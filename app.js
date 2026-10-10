@@ -212,9 +212,12 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
-          <div style="text-align:center;">
-            <div style="font-weight:900;font-size:16px;">${this.selectedDeck.title}</div>
-            <div style="font-size:11px;color:#FBBF24;font-weight:700;">Classic Line Bingo</div>
+          <div style="text-align:center;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:20px;">🐻</span>
+            <div>
+              <div style="font-weight:900;font-size:16px;">${this.selectedDeck.title}</div>
+              <div style="font-size:11px;color:#FBBF24;font-weight:700;">Classic Line Bingo</div>
+            </div>
           </div>
           <div style="width:50px;"></div>
         </div>
@@ -286,6 +289,9 @@ class Router {
         </div>
 
         <h3 style="margin-top:16px;margin-bottom:8px;">Earned Badges</h3>
+        <div class="card">
+          <p>🐻 <strong>Dash the Bear</strong> ✓ (Unlocked)</p>
+        </div>
         <div class="card">
           <p>🚗 <strong>First Ride</strong> ✓ (Unlocked)</p>
         </div>
