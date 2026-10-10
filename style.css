@@ -1,0 +1,176 @@
+:root {
+  --bg-primary: #F8FAFC;
+  --text-primary: #0F172A;
+  --color-navy: #0F172A;
+  --color-yellow: #F59E0B;
+  --color-teal: #0D9488;
+  --color-orange: #F97316;
+  --color-green: #10B981;
+  --color-gold: #EAB308;
+  --color-card: #FFFFFF;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #F8FAFC;
+}
+
+/* SAFETY BANNER */
+.safety-banner {
+  background-color: rgba(249, 115, 22, 0.15);
+  border-bottom: 2px solid var(--color-orange);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.safety-banner .car-icon {
+  font-size: 24px;
+}
+
+.safety-banner strong {
+  color: var(--color-orange);
+  font-size: 13px;
+  display: block;
+}
+
+.safety-banner p {
+  font-size: 11px;
+  color: #475569;
+}
+
+/* MAIN CONTENT */
+#main-content {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: 70px;
+}
+
+/* BUTTONS */
+.btn {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-yellow {
+  background-color: var(--color-yellow);
+  color: var(--color-navy);
+}
+
+.btn-teal {
+  background-color: var(--color-teal);
+  color: #FFFFFF;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--color-navy);
+  color: var(--color-navy);
+}
+
+/* CARDS */
+.card {
+  background: var(--color-card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* 5x5 BINGO GRID */
+.bingo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  aspect-ratio: 1;
+  margin: 12px 0;
+}
+
+.tile {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tile.completed {
+  background: var(--color-green);
+  color: white;
+  border-color: var(--color-green);
+}
+
+.tile.center {
+  background: var(--color-yellow);
+  color: var(--color-navy);
+  font-weight: 800;
+}
+
+/* FOOTER NAV */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  max-width: 500px;
+  width: 100%;
+  height: 56px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.app-footer button {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+}

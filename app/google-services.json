@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "432631366984",
+    "project_id": "app-vercel-windowwander-4dadb",
+    "storage_bucket": "app-vercel-windowwander-4dadb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432631366984:android:9d2b47b13987ab1c5c1f7d",
+        "android_client_info": {
+          "package_name": "app.vercel.windowwander"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4Vh30VVrXD2TwMEhNsOSP-DtuEAg5J2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
