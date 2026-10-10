@@ -18,8 +18,8 @@ import androidx.core.view.WindowCompat
 private val DarkColorScheme = darkColorScheme(
     primary = TravelTealLight,
     secondary = SunnyYellowLight,
-    tertiary = AccentOrange,
-    background = DeepNavy,
+    tertiary = VividOrange,
+    background = MidnightNavy,
     surface = MediumNavy,
     onPrimary = DeepNavy,
     onSecondary = DeepNavy,

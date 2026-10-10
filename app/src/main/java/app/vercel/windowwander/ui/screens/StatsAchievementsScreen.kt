@@ -11,19 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.model.Badge
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.ui.theme.CompletedGreen
+import app.vercel.windowwander.ui.theme.MediumNavy
+import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.TravelTeal
 
@@ -49,7 +51,7 @@ fun StatsAchievementsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MidnightNavy)
             .padding(16.dp)
     ) {
         // TOP HEADER
@@ -60,29 +62,43 @@ fun StatsAchievementsScreen(
         ) {
             Text(
                 text = "🏆 Stats & Badges",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Black,
+                color = Color.White
             )
 
-            Text(
-                text = "Back",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = TravelTeal,
-                modifier = Modifier.clickable { onBackToHome() }
-            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MediumNavy)
+                    .clickable { onBackToHome() }
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Back",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // PLAYER LEVEL CARD
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            shape = RoundedCornerShape(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(12.dp, RoundedCornerShape(20.dp)),
+            colors = CardDefaults.cardColors(containerColor = MediumNavy),
+            shape = RoundedCornerShape(20.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Brush.verticalGradient(listOf(SunnyYellow.copy(alpha = 0.25f), MediumNavy)))
+                    .padding(20.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -92,58 +108,61 @@ fun StatsAchievementsScreen(
                         Text(
                             text = "Level ${profile.level} Explorer",
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Black,
+                            color = Color.White
                         )
                         Text(
                             text = "${profile.xp} Total XP Earned",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            color = SunnyYellow,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Text(text = "⭐", fontSize = 28.sp)
+                    Text(text = "⭐", fontSize = 32.sp)
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 LinearProgressIndicator(
                     progress = { profile.xpInCurrentLevel / 100f },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .height(10.dp)
+                        .clip(RoundedCornerShape(5.dp)),
                     color = SunnyYellow,
-                    trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                    trackColor = Color.White.copy(alpha = 0.15f)
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = "${profile.xpInCurrentLevel} / 100 XP to Level ${profile.level + 1}",
                     fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    color = Color.White.copy(alpha = 0.7f)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         Text(
             text = "Earned Badges",
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.White
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(allBadges) { badge ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (badge.isUnlocked) CompletedGreen.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
+                        containerColor = if (badge.isUnlocked) CompletedGreen.copy(alpha = 0.2f) else MediumNavy
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(14.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(14.dp),
@@ -154,12 +173,12 @@ fun StatsAchievementsScreen(
                             Text(
                                 text = badge.title + if (badge.isUnlocked) " ✓" else " (Locked)",
                                 fontWeight = FontWeight.Bold,
-                                color = if (badge.isUnlocked) CompletedGreen else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                color = if (badge.isUnlocked) CompletedGreen else Color.White.copy(alpha = 0.5f)
                             )
                             Text(
                                 text = badge.description,
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                color = Color.White.copy(alpha = 0.7f)
                             )
                         }
                     }

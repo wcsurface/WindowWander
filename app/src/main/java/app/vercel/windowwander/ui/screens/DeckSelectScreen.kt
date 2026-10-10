@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,14 +26,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.data.DeckRepository
 import app.vercel.windowwander.model.Deck
+import app.vercel.windowwander.ui.theme.ElectricBlue
+import app.vercel.windowwander.ui.theme.MediumNavy
+import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.TravelTeal
+import app.vercel.windowwander.ui.theme.VividOrange
 
 @Composable
 fun DeckSelectScreen(
@@ -44,7 +51,7 @@ fun DeckSelectScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MidnightNavy)
             .padding(16.dp)
     ) {
         // TOP HEADER
@@ -54,34 +61,54 @@ fun DeckSelectScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🎴 Choose a Deck",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                text = "🎴 Deck Catalog",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Black,
+                color = Color.White
             )
 
-            Text(
-                text = "Back",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = TravelTeal,
-                modifier = Modifier.clickable { onBackToHome() }
-            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MediumNavy)
+                    .clickable { onBackToHome() }
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Back",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             items(decks) { deck ->
+                val deckGradient = when (deck.id) {
+                    "deck_a" -> listOf(ElectricBlue.copy(alpha = 0.3f), MediumNavy)
+                    "deck_b" -> listOf(VividOrange.copy(alpha = 0.3f), MediumNavy)
+                    "deck_c" -> listOf(TravelTeal.copy(alpha = 0.3f), MediumNavy)
+                    "deck_d" -> listOf(SunnyYellow.copy(alpha = 0.3f), MediumNavy)
+                    else -> listOf(MediumNavy, MidnightNavy)
+                }
+
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    shape = RoundedCornerShape(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(8.dp, RoundedCornerShape(20.dp)),
+                    colors = CardDefaults.cardColors(containerColor = MediumNavy),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Brush.verticalGradient(deckGradient))
+                            .padding(18.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -91,21 +118,21 @@ fun DeckSelectScreen(
                             Text(
                                 text = deck.title,
                                 fontSize = 18.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                fontWeight = FontWeight.Black,
+                                color = Color.White
                             )
 
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(SunnyYellow.copy(alpha = 0.2f))
+                                    .background(SunnyYellow)
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
                                 Text(
                                     text = deck.audience,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = SunnyYellow
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.Black
                                 )
                             }
                         }
@@ -115,10 +142,10 @@ fun DeckSelectScreen(
                         Text(
                             text = deck.description,
                             fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                            color = Color.White.copy(alpha = 0.8f)
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -128,18 +155,20 @@ fun DeckSelectScreen(
                             Text(
                                 text = "🎯 ${deck.prompts.size} Prompts • ${deck.difficulty}",
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White.copy(alpha = 0.6f)
                             )
 
                             Button(
                                 onClick = { onSelectDeckAndPlay(deck) },
-                                colors = ButtonDefaults.buttonColors(containerColor = TravelTeal),
+                                colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text(
-                                    text = "PLAY DECK",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
+                                    text = "PLAY DECK ▶",
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 12.sp,
+                                    color = Color.White
                                 )
                             }
                         }
