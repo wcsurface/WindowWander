@@ -89,24 +89,24 @@ body {
   background: var(--bg-card);
   padding: 6px 12px;
   border-radius: 20px;
-  border: 1.5px solid var(--color-yellow);
+  border: 2px solid var(--color-yellow);
 }
 
 .avatar-circle {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: linear-gradient(135deg, #F59E0B, #F97316);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .currency-pill {
   background: #0F172A;
-  border: 1.5px solid var(--color-gold);
-  border-radius: 16px;
+  border: 2px solid var(--color-gold);
+  border-radius: 18px;
   padding: 6px 10px;
   font-weight: 900;
   font-size: 12px;
@@ -120,7 +120,7 @@ body {
   height: 38px;
   border-radius: 50%;
   background: var(--bg-card);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.3);
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -135,7 +135,7 @@ body {
   overflow: hidden;
   margin-bottom: 16px;
   box-shadow: 0 10px 28px rgba(0,0,0,0.6);
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.2);
 }
 
 .hero-svg {
@@ -171,7 +171,7 @@ body {
 .btn {
   width: 100%;
   min-height: 58px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: none;
   font-size: 18px;
   font-weight: 900;
@@ -195,7 +195,7 @@ body {
   background: linear-gradient(135deg, #F59E0B, #FBBF24);
   color: #0F172A;
   box-shadow: 0 10px 28px rgba(245, 158, 11, 0.5);
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .btn-yellow {
@@ -221,7 +221,7 @@ body {
 
 .back-pill {
   background: var(--bg-card);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.3);
   color: white;
   font-weight: 800;
   padding: 8px 14px;
@@ -236,17 +236,34 @@ body {
   padding: 18px;
   margin-bottom: 14px;
   box-shadow: 0 6px 22px rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.15);
 }
 
-.card-gradient-blue {
-  background: linear-gradient(180deg, rgba(37,99,235,0.35), var(--bg-card));
-  border: 1.5px solid #2563EB;
+.road-sign-card {
+  border-radius: 18px;
+  padding: 16px;
+  border-bottom: 5px solid rgba(0,0,0,0.4);
+  border-left: 2px solid rgba(255,255,255,0.4);
+  border-right: 2px solid rgba(255,255,255,0.4);
+  border-top: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
-.card-gradient-teal {
-  background: linear-gradient(180deg, rgba(13,148,136,0.35), var(--bg-card));
-  border: 1.5px solid #0D9488;
+.sign-blue {
+  background: linear-gradient(180deg, #2563EB, #1D4ED8);
+}
+
+.sign-teal {
+  background: linear-gradient(180deg, #0D9488, #0F766E);
+}
+
+.sign-badge {
+  background: var(--color-yellow);
+  color: #0F172A;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
 .pill-badge {
@@ -292,16 +309,16 @@ body {
 }
 
 .bingo-h {
-  height: 38px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 18px;
+  font-size: 20px;
   color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  border: 1.5px solid rgba(255,255,255,0.6);
 }
 
 .h-b { background: #2563EB; }
@@ -321,7 +338,7 @@ body {
 
 .tile {
   background: linear-gradient(180deg, #2A364F, #1E293B);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -364,7 +381,7 @@ body {
   width: 100%;
   height: 60px;
   background: #0F172A;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  border-top: 1.5px solid rgba(255,255,255,0.18);
   display: flex;
   justify-content: space-around;
   align-items: center;

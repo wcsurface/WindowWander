@@ -174,15 +174,21 @@ class Router {
         </button>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-          <div class="card card-gradient-blue" onclick="router.navigate('game')" style="cursor:pointer;">
-            <span style="font-size:26px;">🌐</span>
-            <div style="font-weight:900;font-size:15px;margin-top:8px;">Multiplayer</div>
-            <div style="font-size:11px;color:#CBD5E1;">Play in car room</div>
+          <div class="road-sign-card sign-blue" onclick="router.navigate('game')" style="cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:26px;">🌐</span>
+              <span class="sign-badge">LIVE</span>
+            </div>
+            <div style="font-weight:900;font-size:16px;margin-top:8px;">Multiplayer</div>
+            <div style="font-size:11px;color:#E2E8F0;">Play in car room</div>
           </div>
-          <div class="card card-gradient-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
-            <span style="font-size:26px;">🎴</span>
-            <div style="font-weight:900;font-size:15px;margin-top:8px;">Deck Library</div>
-            <div style="font-size:11px;color:#CBD5E1;">8 Themed Decks</div>
+          <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:26px;">🎴</span>
+              <span class="sign-badge">8 DECKS</span>
+            </div>
+            <div style="font-weight:900;font-size:16px;margin-top:8px;">Deck Library</div>
+            <div style="font-size:11px;color:#E2E8F0;">8 Themed Decks</div>
           </div>
         </div>
 

@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -48,7 +49,7 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// FULL-SCREEN CARTOON SCENIC HIGHWAY BACKGROUND
+// FULL CARTOON ROAD TRIP GAME WORLD BACKGROUND
 @Composable
 fun ScenicHighwayBackground(
     modifier: Modifier = Modifier,
@@ -60,7 +61,7 @@ fun ScenicHighwayBackground(
         cloudAnim.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(10000, easing = LinearEasing),
+                animation = tween(12000, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
             )
         )
@@ -71,13 +72,13 @@ fun ScenicHighwayBackground(
             val w = size.width
             val h = size.height
 
-            // 1. SKY GRADIENT (Bright Blue Summer Sky)
+            // 1. VIBRANT SKY GRADIENT (Bright Blue Summer Sky)
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF0284C7), // Sky Blue
-                        Color(0xFF38BDF8), // Horizon Cyan
-                        Color(0xFF7DD3FC)
+                        Color(0xFF0284C7), // Vibrant Sky Blue
+                        Color(0xFF38BDF8), // Light Cyan Horizon
+                        Color(0xFFBAE6FD)
                     )
                 )
             )
@@ -86,60 +87,60 @@ fun ScenicHighwayBackground(
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(SunnyYellowLight, SunnyYellow.copy(alpha = 0.5f), Color.Transparent),
-                    center = Offset(w * 0.85f, h * 0.15f),
-                    radius = 180f
+                    center = Offset(w * 0.82f, h * 0.12f),
+                    radius = 200f
                 ),
-                center = Offset(w * 0.85f, h * 0.15f),
-                radius = 180f
+                center = Offset(w * 0.82f, h * 0.12f),
+                radius = 200f
             )
 
             // 3. PUFFY CARTOON CLOUDS
-            val cloudX1 = w * (0.1f + cloudAnim.value * 0.15f)
-            val cloudX2 = w * (0.6f - cloudAnim.value * 0.1f)
+            val cloudX1 = w * (0.05f + cloudAnim.value * 0.12f)
+            val cloudX2 = w * (0.65f - cloudAnim.value * 0.08f)
 
-            drawCircle(color = Color.White.copy(alpha = 0.85f), radius = 28f, center = Offset(cloudX1, h * 0.12f))
-            drawCircle(color = Color.White.copy(alpha = 0.85f), radius = 38f, center = Offset(cloudX1 + 25f, h * 0.11f))
-            drawCircle(color = Color.White.copy(alpha = 0.85f), radius = 28f, center = Offset(cloudX1 + 50f, h * 0.12f))
+            drawCircle(color = Color.White.copy(alpha = 0.9f), radius = 32f, center = Offset(cloudX1, h * 0.11f))
+            drawCircle(color = Color.White.copy(alpha = 0.9f), radius = 42f, center = Offset(cloudX1 + 28f, h * 0.1f))
+            drawCircle(color = Color.White.copy(alpha = 0.9f), radius = 32f, center = Offset(cloudX1 + 56f, h * 0.11f))
 
-            drawCircle(color = Color.White.copy(alpha = 0.85f), radius = 24f, center = Offset(cloudX2, h * 0.18f))
-            drawCircle(color = Color.White.copy(alpha = 0.85f), radius = 32f, center = Offset(cloudX2 + 20f, h * 0.17f))
+            drawCircle(color = Color.White.copy(alpha = 0.9f), radius = 28f, center = Offset(cloudX2, h * 0.16f))
+            drawCircle(color = Color.White.copy(alpha = 0.9f), radius = 36f, center = Offset(cloudX2 + 22f, h * 0.15f))
 
-            // 4. DISTANT BLUE MOUNTAIN RANGES
+            // 4. DISTANT BLUE MOUNTAINS
             val mtnPath = Path().apply {
-                moveTo(0f, h * 0.45f)
-                lineTo(w * 0.2f, h * 0.3f)
-                lineTo(w * 0.45f, h * 0.42f)
-                lineTo(w * 0.7f, h * 0.25f)
-                lineTo(w * 0.9f, h * 0.38f)
-                lineTo(w, h * 0.32f)
+                moveTo(0f, h * 0.42f)
+                lineTo(w * 0.22f, h * 0.28f)
+                lineTo(w * 0.45f, h * 0.38f)
+                lineTo(w * 0.72f, h * 0.22f)
+                lineTo(w * 0.92f, h * 0.35f)
+                lineTo(w, h * 0.3f)
                 lineTo(w, h * 0.55f)
                 lineTo(0f, h * 0.55f)
                 close()
             }
-            drawPath(mtnPath, color = Color(0xFF1E3A8A).copy(alpha = 0.6f))
+            drawPath(mtnPath, color = Color(0xFF1E3A8A).copy(alpha = 0.65f))
 
-            // 5. GREEN ROLLING HILLS WITH TREES
+            // 5. BRIGHT GREEN ROLLING HILLS
             val hillPath = Path().apply {
-                moveTo(0f, h * 0.52f)
-                cubicTo(w * 0.3f, h * 0.45f, w * 0.6f, h * 0.55f, w, h * 0.48f)
+                moveTo(0f, h * 0.48f)
+                cubicTo(w * 0.35f, h * 0.42f, w * 0.65f, h * 0.52f, w, h * 0.45f)
                 lineTo(w, h)
                 lineTo(0f, h)
                 close()
             }
-            drawPath(hillPath, color = Color(0xFF15803D)) // Forest Green
+            drawPath(hillPath, color = Color(0xFF16A34A)) // Vibrant Grass Green
 
             // 6. ASPHALT HIGHWAY WINDING TO HORIZON
             val roadPath = Path().apply {
                 moveTo(w * 0.05f, h)
                 cubicTo(
-                    w * 0.4f, h * 0.75f,
-                    w * 0.25f, h * 0.58f,
-                    w * 0.52f, h * 0.48f
+                    w * 0.42f, h * 0.72f,
+                    w * 0.28f, h * 0.55f,
+                    w * 0.52f, h * 0.45f
                 )
-                lineTo(w * 0.58f, h * 0.48f)
+                lineTo(w * 0.58f, h * 0.45f)
                 cubicTo(
-                    w * 0.38f, h * 0.62f,
-                    w * 0.55f, h * 0.82f,
+                    w * 0.38f, h * 0.6f,
+                    w * 0.55f, h * 0.8f,
                     w * 0.45f, h
                 )
                 close()
@@ -150,9 +151,9 @@ fun ScenicHighwayBackground(
             val dashPath = Path().apply {
                 moveTo(w * 0.25f, h)
                 cubicTo(
-                    w * 0.42f, h * 0.76f,
-                    w * 0.3f, h * 0.6f,
-                    w * 0.55f, h * 0.49f
+                    w * 0.42f, h * 0.74f,
+                    w * 0.32f, h * 0.58f,
+                    w * 0.55f, h * 0.46f
                 )
             }
             drawPath(
@@ -163,69 +164,6 @@ fun ScenicHighwayBackground(
         }
 
         content()
-    }
-}
-
-// HERO ROAD TRIP SCENE
-@Composable
-fun HeroRoadTripGraphic(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .shadow(16.dp, RoundedCornerShape(24.dp))
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0284C7),
-                        Color(0xFF38BDF8),
-                        Color(0xFF0F172A)
-                    )
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-
-            // SUN GLOW
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(SunnyYellowLight, SunnyYellow.copy(alpha = 0.4f), Color.Transparent),
-                    center = Offset(w * 0.78f, h * 0.28f),
-                    radius = 110f
-                ),
-                center = Offset(w * 0.78f, h * 0.28f),
-                radius = 110f
-            )
-
-            // MOUNTAINS
-            val mtnPath = Path().apply {
-                moveTo(0f, h * 0.6f)
-                lineTo(w * 0.25f, h * 0.3f)
-                lineTo(w * 0.5f, h * 0.55f)
-                lineTo(w * 0.75f, h * 0.22f)
-                lineTo(w, h * 0.5f)
-                lineTo(w, h)
-                lineTo(0f, h)
-                close()
-            }
-            drawPath(mtnPath, color = Color(0xFF1E3A8A))
-
-            // CAR
-            val carX = w * 0.28f
-            val carY = h * 0.74f
-
-            drawOval(color = Color.Black.copy(alpha = 0.45f), topLeft = Offset(carX - 30f, carY + 14f), size = Size(75f, 18f))
-            drawRoundRect(color = VividOrange, topLeft = Offset(carX - 22f, carY - 8f), size = Size(64f, 24f), cornerRadius = CornerRadius(10f, 10f))
-            drawRoundRect(color = Color(0xFFC2410C), topLeft = Offset(carX - 10f, carY - 22f), size = Size(40f, 16f), cornerRadius = CornerRadius(8f, 8f))
-            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX - 8f, carY + 16f))
-            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX + 28f, carY + 16f))
-        }
     }
 }
 
@@ -251,23 +189,23 @@ fun ArcadeHudBar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .shadow(8.dp, RoundedCornerShape(20.dp))
-                .clip(RoundedCornerShape(20.dp))
-                .background(Color(0xFF1E293B))
-                .border(2.dp, SunnyYellow, RoundedCornerShape(20.dp))
+                .shadow(10.dp, RoundedCornerShape(22.dp))
+                .clip(RoundedCornerShape(22.dp))
+                .background(Color(0xFF0F172A))
+                .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
                 .clickable { onOpenStats() }
-                .padding(horizontal = 10.dp, vertical = 6.dp)
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(34.dp)
                     .clip(CircleShape)
                     .background(
                         Brush.linearGradient(listOf(SunnyYellow, VividOrange))
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "🐻", fontSize = 18.sp)
+                Text(text = "🐻", fontSize = 20.sp)
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -275,7 +213,7 @@ fun ArcadeHudBar(
             Column {
                 Text(
                     text = nickname,
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
                 )
@@ -283,28 +221,28 @@ fun ArcadeHudBar(
                     text = "Lvl $level Explorer",
                     fontSize = 10.sp,
                     color = SunnyYellowLight,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.ExtraBold
                 )
             }
         }
 
-        // CURRENCY & ENERGY STATUS PILLS
+        // CURRENCY & SETTINGS PILLS
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             // COINS PILL
             Box(
                 modifier = Modifier
-                    .shadow(6.dp, RoundedCornerShape(16.dp))
-                    .clip(RoundedCornerShape(16.dp))
+                    .shadow(8.dp, RoundedCornerShape(18.dp))
+                    .clip(RoundedCornerShape(18.dp))
                     .background(Color(0xFF0F172A))
-                    .border(1.5.dp, GoldWinner, RoundedCornerShape(16.dp))
-                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                    .border(2.dp, GoldWinner, RoundedCornerShape(18.dp))
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "🪙", fontSize = 14.sp)
+                    Text(text = "🪙", fontSize = 15.sp)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "$coins",
-                        fontSize = 12.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Black,
                         color = GoldWinnerLight
                     )
@@ -314,15 +252,15 @@ fun ArcadeHudBar(
             // SETTINGS BUTTON
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .shadow(6.dp, CircleShape)
+                    .size(38.dp)
+                    .shadow(8.dp, CircleShape)
                     .clip(CircleShape)
-                    .background(Color(0xFF1E293B))
-                    .border(1.5.dp, Color.White.copy(alpha = 0.4f), CircleShape)
+                    .background(Color(0xFF0F172A))
+                    .border(2.dp, Color.White.copy(alpha = 0.5f), CircleShape)
                     .clickable { onOpenSettings() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "⚙️", fontSize = 16.sp)
+                Text(text = "⚙️", fontSize = 18.sp)
             }
         }
     }
@@ -337,26 +275,26 @@ fun BeveledGameButton(
     buttonColor: Color = SunnyYellow,
     bevelColor: Color = Color(0xFFD97706),
     textColor: Color = DeepNavy,
-    fontSize: Int = 20
+    fontSize: Int = 22
 ) {
     Box(
         modifier = modifier
-            .shadow(16.dp, RoundedCornerShape(20.dp), spotColor = buttonColor)
-            .clip(RoundedCornerShape(20.dp))
+            .shadow(20.dp, RoundedCornerShape(22.dp), spotColor = buttonColor)
+            .clip(RoundedCornerShape(22.dp))
             .background(bevelColor)
             .clickable { onClick() }
-            .padding(bottom = 7.dp)
+            .padding(bottom = 8.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(buttonColor, buttonColor.copy(alpha = 0.88f))
                     )
                 )
-                .border(2.dp, Color.White.copy(alpha = 0.7f), RoundedCornerShape(18.dp)),
+                .border(2.5.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(20.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -370,17 +308,90 @@ fun BeveledGameButton(
     }
 }
 
+// CARTOON HIGHWAY MILEAGE ROAD SIGN CARD
+@Composable
+fun CartoonRoadSignCard(
+    title: String,
+    subtitle: String,
+    icon: String,
+    badgeText: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    signColor: Color = Color(0xFF15803D) // Highway Green
+) {
+    Box(
+        modifier = modifier
+            .shadow(12.dp, RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .background(Color(0xFF064E3B))
+            .clickable { onClick() }
+            .padding(bottom = 6.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    Brush.verticalGradient(listOf(signColor, Color(0xFF047857)))
+                )
+                .border(2.5.dp, Color.White, RoundedCornerShape(16.dp))
+                .padding(14.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = icon, fontSize = 28.sp)
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(SunnyYellow)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = badgeText,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Black,
+                            color = DeepNavy
+                        )
+                    }
+                }
+
+                Column {
+                    Text(
+                        text = title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White
+                    )
+                    Text(
+                        text = subtitle,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White.copy(alpha = 0.85f)
+                    )
+                }
+            }
+        }
+    }
+}
+
 // B I N G O 3D COLORED HEADERS
 @Composable
 fun BingoColumnHeaders(
     modifier: Modifier = Modifier
 ) {
     val headers = listOf(
-        Pair("B", Color(0xFF2563EB)),
-        Pair("I", Color(0xFFDC2626)),
-        Pair("N", Color(0xFF7C3AED)),
-        Pair("G", Color(0xFF059669)),
-        Pair("O", Color(0xFFD97706))
+        Pair("B", Color(0xFF2563EB)), // Electric Blue
+        Pair("I", Color(0xFFDC2626)), // Crimson Red
+        Pair("N", Color(0xFF7C3AED)), // Vivid Purple
+        Pair("G", Color(0xFF059669)), // Emerald Green
+        Pair("O", Color(0xFFD97706))  // Amber Gold
     )
 
     Row(
@@ -391,20 +402,80 @@ fun BingoColumnHeaders(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(38.dp)
-                    .shadow(8.dp, RoundedCornerShape(12.dp))
+                    .height(40.dp)
+                    .shadow(10.dp, RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .background(color)
-                    .border(1.5.dp, Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp)),
+                    .border(2.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = char,
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
                 )
             }
+        }
+    }
+}
+
+// HERO SCENE
+@Composable
+fun HeroRoadTripGraphic(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .shadow(16.dp, RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF0284C7),
+                        Color(0xFF38BDF8),
+                        Color(0xFF0F172A)
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(SunnyYellowLight, SunnyYellow.copy(alpha = 0.4f), Color.Transparent),
+                    center = Offset(w * 0.78f, h * 0.28f),
+                    radius = 110f
+                ),
+                center = Offset(w * 0.78f, h * 0.28f),
+                radius = 110f
+            )
+
+            val mtnPath = Path().apply {
+                moveTo(0f, h * 0.6f)
+                lineTo(w * 0.25f, h * 0.3f)
+                lineTo(w * 0.5f, h * 0.55f)
+                lineTo(w * 0.75f, h * 0.22f)
+                lineTo(w, h * 0.5f)
+                lineTo(w, h)
+                lineTo(0f, h)
+                close()
+            }
+            drawPath(mtnPath, color = Color(0xFF1E3A8A))
+
+            val carX = w * 0.28f
+            val carY = h * 0.74f
+
+            drawOval(color = Color.Black.copy(alpha = 0.45f), topLeft = Offset(carX - 30f, carY + 14f), size = Size(75f, 18f))
+            drawRoundRect(color = VividOrange, topLeft = Offset(carX - 22f, carY - 8f), size = Size(64f, 24f), cornerRadius = CornerRadius(10f, 10f))
+            drawRoundRect(color = Color(0xFFC2410C), topLeft = Offset(carX - 10f, carY - 22f), size = Size(40f, 16f), cornerRadius = CornerRadius(8f, 8f))
+            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX - 8f, carY + 16f))
+            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX + 28f, carY + 16f))
         }
     }
 }

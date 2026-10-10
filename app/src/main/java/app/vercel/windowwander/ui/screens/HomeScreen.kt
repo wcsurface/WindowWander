@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,11 +33,11 @@ import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.components.ArcadeHudBar
 import app.vercel.windowwander.ui.components.BeveledGameButton
+import app.vercel.windowwander.ui.components.CartoonRoadSignCard
 import app.vercel.windowwander.ui.components.HeroRoadTripGraphic
 import app.vercel.windowwander.ui.components.ScenicHighwayBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
-import app.vercel.windowwander.ui.theme.ElectricBlue
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.TravelTeal
@@ -133,119 +131,39 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // GAME MODES & DECKS ROW
+            // GAME MODES CARTOON ROAD SIGN CARDS
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // MULTIPLAYER CARD
-                Card(
+                // MULTIPLAYER ROAD SIGN
+                CartoonRoadSignCard(
+                    title = "Multiplayer",
+                    subtitle = "Play in car room",
+                    icon = "🌐",
+                    badgeText = "LIVE",
+                    onClick = onPlayOnline,
                     modifier = Modifier
                         .weight(1f)
-                        .height(115.dp)
-                        .shadow(12.dp, RoundedCornerShape(20.dp))
-                        .clickable { onPlayOnline() },
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(ElectricBlue.copy(alpha = 0.4f), MediumNavy)
-                                )
-                            )
-                            .border(1.5.dp, ElectricBlue, RoundedCornerShape(20.dp))
-                            .padding(14.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "🌐", fontSize = 26.sp)
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(ElectricBlue)
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
-                            ) {
-                                Text(text = "LIVE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
+                        .height(120.dp),
+                    signColor = Color(0xFF2563EB) // Blue Shield
+                )
 
-                        Column {
-                            Text(
-                                text = "Multiplayer",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Play in car room",
-                                fontSize = 11.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
-                    }
-                }
-
-                // DECK LIBRARY CARD
-                Card(
+                // DECK LIBRARY ROAD SIGN
+                CartoonRoadSignCard(
+                    title = "Deck Library",
+                    subtitle = "8 Themed Decks",
+                    icon = "🎴",
+                    badgeText = "8 DECKS",
+                    onClick = onChooseDeck,
                     modifier = Modifier
                         .weight(1f)
-                        .height(115.dp)
-                        .shadow(12.dp, RoundedCornerShape(20.dp))
-                        .clickable { onChooseDeck() },
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(TravelTeal.copy(alpha = 0.4f), MediumNavy)
-                                )
-                            )
-                            .border(1.5.dp, TravelTeal, RoundedCornerShape(20.dp))
-                            .padding(14.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "🎴", fontSize = 26.sp)
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(TravelTeal)
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
-                            ) {
-                                Text(text = "8 DECKS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            }
-                        }
-
-                        Column {
-                            Text(
-                                text = "Deck Library",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Explore themes",
-                                fontSize = 11.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
-                    }
-                }
+                        .height(120.dp),
+                    signColor = Color(0xFF0D9488) // Teal Sign
+                )
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // TRAVEL LOCATION REGION SELECTOR
             Card(
@@ -259,7 +177,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
+                        .border(1.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(18.dp))
                         .padding(14.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
