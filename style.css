@@ -74,6 +74,85 @@ body {
   padding-bottom: 76px;
 }
 
+/* USER HEADER */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F59E0B, #F97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.settings-gear {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* HERO CARD */
+.hero-card {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.hero-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--color-orange);
+  color: white;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+.hero-title {
+  position: absolute;
+  top: 32px;
+  left: 14px;
+  font-size: 26px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
 /* BUTTONS */
 .btn {
   width: 100%;
@@ -87,8 +166,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: transform 0.1s ease, filter 0.15s ease;
-  letter-spacing: 0.5px;
+  transition: transform 0.1s ease;
 }
 
 .btn:active {
@@ -123,6 +201,16 @@ body {
   color: #FFFFFF;
 }
 
+.back-pill {
+  background: var(--bg-card);
+  border: none;
+  color: white;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
 /* CARDS */
 .card {
   background: var(--bg-card);
@@ -141,8 +229,37 @@ body {
   background: linear-gradient(180deg, rgba(13,148,136,0.25), var(--bg-card));
 }
 
-.card-gradient-yellow {
-  background: linear-gradient(180deg, rgba(245,158,11,0.25), var(--bg-card));
+.pill-badge {
+  background: var(--color-green);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.pill-badge-yellow {
+  background: var(--color-yellow);
+  color: #0F172A;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-green);
+  transition: width 0.3s ease;
 }
 
 /* 5x5 BINGO GRID */
@@ -217,16 +334,4 @@ body {
 
 .app-footer button.active {
   color: var(--color-yellow);
-}
-
-/* CELEBRATION MODAL */
-.celebration-modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 200;
 }

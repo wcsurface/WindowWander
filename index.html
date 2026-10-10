@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Road Trip Bingo - Mobile Casual Game</title>
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
-  <meta name="theme-color" content="#0F172A">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="/style.css">
-  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="theme-color" content="#070C18">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
   <div id="app">
@@ -23,23 +23,23 @@
 
     <!-- MAIN CONTAINER -->
     <main id="main-content">
-      <!-- Screen content injected dynamically by app.js -->
+      <!-- Dynamic content rendered by app.js -->
     </main>
 
     <!-- FOOTER NAV -->
     <footer class="app-footer">
-      <button onclick="router.navigate('home')">🏠 Home</button>
-      <button onclick="router.navigate('decks')">🎴 Decks</button>
-      <button onclick="router.navigate('stats')">🏆 Stats</button>
-      <button onclick="router.navigate('settings')">⚙️ Settings</button>
+      <button id="nav-home" onclick="router.navigate('home')">🏠 Home</button>
+      <button id="nav-decks" onclick="router.navigate('decks')">🎴 Decks</button>
+      <button id="nav-stats" onclick="router.navigate('stats')">🏆 Stats</button>
+      <button id="nav-settings" onclick="router.navigate('settings')">⚙️ Settings</button>
     </footer>
   </div>
 
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
