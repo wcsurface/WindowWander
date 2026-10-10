@@ -173,10 +173,14 @@ body {
   transform: scale(0.96);
 }
 
+.btn-beveled {
+  border-bottom: 5px solid #D97706;
+}
+
 .btn-primary-hero {
-  background: linear-gradient(135deg, #F59E0B, #F97316);
+  background: linear-gradient(135deg, #F59E0B, #FBBF24);
   color: #0F172A;
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
   font-size: 18px;
 }
 
@@ -262,13 +266,40 @@ body {
   transition: width 0.3s ease;
 }
 
+/* B I N G O HEADERS */
+.bingo-header-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.bingo-h {
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.h-b { background: #2563EB; }
+.h-i { background: #DC2626; }
+.h-n { background: #7C3AED; }
+.h-g { background: #059669; }
+.h-o { background: #D97706; }
+
 /* 5x5 BINGO GRID */
 .bingo-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   aspect-ratio: 1;
-  margin: 12px 0;
+  margin: 6px 0 12px 0;
 }
 
 .tile {

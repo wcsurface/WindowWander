@@ -31,7 +31,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,19 +51,19 @@ import app.vercel.windowwander.engine.WinResult
 import app.vercel.windowwander.model.BingoTile
 import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.GameMode
+import app.vercel.windowwander.ui.components.BeveledGameButton
+import app.vercel.windowwander.ui.components.BingoColumnHeaders
 import app.vercel.windowwander.ui.components.CategoryIconGraphic
 import app.vercel.windowwander.ui.components.ConfettiCelebrationGraphic
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.CompletedGreenDark
 import app.vercel.windowwander.ui.theme.DeepNavy
-import app.vercel.windowwander.ui.theme.ElectricBlue
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.GoldWinnerLight
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
-import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @Composable
@@ -124,7 +123,7 @@ fun BingoGameScreen(
                         color = Color.White
                     )
                     Text(
-                        text = "${gameMode.displayName}",
+                        text = gameMode.displayName,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = SunnyYellowLight
@@ -187,6 +186,11 @@ fun BingoGameScreen(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            // B I N G O 3D COLUMN HEADERS
+            BingoColumnHeaders()
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             // 5x5 RESPONSIVE BINGO GRID
             LazyVerticalGrid(
@@ -268,7 +272,7 @@ fun BingoGameScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.85f)),
+                    .background(Color.Black.copy(alpha = 0.88f)),
                 contentAlignment = Alignment.Center
             ) {
                 ConfettiCelebrationGraphic()
@@ -286,21 +290,21 @@ fun BingoGameScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(64.dp)
+                                .size(72.dp)
                                 .clip(CircleShape)
                                 .background(
                                     Brush.radialGradient(listOf(SunnyYellowLight, GoldWinner))
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "🏆", fontSize = 32.sp)
+                            Text(text = "🏆", fontSize = 36.sp)
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "BINGO ACHIEVED!",
-                            fontSize = 24.sp,
+                            text = "BINGO VICTORY!",
+                            fontSize = 26.sp,
                             fontWeight = FontWeight.Black,
                             color = SunnyYellow
                         )
@@ -313,37 +317,38 @@ fun BingoGameScreen(
                             color = Color.White.copy(alpha = 0.8f)
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(CompletedGreen.copy(alpha = 0.2f))
+                                .background(CompletedGreen.copy(alpha = 0.25f))
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
                             Text(
-                                text = "+100 BONUS XP EARNED! ⭐️",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
+                                text = "+100 BONUS XP • +50 COINS ⭐️",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Black,
                                 color = CompletedGreen
                             )
                         }
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        Button(
+                        BeveledGameButton(
+                            text = "START NEXT ROUND 🔄",
                             onClick = {
                                 onDismissCelebration()
                                 onNewGame()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
-                            shape = RoundedCornerShape(14.dp)
-                        ) {
-                            Text(text = "Start Next Round 🔄", fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                        }
+                                .height(54.dp),
+                            buttonColor = VividOrange,
+                            bevelColor = Color(0xFFC2410C),
+                            textColor = Color.White,
+                            fontSize = 16
+                        )
 
                         Spacer(modifier = Modifier.height(10.dp))
 
@@ -351,7 +356,7 @@ fun BingoGameScreen(
                             onClick = onDismissCelebration,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(50.dp),
+                                .height(48.dp),
                             shape = RoundedCornerShape(14.dp)
                         ) {
                             Text(text = "Keep Playing Board", fontWeight = FontWeight.Bold, color = Color.White)

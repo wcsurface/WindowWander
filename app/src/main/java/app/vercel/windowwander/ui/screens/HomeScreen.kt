@@ -1,12 +1,9 @@
 package app.vercel.windowwander.ui.screens
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,35 +19,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.model.Region
+import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.HeroRoadTripGraphic
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.ElectricBlue
-import app.vercel.windowwander.ui.theme.ElectricBlueLight
-import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
@@ -79,24 +68,26 @@ fun HomeScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TOP APP HEADER & PROFILE BADGE
+        // TOP APP HUD BAR
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // PROFILE & LEVEL
+            // PROFILE BADGE WITH LEVEL & XP
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .shadow(8.dp, RoundedCornerShape(20.dp))
                     .clip(RoundedCornerShape(20.dp))
                     .background(MediumNavy)
+                    .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(20.dp))
                     .clickable { onOpenStats() }
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(34.dp)
                         .clip(CircleShape)
                         .background(
                             Brush.linearGradient(listOf(SunnyYellow, VividOrange))
@@ -109,20 +100,20 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Column {
                     Text(
                         text = profile.nickname,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Black,
                         color = Color.White
                     )
                     Text(
                         text = "Level ${profile.level} • ${profile.xp} XP",
                         fontSize = 10.sp,
                         color = SunnyYellowLight,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -132,8 +123,10 @@ fun HomeScreen(
                 onClick = onOpenSettings,
                 modifier = Modifier
                     .size(40.dp)
+                    .shadow(6.dp, CircleShape)
                     .clip(CircleShape)
                     .background(MediumNavy)
+                    .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
             ) {
                 Text(text = "⚙️", fontSize = 18.sp)
             }
@@ -141,13 +134,12 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // HERO SECTION WITH TITLE & CUSTOM ROAD VECTOR ART
+        // SCENIC GAME WORLD HERO SECTION
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
             HeroRoadTripGraphic()
 
-            // OVERLAY APP TITLE TREATMENT
             Column(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -157,10 +149,10 @@ fun HomeScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(VividOrange)
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Text(
-                        text = "SUMMER ROAD TRIP EDITION",
+                        text = "ROAD TRIP EDITION",
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White,
@@ -180,65 +172,29 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // PRIMARY IRRESISTIBLE PLAY BUTTON
-        val playInteractionSource = remember { MutableInteractionSource() }
-        val isPlayPressed by playInteractionSource.collectIsPressedAsState()
-        val playScale by animateFloatAsState(if (isPlayPressed) 0.96f else 1.0f, label = "playScale")
-
-        Box(
+        // HUGE 3D BEVELED GOLDEN PLAY BUTTON
+        BeveledGameButton(
+            text = "⚡ PLAY NOW ▶",
+            onClick = onQuickPlay,
             modifier = Modifier
                 .fillMaxWidth()
-                .scale(playScale)
-                .shadow(16.dp, RoundedCornerShape(20.dp), spotColor = VividOrange)
-                .clip(RoundedCornerShape(20.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(SunnyYellow, VividOrange, Color(0xFFEA580C))
-                    )
-                )
-                .clickable(
-                    interactionSource = playInteractionSource,
-                    indication = null,
-                    onClick = onQuickPlay
-                )
-                .padding(vertical = 18.dp, horizontal = 20.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "⚡",
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "START QUICK PLAY",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    color = DeepNavy,
-                    letterSpacing = 0.5.sp
-                )
-                Text(
-                    text = " ▶",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    color = DeepNavy
-                )
-            }
-        }
+                .height(62.dp),
+            buttonColor = SunnyYellow,
+            bevelColor = Color(0xFFD97706),
+            textColor = DeepNavy,
+            fontSize = 20
+        )
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        // MULTIPLAYER & DECK LIBRARY CARDS ROW
+        // MULTIPLAYER & DECK LIBRARY CARDS
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // ONLINE MULTIPLAYER CARD
+            // MULTIPLAYER CARD
             Card(
                 modifier = Modifier
                     .weight(1f)
@@ -252,7 +208,7 @@ fun HomeScreen(
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                listOf(ElectricBlue.copy(alpha = 0.3f), MediumNavy)
+                                listOf(ElectricBlue.copy(alpha = 0.35f), MediumNavy)
                             )
                         )
                         .padding(14.dp),
@@ -289,7 +245,7 @@ fun HomeScreen(
                 }
             }
 
-            // DECKS LIBRARY CARD
+            // DECK LIBRARY CARD
             Card(
                 modifier = Modifier
                     .weight(1f)
@@ -303,7 +259,7 @@ fun HomeScreen(
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                listOf(TravelTeal.copy(alpha = 0.3f), MediumNavy)
+                                listOf(TravelTeal.copy(alpha = 0.35f), MediumNavy)
                             )
                         )
                         .padding(14.dp),
@@ -348,7 +304,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onOpenSettings() },
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(18.dp),
             colors = CardDefaults.cardColors(containerColor = MediumNavy)
         ) {
             Row(
@@ -386,7 +342,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        // DAILY CHALLENGE CARD
+        // DAILY CHALLENGE PASS CARD
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
@@ -397,7 +353,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .background(
                         Brush.linearGradient(
-                            listOf(CompletedGreen.copy(alpha = 0.2f), MediumNavy)
+                            listOf(CompletedGreen.copy(alpha = 0.25f), MediumNavy)
                         )
                     )
                     .padding(16.dp)
@@ -411,7 +367,7 @@ fun HomeScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(text = "🎯", fontSize = 20.sp, modifier = Modifier.padding(end = 6.dp))
                             Text(
-                                text = "DAILY ROAD TRIP CHALLENGE",
+                                text = "DAILY ROAD TRIP PASS",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Black,
                                 color = CompletedGreen
@@ -431,7 +387,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Spot a yellow vehicle, semi-truck, and an out-of-state license plate!",
+                        text = "Spot a yellow vehicle, semi-truck, and an out-of-state plate today!",
                         fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.9f)
                     )
