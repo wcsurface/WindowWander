@@ -55,13 +55,13 @@ import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.BingoColumnHeaders
 import app.vercel.windowwander.ui.components.CategoryIconGraphic
 import app.vercel.windowwander.ui.components.ConfettiCelebrationGraphic
+import app.vercel.windowwander.ui.components.ScenicHighwayBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.CompletedGreenDark
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.GoldWinnerLight
 import app.vercel.windowwander.ui.theme.MediumNavy
-import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
@@ -82,284 +82,288 @@ fun BingoGameScreen(
 ) {
     val completedCount = tiles.count { it.isCompleted }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MidnightNavy)
-            .padding(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+    ScenicHighwayBackground {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
         ) {
-            // GAME HEADER BAR
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // EXIT BUTTON
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MediumNavy)
-                        .clickable { onBackToHome() }
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                // GAME HEADER BAR
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "◀ Exit",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-
-                // DECK TITLE & GAME MODE
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = deck.title,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Black,
-                        color = Color.White
-                    )
-                    Text(
-                        text = gameMode.displayName,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = SunnyYellowLight
-                    )
-                }
-
-                // UNDO BUTTON
-                if (canUndo) {
+                    // EXIT BUTTON
                     Box(
                         modifier = Modifier
+                            .shadow(6.dp, RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp))
-                            .background(VividOrange.copy(alpha = 0.2f))
-                            .clickable { onUndo() }
+                            .background(MediumNavy)
+                            .border(1.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .clickable { onBackToHome() }
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Text(
-                            text = "↩ Undo",
+                            text = "◀ Exit",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = VividOrange
+                            color = Color.White
                         )
                     }
-                } else {
-                    Spacer(modifier = Modifier.width(60.dp))
+
+                    // DECK TITLE & GAME MODE
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = deck.title,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White
+                        )
+                        Text(
+                            text = gameMode.displayName,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = SunnyYellowLight
+                        )
+                    }
+
+                    // UNDO BUTTON
+                    if (canUndo) {
+                        Box(
+                            modifier = Modifier
+                                .shadow(6.dp, RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(VividOrange)
+                                .clickable { onUndo() }
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "↩ Undo",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.width(60.dp))
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-            // SIGHTS PROGRESS BAR
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Sights Discovered",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White.copy(alpha = 0.7f)
-                )
-                Text(
-                    text = "$completedCount / 25",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Black,
-                    color = SunnyYellow
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            LinearProgressIndicator(
-                progress = { completedCount / 25f },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                color = CompletedGreen,
-                trackColor = MediumNavy
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // B I N G O 3D COLUMN HEADERS
-            BingoColumnHeaders()
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            // 5x5 RESPONSIVE BINGO GRID
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(5),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                items(tiles) { tile ->
-                    BingoTileView(
-                        tile = tile,
-                        isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
-                        onTap = { onTapTile(tile.index) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // GAME ACTION & WIN STATUS BAR
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = onNewGame,
-                    colors = ButtonDefaults.buttonColors(containerColor = MediumNavy),
-                    shape = RoundedCornerShape(14.dp)
+                // SIGHTS PROGRESS BAR
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "🔄 New Board",
+                        text = "Sights Discovered",
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 13.sp
+                        color = Color.White
+                    )
+                    Text(
+                        text = "$completedCount / 25",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Black,
+                        color = SunnyYellow
                     )
                 }
 
-                if (winResult.hasWon) {
-                    Box(
-                        modifier = Modifier
-                            .shadow(8.dp, RoundedCornerShape(14.dp))
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(
-                                Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner))
-                            )
-                            .padding(horizontal = 14.dp, vertical = 10.dp)
+                Spacer(modifier = Modifier.height(4.dp))
+
+                LinearProgressIndicator(
+                    progress = { completedCount / 25f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = CompletedGreen,
+                    trackColor = MediumNavy
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // B I N G O 3D COLORED HEADERS
+                BingoColumnHeaders()
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // 5x5 RESPONSIVE BINGO GRID
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(5),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    items(tiles) { tile ->
+                        BingoTileView(
+                            tile = tile,
+                            isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
+                            onTap = { onTapTile(tile.index) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // GAME ACTION & WIN STATUS BAR
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = onNewGame,
+                        colors = ButtonDefaults.buttonColors(containerColor = MediumNavy),
+                        shape = RoundedCornerShape(14.dp)
                     ) {
                         Text(
-                            text = "🎉 BINGO! (${winResult.winningLinesCount} Line${if (winResult.winningLinesCount > 1) "s" else ""})",
-                            fontWeight = FontWeight.Black,
-                            color = DeepNavy,
+                            text = "🔄 New Board",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
                             fontSize = 13.sp
                         )
                     }
-                }
-            }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            // PASSENGER SAFETY FOOTER
-            Text(
-                text = "🚗 Passenger View • Drivers Drive Safely",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.5f),
-                textAlign = TextAlign.Center
-            )
-        }
-
-        // BINGO CELEBRATION OVERLAY
-        AnimatedVisibility(
-            visible = showCelebration,
-            enter = scaleIn(),
-            exit = scaleOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.88f)),
-                contentAlignment = Alignment.Center
-            ) {
-                ConfettiCelebrationGraphic()
-
-                Card(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .shadow(24.dp, RoundedCornerShape(24.dp)),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    if (winResult.hasWon) {
                         Box(
                             modifier = Modifier
-                                .size(72.dp)
-                                .clip(CircleShape)
+                                .shadow(8.dp, RoundedCornerShape(14.dp))
+                                .clip(RoundedCornerShape(14.dp))
                                 .background(
-                                    Brush.radialGradient(listOf(SunnyYellowLight, GoldWinner))
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "🏆", fontSize = 36.sp)
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = "BINGO VICTORY!",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Black,
-                            color = SunnyYellow
-                        )
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
-                        Text(
-                            text = "Great roadside discoveries!",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(CompletedGreen.copy(alpha = 0.25f))
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner))
+                                )
+                                .padding(horizontal = 14.dp, vertical = 10.dp)
                         ) {
                             Text(
-                                text = "+100 BONUS XP • +50 COINS ⭐️",
-                                fontSize = 13.sp,
+                                text = "🎉 BINGO! (${winResult.winningLinesCount} Line${if (winResult.winningLinesCount > 1) "s" else ""})",
                                 fontWeight = FontWeight.Black,
-                                color = CompletedGreen
+                                color = DeepNavy,
+                                fontSize = 13.sp
                             )
                         }
+                    }
+                }
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
-                        BeveledGameButton(
-                            text = "START NEXT ROUND 🔄",
-                            onClick = {
-                                onDismissCelebration()
-                                onNewGame()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(54.dp),
-                            buttonColor = VividOrange,
-                            bevelColor = Color(0xFFC2410C),
-                            textColor = Color.White,
-                            fontSize = 16
-                        )
+                // PASSENGER SAFETY FOOTER
+                Text(
+                    text = "🚗 Passenger View • Drivers Drive Safely",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center
+                )
+            }
 
-                        Spacer(modifier = Modifier.height(10.dp))
+            // BINGO CELEBRATION OVERLAY
+            AnimatedVisibility(
+                visible = showCelebration,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.88f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ConfettiCelebrationGraphic()
 
-                        OutlinedButton(
-                            onClick = onDismissCelebration,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            shape = RoundedCornerShape(14.dp)
+                    Card(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .shadow(24.dp, RoundedCornerShape(24.dp)),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Keep Playing Board", fontWeight = FontWeight.Bold, color = Color.White)
+                            Box(
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.radialGradient(listOf(SunnyYellowLight, GoldWinner))
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "🏆", fontSize = 36.sp)
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Text(
+                                text = "BINGO VICTORY!",
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow
+                            )
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text = "Great roadside discoveries!",
+                                fontSize = 14.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(CompletedGreen.copy(alpha = 0.25f))
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = "+100 BONUS XP • +50 COINS ⭐️",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = CompletedGreen
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            BeveledGameButton(
+                                text = "START NEXT ROUND 🔄",
+                                onClick = {
+                                    onDismissCelebration()
+                                    onNewGame()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(54.dp),
+                                buttonColor = VividOrange,
+                                bevelColor = Color(0xFFC2410C),
+                                textColor = Color.White,
+                                fontSize = 16
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            OutlinedButton(
+                                onClick = onDismissCelebration,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(14.dp)
+                            ) {
+                                Text(text = "Keep Playing Board", fontWeight = FontWeight.Bold, color = Color.White)
+                            }
                         }
                     }
                 }
@@ -395,17 +399,17 @@ fun BingoTileView(
         modifier = Modifier
             .aspectRatio(1f)
             .scale(scale)
-            .shadow(if (tile.isCompleted) 6.dp else 2.dp, RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp))
+            .shadow(if (tile.isCompleted) 8.dp else 3.dp, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(bgBrush)
             .border(
                 width = if (isWinningLine) 2.5.dp else 1.dp,
                 color = when {
                     isWinningLine -> GoldWinnerLight
                     tile.isCompleted -> CompletedGreen
-                    else -> Color.White.copy(alpha = 0.15f)
+                    else -> Color.White.copy(alpha = 0.2f)
                 },
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(12.dp)
             )
             .clickable(
                 interactionSource = interactionSource,

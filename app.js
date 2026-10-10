@@ -124,37 +124,48 @@ class Router {
       main.innerHTML = `
         <div class="user-header">
           <div class="profile-badge">
-            <div class="avatar-circle">⭐</div>
+            <div class="avatar-circle">🐻</div>
             <div>
-              <div style="font-weight:900;font-size:14px;color:white;">Road Explorer</div>
-              <div style="font-size:11px;color:#FBBF24;font-weight:800;">Level ${level} • ${this.stats.xp} XP</div>
+              <div style="font-weight:900;font-size:13px;color:white;">Road Explorer</div>
+              <div style="font-size:10px;color:#FBBF24;font-weight:800;">Lvl ${level} Explorer • ${this.stats.xp} XP</div>
             </div>
           </div>
-          <button class="settings-gear" onclick="router.navigate('settings')">⚙️</button>
+          <div style="display:flex;gap:8px;">
+            <div class="currency-pill">🪙 1,250</div>
+            <button class="settings-gear" onclick="router.navigate('settings')">⚙️</button>
+          </div>
         </div>
 
         <div class="hero-card">
-          <svg class="hero-svg" viewBox="0 0 400 180">
+          <svg class="hero-svg" viewBox="0 0 400 200">
             <defs>
               <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#0284C7"/>
                 <stop offset="50%" stop-color="#38BDF8"/>
-                <stop offset="100%" stop-color="#070C18"/>
+                <stop offset="100%" stop-color="#7DD3FC"/>
               </linearGradient>
             </defs>
-            <rect width="400" height="180" rx="20" fill="url(#skyGrad)" />
-            <circle cx="310" cy="50" r="45" fill="#F59E0B" opacity="0.3" />
-            <circle cx="310" cy="50" r="28" fill="#FBBF24" />
-            <path d="M0 120 L100 70 L180 110 L280 50 L360 100 L400 80 L400 180 L0 180 Z" fill="#1E3A8A" opacity="0.7"/>
-            <path d="M40 180 C 120 135, 80 100, 200 80 L220 80 C 140 105, 180 145, 140 180 Z" fill="#334155"/>
-            <path d="M90 180 C 130 137, 100 104, 210 82" stroke="#F59E0B" stroke-width="4" fill="none"/>
-            <!-- CAR -->
-            <rect x="80" y="125" width="50" height="20" rx="6" fill="#F97316"/>
-            <rect x="90" y="113" width="30" height="14" rx="5" fill="#C2410C"/>
-            <circle cx="92" cy="145" r="6" fill="#020617"/>
-            <circle cx="120" cy="145" r="6" fill="#020617"/>
+            <rect width="400" height="200" rx="20" fill="url(#skyGrad)" />
+            <circle cx="330" cy="50" r="45" fill="#F59E0B" opacity="0.4" />
+            <circle cx="330" cy="50" r="28" fill="#FBBF24" />
+            <!-- CLOUDS -->
+            <circle cx="60" cy="35" r="18" fill="white" opacity="0.85"/>
+            <circle cx="80" cy="32" r="24" fill="white" opacity="0.85"/>
+            <circle cx="100" cy="35" r="18" fill="white" opacity="0.85"/>
+            <!-- MOUNTAINS -->
+            <path d="M0 120 L90 60 L180 110 L280 45 L360 90 L400 70 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.6"/>
+            <!-- HILLS -->
+            <path d="M0 130 C 120 110, 240 145, 400 120 L400 200 L0 200 Z" fill="#15803D"/>
+            <!-- ROAD -->
+            <path d="M20 200 C 160 150, 100 110, 210 95 L230 95 C 150 120, 190 160, 150 200 Z" fill="#334155"/>
+            <path d="M90 200 C 150 152, 110 112, 220 97" stroke="#F59E0B" stroke-width="4" fill="none"/>
+            <!-- CAR & MASCOT -->
+            <rect x="90" y="140" width="60" height="24" rx="8" fill="#F97316"/>
+            <rect x="102" y="126" width="36" height="16" rx="6" fill="#C2410C"/>
+            <circle cx="102" cy="162" r="7" fill="#020617"/>
+            <circle cx="138" cy="162" r="7" fill="#020617"/>
           </svg>
-          <div class="hero-tag">ROAD TRIP EDITION</div>
+          <div class="hero-tag">CARTOON ROAD TRIP BINGO</div>
           <h1 class="hero-title">ROAD TRIP BINGO</h1>
         </div>
 
@@ -164,14 +175,14 @@ class Router {
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div class="card card-gradient-blue" onclick="router.navigate('game')" style="cursor:pointer;">
-            <span style="font-size:24px;">🌐</span>
+            <span style="font-size:26px;">🌐</span>
             <div style="font-weight:900;font-size:15px;margin-top:8px;">Multiplayer</div>
-            <div style="font-size:11px;color:#94A3B8;">Play in car room</div>
+            <div style="font-size:11px;color:#CBD5E1;">Play in car room</div>
           </div>
           <div class="card card-gradient-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
-            <span style="font-size:24px;">🎴</span>
+            <span style="font-size:26px;">🎴</span>
             <div style="font-weight:900;font-size:15px;margin-top:8px;">Deck Library</div>
-            <div style="font-size:11px;color:#94A3B8;">8 Themed Decks</div>
+            <div style="font-size:11px;color:#CBD5E1;">8 Themed Decks</div>
           </div>
         </div>
 
@@ -208,7 +219,7 @@ class Router {
           <div style="width:50px;"></div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#94A3B8;margin-bottom:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#E2E8F0;margin-bottom:4px;font-weight:700;">
           <span>Sights Discovered</span>
           <span style="color:#F59E0B;font-weight:900;">${completedCount} / 25</span>
         </div>
