@@ -1,5 +1,5 @@
 # 🚗 ROAD TRIP BINGO (WindowWander)
-> **A complete, launch-ready, mobile-first casual road trip game for passengers.**
+> **A complete, launch-ready, mobile-first casual arcade road trip game for passengers.**
 
 Road Trip Bingo transforms ordinary car rides into friendly, real-time competitions with 8 themed bingo decks, regional intelligence, local and online multiplayer, XP leveling, and full offline support.
 
