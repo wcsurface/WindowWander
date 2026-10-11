@@ -7,17 +7,16 @@
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
   <meta name="theme-color" content="#0088CC">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
   <div id="app">
-    <!-- SAFETY BANNER -->
+    <!-- PROMINENT SAFETY BANNER (NO CAR ICON, LARGER PROMINENT TEXT) -->
     <header class="safety-banner">
-      <span class="car-icon">🚗</span>
-      <div>
-        <strong>Passengers play. Drivers drive.</strong>
-        <p>Stay safe! Keep your eyes on the road if behind the wheel.</p>
+      <div style="text-align:center;width:100%;">
+        <strong>PASSENGERS PLAY. DRIVERS DRIVE.</strong>
+        <p>Stay safe! Never operate or look at the screen while driving.</p>
       </div>
     </header>
 
@@ -35,11 +34,11 @@
     </footer>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=12').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=13').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>

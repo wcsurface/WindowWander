@@ -31,11 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.model.PlayerProfile
@@ -195,7 +195,7 @@ fun HomeScreen(
 
                                 Box(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(8.dp))
+                                        .shadow(4.dp, RoundedCornerShape(8.dp))
                                         .background(CompletedGreen)
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
@@ -216,31 +216,37 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // SAFETY BANNER
+                // PROMINENT SAFETY BANNER (NO CAR ICON, LARGER PROMINENT TEXT)
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = VividOrange.copy(alpha = 0.2f)),
-                    border = BorderStroke(1.dp, VividOrange)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(12.dp, RoundedCornerShape(18.dp)),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = VividOrange),
+                    border = BorderStroke(2.dp, Color(0xFFC2410C))
                 ) {
-                    Row(
-                        modifier = Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "🚗", fontSize = 24.sp, modifier = Modifier.padding(end = 10.dp))
-                        Column {
-                            Text(
-                                text = "Passengers play. Drivers drive.",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = VividOrange
-                            )
-                            Text(
-                                text = "Never operate or look at the screen while driving.",
-                                fontSize = 11.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
+                        Text(
+                            text = "PASSENGERS PLAY. DRIVERS DRIVE.",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 0.5.sp
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Stay safe! Never operate or look at the screen while driving.",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFFFEDD5),
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
 
