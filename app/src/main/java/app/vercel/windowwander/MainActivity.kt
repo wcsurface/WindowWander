@@ -39,8 +39,12 @@ class MainActivity : ComponentActivity() {
                         Screen.HOME -> HomeScreen(
                             profile = uiState.playerProfile,
                             selectedRegion = uiState.selectedRegion,
+                            selectedDeck = uiState.selectedDeck,
+                            isSearchingOpponent = uiState.isSearchingOpponent,
+                            opponentFoundName = uiState.opponentFoundName,
                             onQuickPlay = { viewModel.startNewGame() },
-                            onPlayOnline = { viewModel.createLocalQuickPlayRoom() },
+                            onStartOnlineMatchmaking = { deck -> viewModel.startOnlineMatchmaking(deck) },
+                            onCancelMatchmaking = { viewModel.cancelMatchmaking() },
                             onChooseDeck = { viewModel.navigateTo(Screen.DECK_SELECT) },
                             onOpenStats = { viewModel.navigateTo(Screen.STATS) },
                             onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },

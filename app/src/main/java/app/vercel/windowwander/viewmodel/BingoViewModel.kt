@@ -2,6 +2,7 @@ package app.vercel.windowwander.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import app.vercel.windowwander.data.DeckRepository
 import app.vercel.windowwander.data.MultiplayerService
 import app.vercel.windowwander.data.UserPreferences
@@ -13,10 +14,12 @@ import app.vercel.windowwander.model.GameMode
 import app.vercel.windowwander.model.MultiplayerRoom
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.model.Region
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 enum class Screen {
     HOME,
@@ -39,6 +42,8 @@ data class UiState(
     val multiplayerRoom: MultiplayerRoom? = null,
     val showBingoCelebration: Boolean = false,
     val showAccountPrompt: Boolean = false,
+    val isSearchingOpponent: Boolean = false,
+    val opponentFoundName: String? = null,
     val soundEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val confirmTapEnabled: Boolean = false,
@@ -121,8 +126,45 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 playerProfile = updatedProfile,
                 showBingoCelebration = false,
                 showAccountPrompt = false,
+                isSearchingOpponent = false,
+                opponentFoundName = null,
                 currentScreen = Screen.BINGO_GAME,
                 canUndo = false
+            )
+        }
+    }
+
+    fun startOnlineMatchmaking(deck: Deck = _uiState.value.selectedDeck) {
+        _uiState.update {
+            it.copy(
+                selectedDeck = deck,
+                gameMode = GameMode.CLASSIC_LINE, // Online is strictly Classic Bingo
+                isSearchingOpponent = true,
+                opponentFoundName = null
+            )
+        }
+
+        viewModelScope.launch {
+            delay(2000) // Matchmaking delay
+            val opponentNames = listOf("Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)")
+            val opponent = opponentNames.random()
+
+            _uiState.update {
+                it.copy(
+                    opponentFoundName = opponent
+                )
+            }
+
+            delay(1200) // Transition to board
+            startNewGame(deck = deck, gameMode = GameMode.CLASSIC_LINE)
+        }
+    }
+
+    fun cancelMatchmaking() {
+        _uiState.update {
+            it.copy(
+                isSearchingOpponent = false,
+                opponentFoundName = null
             )
         }
     }
@@ -164,7 +206,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 winResult = winEval,
                 playerProfile = profile,
                 showBingoCelebration = newlyWon || (winEval.hasWon && it.showBingoCelebration),
-                showAccountPrompt = newlyWon, // Prompt after single game win!
+                showAccountPrompt = newlyWon,
                 canUndo = boardHistory.size > 1
             )
         }

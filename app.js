@@ -79,9 +79,12 @@ class Router {
   constructor() {
     this.currentScreen = 'home';
     this.selectedDeck = DECKS[2]; // Defaulted to location deck (Mountain West)
-    this.selectedMode = GAME_MODES[0]; // Defaulted to Classic Line Bingo
+    this.selectedMode = GAME_MODES[0]; // Strictly Classic Bingo for Online
     this.board = BingoWebEngine.generateBoard();
     this.roomCode = 'ROAD';
+    this.showOnlineModal = false;
+    this.isSearchingOpponent = false;
+    this.opponentName = null;
     this.showAccountModal = false;
     this.isLoggedIn = false;
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0}');
@@ -106,6 +109,31 @@ class Router {
   selectDeckAndPlay(deck) {
     this.selectedDeck = deck;
     this.startCarRoom();
+  }
+
+  startOnlineMatchmaking() {
+    this.showOnlineModal = false;
+    this.isSearchingOpponent = true;
+    this.opponentName = null;
+    this.render();
+
+    setTimeout(() => {
+      const opponents = ["Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)"];
+      this.opponentName = opponents[Math.floor(Math.random() * opponents.length)];
+      this.render();
+
+      setTimeout(() => {
+        this.isSearchingOpponent = false;
+        this.board = BingoWebEngine.generateBoard();
+        this.navigate('game');
+      }, 1200);
+    }, 2000);
+  }
+
+  cancelMatchmaking() {
+    this.isSearchingOpponent = false;
+    this.opponentName = null;
+    this.render();
   }
 
   startCarRoom() {
@@ -195,7 +223,7 @@ class Router {
             <line x1="0" y1="145" x2="400" y2="145" stroke="#FFFFFF" stroke-width="2.5" />
             <line x1="0" y1="198" x2="400" y2="198" stroke="#FFFFFF" stroke-width="2.5" />
 
-            <!-- FORWARD-DRIVING SCROLLING DASHED LINE (RIGHT TO LEFT) -->
+            <!-- FORWARD-DRIVING SCROLLING DASHED LINE -->
             <line x1="0" y1="172" x2="400" y2="172" stroke="#F59E0B" stroke-width="4" stroke-dasharray="24 16">
               <animate attributeName="stroke-dashoffset" from="0" to="40" dur="0.5s" repeatCount="indefinite"/>
             </line>
@@ -203,39 +231,33 @@ class Router {
             <!-- FORWARD-DRIVING CAR WITH BOUNCE -->
             <g>
               <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="0.25s" repeatCount="indefinite"/>
-              <!-- Car Body -->
               <rect x="150" y="152" width="75" height="25" rx="8" fill="#F97316"/>
-              <!-- Cabin Roof -->
               <rect x="168" y="138" width="42" height="18" rx="7" fill="#C2410C"/>
-              <!-- Windows -->
               <rect x="172" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
               <rect x="191" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
-              <!-- Headlight (Right - Forward direction) -->
               <circle cx="223" cy="164" r="4" fill="#FDE047"/>
-              <!-- Wheels -->
               <circle cx="166" cy="178" r="9" fill="#020617"/>
               <circle cx="210" cy="178" r="9" fill="#020617"/>
               <circle cx="166" cy="178" r="4" fill="#94A3B8"/>
               <circle cx="210" cy="178" r="4" fill="#94A3B8"/>
-              <!-- Luggage -->
               <rect x="174" y="128" width="28" height="10" rx="4" fill="#F59E0B"/>
             </g>
           </svg>
           <h1 class="hero-title">ROAD TRIP BINGO</h1>
         </div>
 
-        <button class="btn btn-primary-hero btn-beveled" onclick="router.navigate('multiplayer-options')" style="margin-bottom:14px;">
+        <button class="btn btn-primary-hero btn-beveled" onclick="router.showOnlineModal=true;router.render();" style="margin-bottom:14px;">
           ⚡ PLAY NOW ▶
         </button>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-          <div class="road-sign-card sign-blue" onclick="router.navigate('multiplayer-options')" style="cursor:pointer;">
+          <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🌐</span>
               <span class="sign-badge">LIVE</span>
             </div>
             <div style="font-weight:900;font-size:16px;margin-top:8px;">Multiplayer</div>
-            <div style="font-size:11px;color:#E2E8F0;">Play in car room</div>
+            <div style="font-size:11px;color:#E2E8F0;">Play online room</div>
           </div>
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -254,6 +276,49 @@ class Router {
           </div>
           <p style="font-size:12px;color:#E2E8F0;margin-top:6px;">Spot a yellow vehicle, semi-truck, and an out-of-state plate today!</p>
         </div>
+
+        <!-- ONLINE MULTIPLAYER MODAL OVERLAY -->
+        ${this.showOnlineModal && !this.isSearchingOpponent ? `
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showOnlineModal=false;router.render();">
+            <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
+              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🌐 ONLINE MULTIPLAYER</h2>
+              <p style="font-size:12px;color:#CBD5E1;margin-bottom:16px;">Play Classic Bingo against online passengers across America!</p>
+
+              <div style="margin-bottom:14px;text-align:left;">
+                <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 SELECT DECK / REGION</label>
+                <select id="online-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
+                  ${DECKS.map(d => `<option value="${d.id}" ${d.id===this.selectedDeck.id ? 'selected' : ''}>🎴 ${d.title} (${d.audience})</option>`).join('')}
+                </select>
+              </div>
+
+              <div style="background:#0F172A;border:1.5px solid #2563EB;padding:12px;border-radius:12px;font-size:13px;font-weight:800;color:white;margin-bottom:18px;">
+                🎯 Rule: Classic Bingo (Line Win)
+              </div>
+
+              <button class="btn btn-orange btn-beveled" style="font-size:18px;" onclick="router.startOnlineMatchmaking()">
+                START GAME ▶
+              </button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- SEARCHING FOR OPPONENT MODAL OVERLAY -->
+        ${this.isSearchingOpponent ? `
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;">
+            <div class="card" style="text-align:center;max-width:380px;width:100%;padding:28px;">
+              <div style="font-size:42px;margin-bottom:12px;">${this.opponentName ? '🎉' : '🔍'}</div>
+              ${!this.opponentName ? `
+                <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">SEARCHING FOR OPPONENT...</h2>
+                <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Matching with another passenger traveling in America...</p>
+                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.cancelMatchmaking()">Cancel Search</button>
+              ` : `
+                <h2 style="font-weight:900;color:#10B981;margin-bottom:6px;">OPPONENT FOUND!</h2>
+                <p style="font-size:16px;font-weight:800;color:white;margin-bottom:6px;">Match: ${this.opponentName}</p>
+                <p style="font-size:12px;color:#CBD5E1;">Loading Classic Bingo board...</p>
+              `}
+            </div>
+          </div>
+        ` : ''}
       `;
     } else if (this.currentScreen === 'multiplayer-options') {
       main.innerHTML = `

@@ -16,13 +16,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -38,6 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.vercel.windowwander.data.DeckRepository
+import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.components.ArcadeHudBar
@@ -51,19 +62,26 @@ import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.VividOrange
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     profile: PlayerProfile,
     selectedRegion: Region,
+    selectedDeck: Deck,
+    isSearchingOpponent: Boolean,
+    opponentFoundName: String?,
     onQuickPlay: () -> Unit,
-    onPlayOnline: () -> Unit,
+    onStartOnlineMatchmaking: (Deck) -> Unit,
+    onCancelMatchmaking: () -> Unit,
     onChooseDeck: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenPrivacy: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var showPlayOptionModal by remember { mutableStateOf(false) }
+    var showOnlineMultiplayerModal by remember { mutableStateOf(false) }
+    var currentDeckChoice by remember { mutableStateOf(selectedDeck) }
+    var deckDropdownExpanded by remember { mutableStateOf(false) }
 
     ScenicHighwayBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -109,10 +127,10 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // HUGE 3D BEVELED GOLDEN PLAY BUTTON -> OPENS IN-CAR PLAY MODAL
+                // HUGE 3D BEVELED GOLDEN PLAY BUTTON -> OPENS ONLINE MULTIPLAYER MODAL
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
-                    onClick = { showPlayOptionModal = true },
+                    onClick = { showOnlineMultiplayerModal = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp),
@@ -132,10 +150,10 @@ fun HomeScreen(
                     // MULTIPLAYER ROAD SIGN
                     CartoonRoadSignCard(
                         title = "Multiplayer",
-                        subtitle = "Play in car room",
+                        subtitle = "Play online room",
                         icon = "🌐",
                         badgeText = "LIVE",
-                        onClick = { showPlayOptionModal = true },
+                        onClick = { showOnlineMultiplayerModal = true },
                         modifier = Modifier
                             .weight(1f)
                             .height(120.dp),
@@ -216,7 +234,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // PROMINENT SAFETY BANNER (NO CAR ICON, LARGER PROMINENT TEXT)
+                // PROMINENT SAFETY BANNER
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -260,9 +278,9 @@ fun HomeScreen(
                 )
             }
 
-            // IN-CAR PLAY MODAL (START OR JOIN A GAME)
+            // ONLINE MULTIPLAYER POPUP MODAL (DECK SELECTOR & CLASSIC BINGO)
             AnimatedVisibility(
-                visible = showPlayOptionModal,
+                visible = showOnlineMultiplayerModal && !isSearchingOpponent,
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
@@ -270,7 +288,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.88f))
-                        .clickable { showPlayOptionModal = false },
+                        .clickable { showOnlineMultiplayerModal = false },
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -286,64 +304,178 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "🚗 IN-CAR PLAY",
+                                text = "🌐 ONLINE MULTIPLAYER",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Black,
                                 color = SunnyYellow
                             )
                             Text(
-                                text = "Play bingo with passengers in your car!",
+                                text = "Play Classic Bingo against online passengers across America!",
                                 fontSize = 13.sp,
                                 color = Color.White.copy(alpha = 0.8f),
-                                modifier = Modifier.padding(top = 4.dp, bottom = 18.dp)
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
                             )
 
-                            // START A GAME BUTTON
-                            BeveledGameButton(
-                                text = "🚗 START A GAME (HOST)",
-                                onClick = {
-                                    showPlayOptionModal = false
-                                    onPlayOnline()
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
-                                buttonColor = SunnyYellow,
-                                bevelColor = Color(0xFFD97706),
-                                textColor = DeepNavy,
-                                fontSize = 16
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // JOIN A GAME BUTTON
-                            BeveledGameButton(
-                                text = "📱 JOIN A GAME (CODE)",
-                                onClick = {
-                                    showPlayOptionModal = false
-                                    onPlayOnline()
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
-                                buttonColor = Color(0xFF2563EB),
-                                bevelColor = Color(0xFF1D4ED8),
-                                textColor = Color.White,
-                                fontSize = 16
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // SOLO PLAY BUTTON
-                            Button(
-                                onClick = {
-                                    showPlayOptionModal = false
-                                    onQuickPlay()
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            // REGION / DECK SELECTOR BUTTON
+                            ExposedDropdownMenuBox(
+                                expanded = deckDropdownExpanded,
+                                onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                             ) {
-                                Text(text = "Play Solo Single-Player ▶", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+                                OutlinedTextField(
+                                    value = "🎴 Deck: ${currentDeckChoice.title}",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Game Deck", color = SunnyYellow) },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
+                                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedTextColor = Color.White,
+                                        unfocusedTextColor = Color.White,
+                                        focusedBorderColor = SunnyYellow,
+                                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                                    )
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = deckDropdownExpanded,
+                                    onDismissRequest = { deckDropdownExpanded = false }
+                                ) {
+                                    DeckRepository.DECKS.forEach { deck ->
+                                        DropdownMenuItem(
+                                            text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                                            onClick = {
+                                                currentDeckChoice = deck
+                                                deckDropdownExpanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // FIXED GAME MODE BADGE (ONLINE IS CLASSIC BINGO ONLY)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Color(0xFF0F172A))
+                                    .border(1.5.dp, Color(0xFF2563EB), RoundedCornerShape(12.dp))
+                                    .padding(12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "🎯 Rule: Classic Bingo (Line Win)",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            // START GAME BUTTON
+                            BeveledGameButton(
+                                text = "START GAME ▶",
+                                onClick = {
+                                    showOnlineMultiplayerModal = false
+                                    onStartOnlineMatchmaking(currentDeckChoice)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                buttonColor = VividOrange,
+                                bevelColor = Color(0xFFC2410C),
+                                textColor = Color.White,
+                                fontSize = 18
+                            )
+                        }
+                    }
+                }
+            }
+
+            // SEARCHING FOR OPPONENT STATUS OVERLAY
+            AnimatedVisibility(
+                visible = isSearchingOpponent,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.9f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .padding(24.dp)
+                            .shadow(24.dp, RoundedCornerShape(24.dp)),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(28.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(68.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.radialGradient(listOf(SunnyYellow, VividOrange))
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = if (opponentFoundName != null) "🎉" else "🔍", fontSize = 32.sp)
+                            }
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            if (opponentFoundName == null) {
+                                Text(
+                                    text = "SEARCHING FOR OPPONENT...",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = SunnyYellow,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Matching with another passenger traveling in America...",
+                                    fontSize = 12.sp,
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(18.dp))
+                                Button(
+                                    onClick = onCancelMatchmaking,
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                                ) {
+                                    Text(text = "Cancel Search", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
+                                }
+                            } else {
+                                Text(
+                                    text = "OPPONENT FOUND!",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = CompletedGreen,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Match: $opponentFoundName",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Loading Classic Bingo board...",
+                                    fontSize = 12.sp,
+                                    color = Color.White.copy(alpha = 0.8f)
+                                )
                             }
                         }
                     }
