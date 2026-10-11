@@ -220,17 +220,6 @@ class Router {
           </div>
         </div>
 
-        <div class="card" onclick="router.navigate('settings')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:22px;">📍</span>
-            <div>
-              <div style="font-size:10px;font-weight:900;color:#F59E0B;">LOCATION REGION</div>
-              <div style="font-weight:800;font-size:14px;">Mountain West & Rockies</div>
-            </div>
-          </div>
-          <span style="color:#0D9488;font-weight:800;font-size:12px;">Change ></span>
-        </div>
-
         <div class="card card-gradient-teal">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-weight:900;color:#10B981;font-size:12px;">🎯 DAILY ROAD TRIP PASS</span>
@@ -284,7 +273,7 @@ class Router {
           <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
         </div>
 
-        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
+        <!-- 1. DECK / LOCATION SELECTOR BUTTON (DEFAULTED TO CURRENT LOCATION REGION) -->
         <div style="margin-bottom:12px;">
           <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
           <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">

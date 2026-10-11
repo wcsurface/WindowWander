@@ -49,7 +49,6 @@ import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
-import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @Composable
@@ -172,51 +171,6 @@ fun HomeScreen(
                             .height(120.dp),
                         signColor = Color(0xFF0D9488)
                     )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // TRAVEL LOCATION REGION SELECTOR
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(12.dp, RoundedCornerShape(18.dp))
-                        .clickable { onOpenSettings() },
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(18.dp))
-                            .padding(14.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "📍", fontSize = 22.sp, modifier = Modifier.padding(end = 10.dp))
-                            Column {
-                                Text(
-                                    text = "CURRENT LOCATION REGION",
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = SunnyYellow
-                                )
-                                Text(
-                                    text = selectedRegion.displayName,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                        Text(
-                            text = "Change >",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TravelTeal
-                        )
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
