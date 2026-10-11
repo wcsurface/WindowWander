@@ -74,10 +74,13 @@ fun BingoGameScreen(
     gameMode: GameMode,
     canUndo: Boolean,
     showCelebration: Boolean,
+    showAccountPrompt: Boolean,
     onTapTile: (Int) -> Unit,
     onUndo: () -> Unit,
     onNewGame: () -> Unit,
     onDismissCelebration: () -> Unit,
+    onGoogleSignIn: () -> Unit,
+    onDismissAccountPrompt: () -> Unit,
     onBackToHome: () -> Unit
 ) {
     val completedCount = tiles.count { it.isCompleted }
@@ -268,7 +271,7 @@ fun BingoGameScreen(
 
             // BINGO CELEBRATION OVERLAY
             AnimatedVisibility(
-                visible = showCelebration,
+                visible = showCelebration && !showAccountPrompt,
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
@@ -363,6 +366,103 @@ fun BingoGameScreen(
                                 shape = RoundedCornerShape(14.dp)
                             ) {
                                 Text(text = "Keep Playing Board", fontWeight = FontWeight.Bold, color = Color.White)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY
+            AnimatedVisibility(
+                visible = showAccountPrompt,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.88f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .shadow(24.dp, RoundedCornerShape(24.dp)),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.radialGradient(listOf(Color(0xFF38BDF8), Color(0xFF2563EB)))
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "💾", fontSize = 32.sp)
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Text(
+                                text = "SAVE YOUR ACHIEVEMENTS!",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text = "Back up your Level, XP, earned badges, and lifetime Bingo wins so you never lose your road trip progress!",
+                                fontSize = 13.sp,
+                                color = Color.White.copy(alpha = 0.85f),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            // GOOGLE SIGN IN BUTTON
+                            BeveledGameButton(
+                                text = "🌐 SIGN IN WITH GOOGLE",
+                                onClick = onGoogleSignIn,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(54.dp),
+                                buttonColor = Color(0xFF2563EB),
+                                bevelColor = Color(0xFF1D4ED8),
+                                textColor = Color.White,
+                                fontSize = 15
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            // CREATE FREE ACCOUNT BUTTON
+                            BeveledGameButton(
+                                text = "✉️ CREATE FREE ACCOUNT",
+                                onClick = onGoogleSignIn,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(54.dp),
+                                buttonColor = SunnyYellow,
+                                bevelColor = Color(0xFFD97706),
+                                textColor = DeepNavy,
+                                fontSize = 15
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Button(
+                                onClick = onDismissAccountPrompt,
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
+                                Text(text = "Continue as Guest (Skip)", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
                             }
                         }
                     }

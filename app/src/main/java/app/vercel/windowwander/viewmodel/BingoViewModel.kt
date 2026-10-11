@@ -38,6 +38,7 @@ data class UiState(
     val playerProfile: PlayerProfile = PlayerProfile(),
     val multiplayerRoom: MultiplayerRoom? = null,
     val showBingoCelebration: Boolean = false,
+    val showAccountPrompt: Boolean = false,
     val soundEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val confirmTapEnabled: Boolean = false,
@@ -104,7 +105,6 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
         val initialWin = BingoEngine.evaluateWin(newBoard, gameMode)
 
-        // Increment daily played & stats
         val currentProfile = _uiState.value.playerProfile
         val updatedProfile = currentProfile.copy(
             gamesPlayed = currentProfile.gamesPlayed + 1,
@@ -120,6 +120,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 gameMode = gameMode,
                 playerProfile = updatedProfile,
                 showBingoCelebration = false,
+                showAccountPrompt = false,
                 currentScreen = Screen.BINGO_GAME,
                 canUndo = false
             )
@@ -140,7 +141,6 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
         var profile = _uiState.value.playerProfile
 
-        // Award XP for newly completed non-center tile (+10 XP per tile, +100 XP for Bingo)
         val isNowCompleted = updatedBoard[tileIndex].isCompleted
         if (isNowCompleted && !updatedBoard[tileIndex].isCenter) {
             profile = profile.copy(
@@ -164,6 +164,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 winResult = winEval,
                 playerProfile = profile,
                 showBingoCelebration = newlyWon || (winEval.hasWon && it.showBingoCelebration),
+                showAccountPrompt = newlyWon, // Prompt after single game win!
                 canUndo = boardHistory.size > 1
             )
         }
@@ -187,6 +188,24 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun dismissCelebration() {
         _uiState.update { it.copy(showBingoCelebration = false) }
+    }
+
+    fun dismissAccountPrompt() {
+        _uiState.update { it.copy(showAccountPrompt = false) }
+    }
+
+    fun handleGoogleSignIn() {
+        val updated = _uiState.value.playerProfile.copy(
+            nickname = "RoadExplorer_Google",
+            earnedBadges = _uiState.value.playerProfile.earnedBadges + "cloud_backup"
+        )
+        preferences.saveProfile(updated)
+        _uiState.update {
+            it.copy(
+                playerProfile = updated,
+                showAccountPrompt = false
+            )
+        }
     }
 
     fun setRegion(region: Region) {

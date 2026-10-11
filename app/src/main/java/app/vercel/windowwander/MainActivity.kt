@@ -62,10 +62,13 @@ class MainActivity : ComponentActivity() {
                             gameMode = uiState.gameMode,
                             canUndo = uiState.canUndo,
                             showCelebration = uiState.showBingoCelebration,
+                            showAccountPrompt = uiState.showAccountPrompt,
                             onTapTile = { index -> viewModel.tapTile(index) },
                             onUndo = { viewModel.undoLastTap() },
                             onNewGame = { viewModel.startNewGame() },
                             onDismissCelebration = { viewModel.dismissCelebration() },
+                            onGoogleSignIn = { viewModel.handleGoogleSignIn() },
+                            onDismissAccountPrompt = { viewModel.dismissAccountPrompt() },
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 

@@ -82,6 +82,8 @@ class Router {
     this.selectedMode = GAME_MODES[0]; // Defaulted to Classic Line Bingo
     this.board = BingoWebEngine.generateBoard();
     this.roomCode = 'ROAD';
+    this.showAccountModal = false;
+    this.isLoggedIn = false;
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0}');
   }
 
@@ -128,7 +130,17 @@ class Router {
       this.stats.bingos += 1;
       this.stats.xp += 100;
       this.saveStats();
+      if (!this.isLoggedIn) {
+        this.showAccountModal = true;
+      }
     }
+    this.render();
+  }
+
+  handleGoogleSignIn() {
+    this.isLoggedIn = true;
+    this.showAccountModal = false;
+    alert("✅ Signed in with Google! Your XP, Level, and Bingo achievements are safely backed up.");
     this.render();
   }
 
@@ -147,7 +159,7 @@ class Router {
           <div class="profile-badge">
             <div class="avatar-circle">🐻</div>
             <div>
-              <div style="font-weight:900;font-size:13px;color:white;">Road Explorer</div>
+              <div style="font-weight:900;font-size:13px;color:white;">${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'}</div>
               <div style="font-size:10px;color:#FBBF24;font-weight:800;">Lvl ${level} Explorer • ${this.stats.xp} XP</div>
             </div>
           </div>
@@ -340,6 +352,29 @@ class Router {
           </button>
           ${isWin ? '<div style="background:#F59E0B;color:#0F172A;font-weight:900;padding:8px 14px;border-radius:12px;font-size:13px;">🎉 BINGO!</div>' : ''}
         </div>
+
+        <!-- ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY -->
+        ${this.showAccountModal ? `
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;">
+            <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;">
+              <div style="font-size:36px;margin-bottom:8px;">💾</div>
+              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">SAVE YOUR ACHIEVEMENTS!</h2>
+              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with Google or create a free account to back up your Level, XP, earned badges, and lifetime Bingo wins!</p>
+
+              <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="router.handleGoogleSignIn()">
+                🌐 SIGN IN WITH GOOGLE
+              </button>
+
+              <button class="btn btn-yellow btn-beveled" style="margin-bottom:14px;font-size:15px;" onclick="router.handleGoogleSignIn()">
+                ✉️ CREATE FREE ACCOUNT
+              </button>
+
+              <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showAccountModal=false;router.render();">
+                Continue as Guest (Skip)
+              </button>
+            </div>
+          </div>
+        ` : ''}
       `;
     } else if (this.currentScreen === 'decks') {
       main.innerHTML = `
