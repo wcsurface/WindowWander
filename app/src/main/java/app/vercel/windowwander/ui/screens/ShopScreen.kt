@@ -1,6 +1,6 @@
 package app.vercel.windowwander.ui.screens
 
-import androidx.compose.foundation.Image
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +19,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,11 @@ import app.vercel.windowwander.ui.components.MainHomeBackground
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 
 @Composable
 fun ShopScreen(
@@ -48,7 +54,20 @@ fun ShopScreen(
     onNavigateSettings: () -> Unit,
     onBackToHome: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
 
     MainHomeBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -56,7 +75,7 @@ fun ShopScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 86.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // TOP BAR WITH COINS & TITLE
@@ -91,16 +110,19 @@ fun ShopScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED LOGO
+                // CENTERED ANIMATED GIF LOGO
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.road_trip_bingo_animated_logo),
-                        contentDescription = "Road Trip Bingo Logo",
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(R.drawable.road_trip_bingo_animated_logo)
+                            .build(),
+                        imageLoader = imageLoader,
+                        contentDescription = "Road Trip Bingo Animated Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -175,7 +197,7 @@ fun ShopScreen(
                 }
             }
 
-            // FLOATING GRADIENT PILL 3D NAVIGATION BAR
+            // FLOATING GRADIENT PILL 3D NAVIGATION BAR AT THE BOTTOM LIKE MAIN LOBBY
             GradientPillNavigationBar(
                 currentScreenName = "shop",
                 isLoggedIn = isLoggedIn,
