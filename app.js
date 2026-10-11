@@ -185,7 +185,7 @@ class Router {
             <circle cx="60" cy="35" r="18" fill="white" opacity="0.85"/>
             <circle cx="80" cy="32" r="24" fill="white" opacity="0.85"/>
             <circle cx="100" cy="35" r="18" fill="white" opacity="0.85"/>
-            <!-- MOUNTAINS -->
+            <!-- PARALLAX SCENERY MOUNTAINS -->
             <path d="M0 130 L90 70 L180 120 L280 55 L360 100 L400 80 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.65"/>
             <!-- GREEN ROLLING HILLS -->
             <path d="M0 140 C 120 120, 240 150, 400 130 L400 200 L0 200 Z" fill="#15803D"/>
@@ -195,12 +195,12 @@ class Router {
             <line x1="0" y1="145" x2="400" y2="145" stroke="#FFFFFF" stroke-width="2.5" />
             <line x1="0" y1="198" x2="400" y2="198" stroke="#FFFFFF" stroke-width="2.5" />
 
-            <!-- HORIZONTAL SCROLLING YELLOW DASHED LINE -->
+            <!-- FORWARD-DRIVING SCROLLING DASHED LINE (RIGHT TO LEFT) -->
             <line x1="0" y1="172" x2="400" y2="172" stroke="#F59E0B" stroke-width="4" stroke-dasharray="24 16">
-              <animate attributeName="stroke-dashoffset" from="0" to="-40" dur="0.5s" repeatCount="indefinite"/>
+              <animate attributeName="stroke-dashoffset" from="0" to="40" dur="0.5s" repeatCount="indefinite"/>
             </line>
 
-            <!-- CAR DRIVING HORIZONTALLY FACING RIGHT -->
+            <!-- FORWARD-DRIVING CAR WITH BOUNCE -->
             <g>
               <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="0.25s" repeatCount="indefinite"/>
               <!-- Car Body -->
@@ -210,7 +210,7 @@ class Router {
               <!-- Windows -->
               <rect x="172" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
               <rect x="191" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
-              <!-- Headlight -->
+              <!-- Headlight (Right - Forward direction) -->
               <circle cx="223" cy="164" r="4" fill="#FDE047"/>
               <!-- Wheels -->
               <circle cx="166" cy="178" r="9" fill="#020617"/>
