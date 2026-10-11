@@ -205,13 +205,13 @@ fun BeveledGameButton(
     }
 }
 
-// CARTOON HIGHWAY MILEAGE ROAD SIGN CARD MATCHING MOCKUP
+// CARTOON HIGHWAY MILEAGE ROAD SIGN CARD
 @Composable
 fun CartoonRoadSignCard(
     title: String,
     subtitle: String,
     icon: String,
-    badgeText: String,
+    badgeText: String? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     signColor: Color = Color(0xFF15803D)
@@ -243,18 +243,20 @@ fun CartoonRoadSignCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = icon, fontSize = 28.sp)
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(VividOrange)
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
-                    ) {
-                        Text(
-                            text = badgeText,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
-                        )
+                    if (!badgeText.isNullOrEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(VividOrange)
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = badgeText,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
 

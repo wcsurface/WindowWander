@@ -160,12 +160,12 @@ fun HomeScreen(
                         signColor = Color(0xFF0D9488)
                     )
 
-                    // DECK LIBRARY ROAD SIGN (8 DECKS BADGE, NO LIVE TEXT)
+                    // DECK LIBRARY ROAD SIGN (NO ORANGE HIGHLIGHTED BADGE AT ALL)
                     CartoonRoadSignCard(
                         title = "Deck Library",
                         subtitle = "8 Decks!",
                         icon = "🎴",
-                        badgeText = "8 DECKS",
+                        badgeText = null,
                         onClick = onChooseDeck,
                         modifier = Modifier
                             .weight(1f)

@@ -69,8 +69,8 @@ class AudioEngine {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-      osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12); // G5 cheerful chime
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12);
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
       osc.connect(gain);
@@ -288,11 +288,10 @@ class Router {
             <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
           </div>
 
-          <!-- DECK LIBRARY (8 DECKS BADGE, NO LIVE TEXT) -->
+          <!-- DECK LIBRARY (NO ORANGE HIGHLIGHTED BADGE AT ALL) -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
-              <span class="sign-badge" style="background:#10B981;">8 DECKS</span>
             </div>
             <div style="font-weight:900;font-size:16px;margin-top:10px;">Deck Library</div>
             <div style="font-size:11px;color:#E2E8F0;">8 Decks!</div>
