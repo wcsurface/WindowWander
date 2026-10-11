@@ -49,6 +49,7 @@ import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
+import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @Composable
@@ -86,11 +87,11 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // SCENIC ROAD TRIP HERO SCENE
+                // SCENIC ROAD TRIP HERO SCENE WITH ANIMATED CAR & REGION ARTWORK
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    HeroRoadTripGraphic()
+                    HeroRoadTripGraphic(region = selectedRegion)
 
                     Column(
                         modifier = Modifier
