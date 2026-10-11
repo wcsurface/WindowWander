@@ -63,19 +63,20 @@ const MOUNTAIN_WEST_PROMPTS = [
 ];
 
 class AudioEngine {
-  static playClick() {
+  static playPop() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+      osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12); // G5 cheerful chime
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + 0.1);
+      osc.stop(ctx.currentTime + 0.12);
     } catch(e) {}
   }
 }
@@ -119,15 +120,17 @@ class Router {
     this.selectedDeck = DECKS[2]; // Defaulted to local region deck (Mountain West)
     this.selectedMode = GAME_MODES[0];
     this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
+    this.history = [];
     this.roomCode = 'ROAD';
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
     this.showOnlineModal = false;
     this.isSearchingOpponent = false;
     this.opponentName = null;
+    this.leaderboardTab = 0; // 0 = Total Points, 1 = Items Found
     this.showAccountModal = false;
     this.isLoggedIn = false;
-    this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0}');
+    this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
   }
 
   navigate(screen) {
@@ -201,8 +204,18 @@ class Router {
 
   toggleTile(index) {
     if (index === 12) return;
+
+    // SAVE HISTORY FOR UNDO FEATURE
+    this.history.push(JSON.parse(JSON.stringify(this.board)));
+
     this.board[index].completed = !this.board[index].completed;
-    AudioEngine.playClick();
+
+    if (this.board[index].completed) {
+      AudioEngine.playPop();
+      if (navigator.vibrate) navigator.vibrate(40);
+      this.stats.items = (this.stats.items || 0) + 1;
+    }
+
     if (BingoWebEngine.checkWin(this.board, this.selectedMode.id)) {
       this.stats.bingos += 1;
       this.stats.xp += 100;
@@ -212,6 +225,13 @@ class Router {
       }
     }
     this.render();
+  }
+
+  undoLastTap() {
+    if (this.history.length > 0) {
+      this.board = this.history.pop();
+      this.render();
+    }
   }
 
   handleGoogleSignIn() {
@@ -246,8 +266,8 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL TRANSPARENT LOGO FLOATING DIRECTLY ON SMOOTH SKY BLUE GRADIENT -->
-        <div style="width:100%;height:230px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
+        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
+        <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
@@ -257,7 +277,8 @@ class Router {
         </button>
 
         <!-- TWO CARTOON ROAD SIGN CARDS -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <!-- MULTIPLAYER ARENA (KEEPS LIVE TEXT) -->
           <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🌐</span>
@@ -266,14 +287,26 @@ class Router {
             <div style="font-weight:900;font-size:16px;margin-top:10px;">Multiplayer Arena</div>
             <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
           </div>
+
+          <!-- DECK LIBRARY (8 DECKS BADGE, NO LIVE TEXT) -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
-              <span class="sign-badge">LIVE</span>
+              <span class="sign-badge" style="background:#10B981;">8 DECKS</span>
             </div>
             <div style="font-weight:900;font-size:16px;margin-top:10px;">Deck Library</div>
             <div style="font-size:11px;color:#E2E8F0;">8 Decks!</div>
           </div>
+        </div>
+
+        <!-- LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER -->
+        <div class="road-sign-card" onclick="router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:26px;">👑</span>
+            <span class="sign-badge" style="background:#FBBF24;color:#0F172A;">RANKS</span>
+          </div>
+          <div style="font-weight:900;font-size:18px;margin-top:6px;">🏆 Leaderboard</div>
+          <div style="font-size:11px;color:#E2E8F0;">Points & Items Found Rankings</div>
         </div>
 
         <!-- ORANGE PILL SAFETY BANNER -->
@@ -355,70 +388,56 @@ class Router {
           </div>
         ` : ''}
       `;
-    } else if (this.currentScreen === 'multiplayer-options') {
+    } else if (this.currentScreen === 'leaderboard') {
+      const level = Math.floor(this.stats.xp / 100) + 1;
+      const pointsList = [
+        { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 4850 },
+        { rank: 2, name: "NomadNate", emoji: "🦅", val: 3920 },
+        { rank: 3, name: "PacificWanderer", emoji: "🏄", val: 3100 },
+        { rank: 4, name: `${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true },
+        { rank: 5, name: "SierraScout", emoji: "🌲", val: 1840 }
+      ].sort((a,b) => b.val - a.val);
+
+      const itemsList = [
+        { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 380 },
+        { rank: 2, name: "NomadNate", emoji: "🦅", val: 295 },
+        { rank: 3, name: `${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true },
+        { rank: 4, name: "PacificWanderer", emoji: "🏄", val: 210 },
+        { rank: 5, name: "SierraScout", emoji: "🌲", val: 145 }
+      ].sort((a,b) => b.val - a.val);
+
+      const activeList = this.leaderboardTab === 0 ? pointsList : itemsList;
+
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;">🚗 In-Car Play</h2>
+          <h2 style="font-weight:900;">🏆 Leaderboard</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
 
-        <div class="card" style="margin-bottom:16px;">
-          <h3 style="color:#FBBF24;margin-bottom:6px;">🚗 START A GAME (HOST)</h3>
-          <p style="font-size:12px;color:#CBD5E1;margin-bottom:14px;">Generates a QR code & 4-letter code so passengers in your car can scan or type to join!</p>
-          <button class="btn btn-yellow btn-beveled" onclick="router.startCarRoom()">START NEW GAME ▶</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#0F172A;padding:4px;border-radius:16px;margin-bottom:16px;">
+          <button onclick="router.leaderboardTab=0;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===0 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===0 ? '#0F172A' : 'white'};">
+            ⭐ Total Points (XP)
+          </button>
+          <button onclick="router.leaderboardTab=1;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===1 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===1 ? '#0F172A' : 'white'};">
+            👀 Items Found
+          </button>
         </div>
 
-        <div class="card">
-          <h3 style="color:#38BDF8;margin-bottom:6px;">📱 JOIN A GAME (CODE)</h3>
-          <p style="font-size:12px;color:#CBD5E1;margin-bottom:10px;">Enter the 4-letter room code shown on the host's screen:</p>
-          <input id="room-code-input" type="text" maxlength="4" placeholder="e.g. ROAD" style="width:100%;height:48px;border-radius:12px;border:2px solid #38BDF8;background:#0F172A;color:white;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;margin-bottom:12px;" />
-          <button class="btn btn-teal btn-beveled" onclick="router.joinCarRoom(document.getElementById('room-code-input').value)">JOIN CAR ROOM ▶</button>
-        </div>
-      `;
-    } else if (this.currentScreen === 'multiplayer') {
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://windowwander.vercel.app?room=${this.roomCode}`;
-      main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;">🌐 Car Room Lobby</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Exit</button>
-        </div>
-
-        <div class="card" style="text-align:center;background:linear-gradient(180deg, rgba(245,158,11,0.25), #1E293B);">
-          <div style="font-size:12px;font-weight:900;color:#F59E0B;">CAR ROOM CODE</div>
-          <div style="font-size:42px;font-weight:900;letter-spacing:4px;color:white;margin:4px 0;">${this.roomCode}</div>
-
-          <!-- QR CODE FOR SCANNING & DOWNLOADING APP -->
-          <div style="display:inline-block;background:white;padding:10px;border-radius:16px;margin:12px 0;">
-            <img src="${qrUrl}" alt="Scan QR Code to Join" style="width:140px;height:140px;display:block;" />
+        ${activeList.map((item, idx) => `
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border:${item.isUser ? '2px solid #FBBF24' : '1px solid rgba(255,255,255,0.1)'};">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:${idx===0?'#EAB308':idx===1?'#94A3B8':idx===2?'#B45309':'#0F172A'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">#${idx+1}</div>
+              <span style="font-size:22px;">${item.emoji}</span>
+              <div>
+                <strong style="font-size:14px;color:white;display:block;">${item.name}</strong>
+                <span style="font-size:11px;color:#FBBF24;">Lvl ${level} Explorer</span>
+              </div>
+            </div>
+            <div style="background:#0F172A;padding:6px 12px;border-radius:10px;font-weight:900;color:#10B981;font-size:13px;">
+              ${item.val} ${this.leaderboardTab===0 ? 'XP' : 'Sights'}
+            </div>
           </div>
-          <div style="font-size:12px;color:#CBD5E1;">Scan QR code with phone camera to download app & join room, or enter code <strong>${this.roomCode}</strong>!</div>
-        </div>
-
-        <h3 style="margin:16px 0 8px 0;">Connected Passengers</h3>
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <span>👑 <strong>Road Explorer (Host)</strong></span>
-          <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
-        </div>
-
-        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
-        <div style="margin-bottom:12px;">
-          <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
-          <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
-            ${DECKS.map(d => `<option value="${d.id}" ${d.id===this.selectedDeck.id ? 'selected' : ''}>🎴 ${d.title} (${d.audience})</option>`).join('')}
-          </select>
-        </div>
-
-        <!-- 2. GAME MODE / WINNING CONDITION BUTTON -->
-        <div style="margin-bottom:16px;">
-          <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎯 WINNING CONDITION</label>
-          <select id="lobby-mode-select" onchange="router.selectedMode=GAME_MODES.find(m=>m.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
-            ${GAME_MODES.map(m => `<option value="${m.id}" ${m.id===this.selectedMode.id ? 'selected' : ''}>🎯 ${m.title} — ${m.desc}</option>`).join('')}
-          </select>
-        </div>
-
-        <button class="btn btn-orange btn-beveled" onclick="router.navigate('game')">
-          START BINGO BOARD ▶
-        </button>
+        `).join('')}
       `;
     } else if (this.currentScreen === 'game') {
       const isWin = BingoWebEngine.checkWin(this.board, this.selectedMode.id);
@@ -434,7 +453,7 @@ class Router {
               <div style="font-size:11px;color:#FBBF24;font-weight:700;">${this.selectedMode.title}</div>
             </div>
           </div>
-          <div style="width:50px;"></div>
+          <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="router.undoLastTap()">↩ Undo</button>
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#E2E8F0;margin-bottom:4px;font-weight:700;">

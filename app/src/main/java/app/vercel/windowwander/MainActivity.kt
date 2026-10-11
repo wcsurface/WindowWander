@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import app.vercel.windowwander.ui.screens.BingoGameScreen
 import app.vercel.windowwander.ui.screens.DeckSelectScreen
 import app.vercel.windowwander.ui.screens.HomeScreen
+import app.vercel.windowwander.ui.screens.LeaderboardScreen
 import app.vercel.windowwander.ui.screens.MultiplayerScreen
 import app.vercel.windowwander.ui.screens.PrivacyTermsScreen
 import app.vercel.windowwander.ui.screens.SettingsScreen
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
                             onStartOnlineMatchmaking = { deck -> viewModel.startOnlineMatchmaking(deck) },
                             onCancelMatchmaking = { viewModel.cancelMatchmaking() },
                             onChooseDeck = { viewModel.navigateTo(Screen.DECK_SELECT) },
+                            onOpenLeaderboard = { viewModel.navigateTo(Screen.LEADERBOARD) },
                             onOpenStats = { viewModel.navigateTo(Screen.STATS) },
                             onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },
                             onOpenPrivacy = { viewModel.navigateTo(Screen.PRIVACY_TERMS) }
@@ -69,6 +71,8 @@ class MainActivity : ComponentActivity() {
                             canUndo = uiState.canUndo,
                             showCelebration = uiState.showBingoCelebration,
                             showAccountPrompt = uiState.showAccountPrompt,
+                            soundEnabled = uiState.soundEnabled,
+                            hapticsEnabled = uiState.hapticsEnabled,
                             onTapTile = { index -> viewModel.tapTile(index) },
                             onUndo = { viewModel.undoLastTap() },
                             onNewGame = { viewModel.startNewGame() },
@@ -85,6 +89,11 @@ class MainActivity : ComponentActivity() {
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
                             onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },
                             onStartGame = { viewModel.startNewGame() },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.LEADERBOARD -> LeaderboardScreen(
+                            profile = uiState.playerProfile,
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 

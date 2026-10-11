@@ -1,7 +1,9 @@
 package app.vercel.windowwander.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
@@ -43,6 +45,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -74,6 +78,8 @@ fun BingoGameScreen(
     canUndo: Boolean,
     showCelebration: Boolean,
     showAccountPrompt: Boolean,
+    soundEnabled: Boolean = true,
+    hapticsEnabled: Boolean = true,
     onTapTile: (Int) -> Unit,
     onUndo: () -> Unit,
     onNewGame: () -> Unit,
@@ -134,7 +140,7 @@ fun BingoGameScreen(
                         )
                     }
 
-                    // UNDO BUTTON
+                    // UNDO ACCIDENTAL TAP BUTTON
                     if (canUndo) {
                         Box(
                             modifier = Modifier
@@ -210,6 +216,7 @@ fun BingoGameScreen(
                         BingoTileView(
                             tile = tile,
                             isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
+                            hapticsEnabled = hapticsEnabled,
                             onTap = { onTapTile(tile.index) }
                         )
                     }
@@ -349,8 +356,6 @@ fun BingoGameScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                buttonColor = VividOrange,
-                                bevelColor = Color(0xFFC2410C),
                                 textColor = Color.White,
                                 fontSize = 16
                             )
@@ -434,8 +439,6 @@ fun BingoGameScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                buttonColor = Color(0xFF2563EB),
-                                bevelColor = Color(0xFF1D4ED8),
                                 textColor = Color.White,
                                 fontSize = 15
                             )
@@ -449,8 +452,6 @@ fun BingoGameScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                buttonColor = SunnyYellow,
-                                bevelColor = Color(0xFFD97706),
                                 textColor = DeepNavy,
                                 fontSize = 15
                             )
@@ -475,11 +476,26 @@ fun BingoGameScreen(
 fun BingoTileView(
     tile: BingoTile,
     isWinningLine: Boolean,
+    hapticsEnabled: Boolean,
     onTap: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (isPressed) 0.92f else 1.0f, label = "tileScale")
+
+    // SATISFYING SPRING POP ANIMATION ON TAPPING
+    val scale by animateFloatAsState(
+        targetValue = when {
+            isPressed -> 0.86f
+            tile.isCompleted -> 1.05f
+            else -> 1.0f
+        },
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "tileSpringScale"
+    )
 
     val bgBrush = when {
         tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
@@ -507,7 +523,12 @@ fun BingoTileView(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = onTap
+                onClick = {
+                    if (hapticsEnabled) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
+                    onTap()
+                }
             )
             .padding(3.dp),
         contentAlignment = Alignment.Center
@@ -527,7 +548,7 @@ fun BingoTileView(
             } else {
                 Text(
                     text = tile.prompt.name,
-                    fontSize = 10.5.sp, // REDUCED SLIGHTLY TO PREVENT TWO-LINE WRAPPING
+                    fontSize = 10.5.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center,

@@ -78,6 +78,7 @@ fun HomeScreen(
     onStartOnlineMatchmaking: (Deck) -> Unit,
     onCancelMatchmaking: () -> Unit,
     onChooseDeck: () -> Unit,
+    onOpenLeaderboard: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenPrivacy: () -> Unit
@@ -111,7 +112,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED TRANSPARENT LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT (NO SURROUNDING BOX)
+                // CENTERED TRANSPARENT LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -146,7 +147,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // MULTIPLAYER ARENA ROAD SIGN
+                    // MULTIPLAYER ARENA ROAD SIGN (KEEPS LIVE BADGE)
                     CartoonRoadSignCard(
                         title = "Multiplayer Arena",
                         subtitle = "Online Now!",
@@ -159,12 +160,12 @@ fun HomeScreen(
                         signColor = Color(0xFF0D9488)
                     )
 
-                    // DECK LIBRARY ROAD SIGN
+                    // DECK LIBRARY ROAD SIGN (8 DECKS BADGE, NO LIVE TEXT)
                     CartoonRoadSignCard(
                         title = "Deck Library",
                         subtitle = "8 Decks!",
                         icon = "🎴",
-                        badgeText = "LIVE",
+                        badgeText = "8 DECKS",
                         onClick = onChooseDeck,
                         modifier = Modifier
                             .weight(1f)
@@ -173,7 +174,22 @@ fun HomeScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER
+                CartoonRoadSignCard(
+                    title = "🏆 Leaderboard",
+                    subtitle = "Points & Items Found Rankings",
+                    icon = "👑",
+                    badgeText = "RANKS",
+                    onClick = onOpenLeaderboard,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    signColor = Color(0xFF1D4ED8)
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
 
                 // ORANGE PILL SAFETY BANNER
                 Box(

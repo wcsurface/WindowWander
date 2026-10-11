@@ -26,6 +26,7 @@ enum class Screen {
     DECK_SELECT,
     BINGO_GAME,
     MULTIPLAYER_LOBBY,
+    LEADERBOARD,
     STATS,
     SETTINGS,
     PRIVACY_TERMS
