@@ -45,7 +45,133 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// MAIN LOBBY FULL SCREEN ARTWORK BACKGROUND (ALWAYS USED ON HOME SCREEN)
+// SHINY 3D GRADIENT PILL-SHAPED FLOATING NAVIGATION BAR
+@Composable
+fun GradientPillNavigationBar(
+    currentScreenName: String = "home",
+    onNavigateHome: () -> Unit,
+    onNavigateDecks: () -> Unit,
+    onNavigateRankings: () -> Unit,
+    onNavigateSettings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 8.dp)
+            .shadow(16.dp, RoundedCornerShape(32.dp))
+            .clip(RoundedCornerShape(32.dp))
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(0xFF0F52BA), // Royal Blue
+                        Color(0xFF1E824C), // Emerald Green
+                        Color(0xFF512E5F)  // Deep Purple
+                    )
+                )
+            )
+            .border(1.5.dp, Color.White.copy(alpha = 0.5f), RoundedCornerShape(32.dp))
+            .padding(vertical = 6.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // 1. HOME
+            PillNavItem(
+                iconRes = R.drawable.ic_nav_home,
+                label = "Home",
+                isSelected = currentScreenName == "home",
+                onClick = onNavigateHome,
+                modifier = Modifier.weight(1f)
+            )
+
+            // DIVIDER 1
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(28.dp)
+                    .background(Color.White.copy(alpha = 0.25f))
+            )
+
+            // 2. DECKS
+            PillNavItem(
+                iconRes = R.drawable.ic_nav_login,
+                label = "Decks",
+                isSelected = currentScreenName == "decks",
+                onClick = onNavigateDecks,
+                modifier = Modifier.weight(1f)
+            )
+
+            // DIVIDER 2
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(28.dp)
+                    .background(Color.White.copy(alpha = 0.25f))
+            )
+
+            // 3. RANKINGS
+            PillNavItem(
+                iconRes = R.drawable.ic_nav_shop,
+                label = "Rankings",
+                isSelected = currentScreenName == "leaderboard",
+                onClick = onNavigateRankings,
+                modifier = Modifier.weight(1f)
+            )
+
+            // DIVIDER 3
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(28.dp)
+                    .background(Color.White.copy(alpha = 0.25f))
+            )
+
+            // 4. SETTINGS
+            PillNavItem(
+                iconRes = R.drawable.ic_nav_settings,
+                label = "Settings",
+                isSelected = currentScreenName == "settings",
+                onClick = onNavigateSettings,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun PillNavItem(
+    iconRes: Int,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .clickable { onClick() }
+            .padding(vertical = 4.dp)
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = label,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isSelected) SunnyYellow else Color.White
+        )
+    }
+}
+
+// MAIN LOBBY FULL SCREEN ARTWORK BACKGROUND
 @Composable
 fun MainHomeBackground(
     modifier: Modifier = Modifier,
@@ -58,7 +184,6 @@ fun MainHomeBackground(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        // Soft darkening scrim overlay for UI element contrast
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,7 +221,6 @@ fun ScenicHighwayBackground(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        // Light darkening scrim overlay for crisp tile readability
         Box(
             modifier = Modifier
                 .fillMaxSize()

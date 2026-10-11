@@ -57,6 +57,7 @@ import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.components.ArcadeHudBar
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.CartoonRoadSignCard
+import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.components.MainHomeBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
@@ -115,7 +116,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 86.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS, SETTINGS)
@@ -234,6 +235,16 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
+
+            // FLOATING GRADIENT PILL 3D NAVIGATION BAR (SET 6)
+            GradientPillNavigationBar(
+                currentScreenName = "home",
+                onNavigateHome = { },
+                onNavigateDecks = onChooseDeck,
+                onNavigateRankings = onOpenLeaderboard,
+                onNavigateSettings = onOpenSettings,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
 
             // SAME-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE/QR)
             AnimatedVisibility(

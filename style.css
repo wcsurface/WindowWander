@@ -62,7 +62,7 @@ body.deck-game-theme {
 #main-content {
   flex: 1;
   padding: 16px;
-  padding-bottom: 76px;
+  padding-bottom: 86px;
 }
 
 /* USER HEADER */
@@ -387,20 +387,23 @@ body.deck-game-theme {
   }
 }
 
-/* FOOTER NAV MATCHING MOCKUP */
+/* FLOATING 3D GRADIENT PILL NAVIGATION BAR (SET 6) */
 .app-footer {
   position: fixed;
-  bottom: 0;
-  max-width: 440px;
-  width: 100%;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 400px;
+  width: calc(100% - 32px);
   height: 64px;
-  background: #0B132B;
-  border-top: 2px solid rgba(255,255,255,0.18);
+  background: linear-gradient(90deg, #0F52BA 0%, #1E824C 50%, #512E5F 100%);
+  border-radius: 32px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 100;
-  box-shadow: 0 -6px 20px rgba(0,0,0,0.5);
 }
 
 .app-footer button {
@@ -408,12 +411,14 @@ body.deck-game-theme {
   border: none;
   font-size: 11px;
   font-weight: 800;
-  color: var(--text-muted);
+  color: #FFFFFF;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  flex: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .app-footer button.active {
