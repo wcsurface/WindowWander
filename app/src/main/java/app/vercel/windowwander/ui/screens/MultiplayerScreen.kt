@@ -1,6 +1,7 @@
 package app.vercel.windowwander.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.model.MultiplayerRoom
+import app.vercel.windowwander.ui.components.BeveledGameButton
+import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.ElectricBlue
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.MidnightNavy
@@ -66,7 +70,7 @@ fun MultiplayerScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🌐 Multiplayer Lobby",
+                text = "🌐 In-Car Multiplayer",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White
@@ -91,6 +95,7 @@ fun MultiplayerScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (room == null) {
+            // START A GAME CARD (HOST)
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -105,34 +110,36 @@ fun MultiplayerScreen(
                         .padding(20.dp)
                 ) {
                     Text(
-                        text = "Create a Car Room",
+                        text = "🚗 START A GAME (HOST)",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
                     )
                     Text(
-                        text = "Start a game for passengers traveling in your car!",
+                        text = "Creates a room code & QR code for passengers in your car!",
                         fontSize = 13.sp,
-                        color = Color.White.copy(alpha = 0.7f)
+                        color = Color.White.copy(alpha = 0.8f)
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    Button(
+                    BeveledGameButton(
+                        text = "START NEW ROOM ▶",
                         onClick = onCreateRoom,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = SunnyYellow),
-                        shape = RoundedCornerShape(14.dp)
-                    ) {
-                        Text(text = "CREATE NEW ROOM", fontWeight = FontWeight.Black, color = Color.Black, fontSize = 15.sp)
-                    }
+                            .height(54.dp),
+                        buttonColor = SunnyYellow,
+                        bevelColor = Color(0xFFD97706),
+                        textColor = DeepNavy,
+                        fontSize = 16
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // JOIN A GAME CARD (CODE)
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -147,7 +154,7 @@ fun MultiplayerScreen(
                         .padding(20.dp)
                 ) {
                     Text(
-                        text = "Join Existing Room",
+                        text = "📱 JOIN A GAME (CODE)",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
@@ -158,7 +165,7 @@ fun MultiplayerScreen(
                     OutlinedTextField(
                         value = roomInputCode,
                         onValueChange = { roomInputCode = it.uppercase().take(4) },
-                        label = { Text("4-Letter Room Code", color = Color.White.copy(alpha = 0.7f)) },
+                        label = { Text("Enter 4-Letter Room Code", color = Color.White.copy(alpha = 0.7f)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -171,20 +178,21 @@ fun MultiplayerScreen(
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    Button(
+                    BeveledGameButton(
+                        text = "JOIN CAR ROOM ▶",
                         onClick = { if (roomInputCode.isNotBlank()) onJoinRoom(roomInputCode) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        enabled = roomInputCode.length == 4,
-                        colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
-                        shape = RoundedCornerShape(14.dp)
-                    ) {
-                        Text(text = "JOIN ROOM", fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                    }
+                            .height(54.dp),
+                        buttonColor = Color(0xFF2563EB),
+                        bevelColor = Color(0xFF1D4ED8),
+                        textColor = Color.White,
+                        fontSize = 16
+                    )
                 }
             }
         } else {
+            // ACTIVE CAR ROOM LOBBY WITH QR CODE & ROOM CODE
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -196,10 +204,10 @@ fun MultiplayerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Brush.verticalGradient(listOf(SunnyYellow.copy(alpha = 0.3f), MediumNavy)))
-                        .padding(24.dp),
+                        .padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "CAR ROOM CODE", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = SunnyYellow)
+                    Text(text = "ROOM CODE", fontSize = 12.sp, fontWeight = FontWeight.Black, color = SunnyYellow)
                     Text(
                         text = room.roomCode,
                         fontSize = 42.sp,
@@ -207,7 +215,28 @@ fun MultiplayerScreen(
                         color = Color.White,
                         letterSpacing = 4.sp
                     )
-                    Text(text = "Share this code with passengers!", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f))
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // QR CODE DISPLAY BADGE FOR SCANNING
+                    Box(
+                        modifier = Modifier
+                            .size(130.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "📷\n[ QR CODE ]\nScan to Join", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = DeepNavy)
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = "Scan QR Code or enter code '${room.roomCode}' to join!",
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.85f)
+                    )
                 }
             }
 
@@ -242,7 +271,7 @@ fun MultiplayerScreen(
                                 color = Color.White
                             )
                             Text(
-                                text = "Score: ${player.score}",
+                                text = "Ready",
                                 fontSize = 12.sp,
                                 color = TravelTeal,
                                 fontWeight = FontWeight.Bold
@@ -254,16 +283,17 @@ fun MultiplayerScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
+            BeveledGameButton(
+                text = "START BINGO BOARD ▶",
                 onClick = onStartGame,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text(text = "START BINGO BOARD ▶", fontWeight = FontWeight.Black, fontSize = 16.sp)
-            }
+                    .height(56.dp),
+                buttonColor = VividOrange,
+                bevelColor = Color(0xFFC2410C),
+                textColor = Color.White,
+                fontSize = 18
+            )
         }
     }
 }

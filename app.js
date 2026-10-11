@@ -72,6 +72,8 @@ class Router {
     this.currentScreen = 'home';
     this.selectedDeck = DECKS[0];
     this.board = BingoWebEngine.generateBoard();
+    this.roomCode = 'ROAD';
+    this.roomMode = 'start'; // 'start', 'join', 'lobby'
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0}');
   }
 
@@ -97,6 +99,22 @@ class Router {
     this.stats.games += 1;
     this.saveStats();
     this.navigate('game');
+  }
+
+  startCarRoom() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    this.roomCode = code;
+    this.roomMode = 'lobby';
+    this.navigate('multiplayer');
+  }
+
+  joinCarRoom(code) {
+    if (!code || code.length < 4) return;
+    this.roomCode = code.toUpperCase().trim();
+    this.roomMode = 'lobby';
+    this.navigate('multiplayer');
   }
 
   toggleTile(index) {
@@ -148,18 +166,13 @@ class Router {
             <rect width="400" height="200" rx="20" fill="url(#skyGrad)" />
             <circle cx="330" cy="50" r="45" fill="#F59E0B" opacity="0.4" />
             <circle cx="330" cy="50" r="28" fill="#FBBF24" />
-            <!-- CLOUDS -->
             <circle cx="60" cy="35" r="18" fill="white" opacity="0.85"/>
             <circle cx="80" cy="32" r="24" fill="white" opacity="0.85"/>
             <circle cx="100" cy="35" r="18" fill="white" opacity="0.85"/>
-            <!-- MOUNTAINS -->
             <path d="M0 120 L90 60 L180 110 L280 45 L360 90 L400 70 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.6"/>
-            <!-- HILLS -->
             <path d="M0 130 C 120 110, 240 145, 400 120 L400 200 L0 200 Z" fill="#15803D"/>
-            <!-- ROAD -->
             <path d="M20 200 C 160 150, 100 110, 210 95 L230 95 C 150 120, 190 160, 150 200 Z" fill="#334155"/>
             <path d="M90 200 C 150 152, 110 112, 220 97" stroke="#F59E0B" stroke-width="4" fill="none"/>
-            <!-- CAR & MASCOT -->
             <rect x="90" y="140" width="60" height="24" rx="8" fill="#F97316"/>
             <rect x="102" y="126" width="36" height="16" rx="6" fill="#C2410C"/>
             <circle cx="102" cy="162" r="7" fill="#020617"/>
@@ -169,12 +182,12 @@ class Router {
           <h1 class="hero-title">ROAD TRIP BINGO</h1>
         </div>
 
-        <button class="btn btn-primary-hero btn-beveled" onclick="router.navigate('game')" style="margin-bottom:14px;">
+        <button class="btn btn-primary-hero btn-beveled" onclick="router.navigate('multiplayer-options')" style="margin-bottom:14px;">
           ⚡ PLAY NOW ▶
         </button>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-          <div class="road-sign-card sign-blue" onclick="router.navigate('game')" style="cursor:pointer;">
+          <div class="road-sign-card sign-blue" onclick="router.navigate('multiplayer-options')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🌐</span>
               <span class="sign-badge">LIVE</span>
@@ -210,6 +223,55 @@ class Router {
           </div>
           <p style="font-size:12px;color:#E2E8F0;margin-top:6px;">Spot a yellow vehicle, semi-truck, and an out-of-state plate today!</p>
         </div>
+      `;
+    } else if (this.currentScreen === 'multiplayer-options') {
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-weight:900;">🚗 In-Car Play</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="color:#FBBF24;margin-bottom:6px;">🚗 START A GAME (HOST)</h3>
+          <p style="font-size:12px;color:#CBD5E1;margin-bottom:14px;">Generates a QR code & 4-letter code so passengers in your car can scan or type to join!</p>
+          <button class="btn btn-yellow btn-beveled" onclick="router.startCarRoom()">START NEW GAME ▶</button>
+        </div>
+
+        <div class="card">
+          <h3 style="color:#38BDF8;margin-bottom:6px;">📱 JOIN A GAME (CODE)</h3>
+          <p style="font-size:12px;color:#CBD5E1;margin-bottom:10px;">Enter the 4-letter room code shown on the host's screen:</p>
+          <input id="room-code-input" type="text" maxlength="4" placeholder="e.g. ROAD" style="width:100%;height:48px;border-radius:12px;border:2px solid #38BDF8;background:#0F172A;color:white;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;margin-bottom:12px;" />
+          <button class="btn btn-teal btn-beveled" onclick="router.joinCarRoom(document.getElementById('room-code-input').value)">JOIN CAR ROOM ▶</button>
+        </div>
+      `;
+    } else if (this.currentScreen === 'multiplayer') {
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://windowwander.vercel.app?room=${this.roomCode}`;
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-weight:900;">🌐 Car Room Lobby</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Exit</button>
+        </div>
+
+        <div class="card" style="text-align:center;background:linear-gradient(180deg, rgba(245,158,11,0.25), #1E293B);">
+          <div style="font-size:12px;font-weight:900;color:#F59E0B;">CAR ROOM CODE</div>
+          <div style="font-size:42px;font-weight:900;letter-spacing:4px;color:white;margin:4px 0;">${this.roomCode}</div>
+
+          <!-- QR CODE FOR SCANNING -->
+          <div style="display:inline-block;background:white;padding:10px;border-radius:16px;margin:12px 0;">
+            <img src="${qrUrl}" alt="Scan QR Code to Join" style="width:140px;height:140px;display:block;" />
+          </div>
+          <div style="font-size:12px;color:#CBD5E1;">Scan QR code with phone camera or enter code <strong>${this.roomCode}</strong> to join!</div>
+        </div>
+
+        <h3 style="margin:16px 0 8px 0;">Connected Passengers</h3>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>👑 <strong>Road Explorer (Host)</strong></span>
+          <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
+        </div>
+
+        <button class="btn btn-orange btn-beveled" style="margin-top:16px;" onclick="router.navigate('game')">
+          START BINGO BOARD ▶
+        </button>
       `;
     } else if (this.currentScreen === 'game') {
       const isWin = BingoWebEngine.checkWin(this.board);
@@ -321,4 +383,12 @@ class Router {
 }
 
 const router = new Router();
-window.addEventListener('DOMContentLoaded', () => router.render());
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const roomParam = params.get('room');
+  if (roomParam) {
+    router.joinCarRoom(roomParam);
+  } else {
+    router.render();
+  }
+});
