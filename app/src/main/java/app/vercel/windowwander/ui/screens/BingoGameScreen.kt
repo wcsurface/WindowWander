@@ -53,6 +53,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -498,8 +499,8 @@ fun BingoTileView(
     // SATISFYING SPRING POP ANIMATION ON TAPPING
     val scale by animateFloatAsState(
         targetValue = when {
-            isPressed -> 0.84f
-            tile.isCompleted -> 1.06f
+            isPressed -> 0.80f
+            tile.isCompleted -> 1.08f
             else -> 1.0f
         },
         animationSpec = spring(
@@ -513,7 +514,7 @@ fun BingoTileView(
     val bgBrush = when {
         tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
         tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(SunnyYellowLight, GoldWinner, VividOrange))
-        tile.isCompleted -> Brush.verticalGradient(listOf(Color(0xFF34D399), Color(0xFF10B981), Color(0xFF047857))) // Emerald Gem
+        tile.isCompleted -> Brush.verticalGradient(listOf(Color(0xFF34D399), Color(0xFF10B981), Color(0xFF047857)))
         else -> Brush.verticalGradient(listOf(Color(0xFF2A364F), MediumNavy))
     }
 
@@ -522,14 +523,14 @@ fun BingoTileView(
             .aspectRatio(1f)
             .scale(scale)
             .shadow(
-                elevation = if (tile.isCompleted) 12.dp else 3.dp,
+                elevation = if (tile.isCompleted) 14.dp else 3.dp,
                 shape = RoundedCornerShape(14.dp),
                 spotColor = if (tile.isCompleted) SunnyYellow else Color.Black
             )
             .clip(RoundedCornerShape(14.dp))
             .background(bgBrush)
             .border(
-                width = if (tile.isCompleted || isWinningLine) 2.5.dp else 1.dp,
+                width = if (tile.isCompleted || isWinningLine) 3.dp else 1.dp,
                 brush = when {
                     isWinningLine -> Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner, VividOrange))
                     tile.isCompleted -> Brush.horizontalGradient(listOf(SunnyYellowLight, GoldWinner, Color.White))
@@ -594,14 +595,14 @@ fun BingoTileView(
             }
         }
 
-        // EXHILARATING STAR EXPLOSION BURST OVERLAY ON TAP
+        // EXHILARATING MUCH LARGER COLOR EXPLOSION BURST OVERLAY
         if (showBurstAnimation) {
             StarExplosionBurst(onAnimationFinished = { showBurstAnimation = false })
         }
     }
 }
 
-// LOCAL STAR & SPARKLE PARTICLE EXPLOSION OVERLAY
+// MUCH LARGER, MASSIVE COLORFUL STAR & SHOCKWAVE PARTICLE EXPLOSION OVERLAY
 @Composable
 fun StarExplosionBurst(
     onAnimationFinished: () -> Unit
@@ -611,7 +612,7 @@ fun StarExplosionBurst(
     LaunchedEffect(Unit) {
         burstAnim.animateTo(
             targetValue = 1f,
-            animationSpec = tween(550, easing = LinearEasing)
+            animationSpec = tween(800, easing = LinearEasing)
         )
         onAnimationFinished()
     }
@@ -621,13 +622,25 @@ fun StarExplosionBurst(
         val progress = burstAnim.value
         val random = Random(42)
 
-        val particleColors = listOf(
-            SunnyYellow, VividOrange, GoldWinnerLight, Color(0xFF38BDF8), Color.White
+        // EXPANDING GOLDEN SHOCKWAVE RING
+        val ringRadius = progress * 160f
+        val ringAlpha = (1f - progress).coerceIn(0f, 1f)
+        drawCircle(
+            color = SunnyYellow.copy(alpha = ringAlpha * 0.8f),
+            radius = ringRadius,
+            center = center,
+            style = Stroke(width = 6f * (1f - progress))
         )
 
-        for (i in 0..12) {
-            val angle = (i * (360f / 12f) + random.nextFloat() * 15f) * (Math.PI / 180f).toFloat()
-            val speed = 35f + random.nextFloat() * 45f
+        // 32 MASSIVE RADIANT PARTICLES
+        val particleColors = listOf(
+            SunnyYellow, VividOrange, GoldWinnerLight, Color(0xFF38BDF8),
+            CompletedGreen, Color(0xFFE11D48), Color.White, Color(0xFFA855F7)
+        )
+
+        for (i in 0..32) {
+            val angle = (i * (360f / 32f) + random.nextFloat() * 12f) * (Math.PI / 180f).toFloat()
+            val speed = 80f + random.nextFloat() * 180f
             val distance = speed * progress
 
             val px = center.x + cos(angle) * distance
@@ -635,9 +648,9 @@ fun StarExplosionBurst(
 
             val alpha = (1f - progress).coerceIn(0f, 1f)
             val color = particleColors[i % particleColors.size].copy(alpha = alpha)
-            val radius = (6f * (1f - progress * 0.5f)).coerceAtLeast(2f)
+            val particleRadius = (12f * (1f - progress * 0.4f)).coerceAtLeast(3f)
 
-            drawCircle(color = color, radius = radius, center = Offset(px, py))
+            drawCircle(color = color, radius = particleRadius, center = Offset(px, py))
         }
     }
 }
