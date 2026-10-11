@@ -181,26 +181,44 @@ class Router {
             <rect width="400" height="200" rx="20" fill="url(#skyGrad)" />
             <circle cx="330" cy="50" r="45" fill="#F59E0B" opacity="0.4" />
             <circle cx="330" cy="50" r="28" fill="#FBBF24" />
-            <!-- ANIMATED PUFFY CLOUDS -->
+            <!-- CLOUDS -->
             <circle cx="60" cy="35" r="18" fill="white" opacity="0.85"/>
             <circle cx="80" cy="32" r="24" fill="white" opacity="0.85"/>
             <circle cx="100" cy="35" r="18" fill="white" opacity="0.85"/>
             <!-- MOUNTAINS -->
-            <path d="M0 120 L90 60 L180 110 L280 45 L360 90 L400 70 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.65"/>
+            <path d="M0 130 L90 70 L180 120 L280 55 L360 100 L400 80 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.65"/>
             <!-- GREEN ROLLING HILLS -->
-            <path d="M0 130 C 120 110, 240 145, 400 120 L400 200 L0 200 Z" fill="#15803D"/>
-            <!-- ANIMATED WINDING HIGHWAY ROAD -->
-            <path d="M20 200 C 160 150, 100 110, 210 95 L230 95 C 150 120, 190 160, 150 200 Z" fill="#334155"/>
-            <path d="M90 200 C 150 152, 110 112, 220 97" stroke="#F59E0B" stroke-width="5" stroke-dasharray="12 8" stroke-dashoffset="0" fill="none">
-              <animate attributeName="stroke-dashoffset" from="0" to="-40" dur="0.8s" repeatCount="indefinite"/>
-            </path>
-            <!-- DRIVING CAR WITH BOUNCE -->
+            <path d="M0 140 C 120 120, 240 150, 400 130 L400 200 L0 200 Z" fill="#15803D"/>
+
+            <!-- HORIZONTAL HIGHWAY ROAD ACROSS BOTTOM -->
+            <rect x="0" y="145" width="400" height="55" fill="#334155" />
+            <line x1="0" y1="145" x2="400" y2="145" stroke="#FFFFFF" stroke-width="2.5" />
+            <line x1="0" y1="198" x2="400" y2="198" stroke="#FFFFFF" stroke-width="2.5" />
+
+            <!-- HORIZONTAL SCROLLING YELLOW DASHED LINE -->
+            <line x1="0" y1="172" x2="400" y2="172" stroke="#F59E0B" stroke-width="4" stroke-dasharray="24 16">
+              <animate attributeName="stroke-dashoffset" from="0" to="-40" dur="0.5s" repeatCount="indefinite"/>
+            </line>
+
+            <!-- CAR DRIVING HORIZONTALLY FACING RIGHT -->
             <g>
-              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-2; 0,0" dur="0.3s" repeatCount="indefinite"/>
-              <rect x="90" y="140" width="60" height="24" rx="8" fill="#F97316"/>
-              <rect x="102" y="126" width="36" height="16" rx="6" fill="#C2410C"/>
-              <circle cx="102" cy="162" r="7" fill="#020617"/>
-              <circle cx="138" cy="162" r="7" fill="#020617"/>
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="0.25s" repeatCount="indefinite"/>
+              <!-- Car Body -->
+              <rect x="150" y="152" width="75" height="25" rx="8" fill="#F97316"/>
+              <!-- Cabin Roof -->
+              <rect x="168" y="138" width="42" height="18" rx="7" fill="#C2410C"/>
+              <!-- Windows -->
+              <rect x="172" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
+              <rect x="191" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
+              <!-- Headlight -->
+              <circle cx="223" cy="164" r="4" fill="#FDE047"/>
+              <!-- Wheels -->
+              <circle cx="166" cy="178" r="9" fill="#020617"/>
+              <circle cx="210" cy="178" r="9" fill="#020617"/>
+              <circle cx="166" cy="178" r="4" fill="#94A3B8"/>
+              <circle cx="210" cy="178" r="4" fill="#94A3B8"/>
+              <!-- Luggage -->
+              <rect x="174" y="128" width="28" height="10" rx="4" fill="#F59E0B"/>
             </g>
           </svg>
           <div class="hero-tag">CARTOON ROAD TRIP BINGO</div>
@@ -283,7 +301,7 @@ class Router {
           <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
         </div>
 
-        <!-- 1. DECK / LOCATION SELECTOR BUTTON (DEFAULTED TO CURRENT LOCATION REGION) -->
+        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
         <div style="margin-bottom:12px;">
           <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
           <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">

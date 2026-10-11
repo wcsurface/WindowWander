@@ -76,14 +76,14 @@ fun ScenicHighwayBackground(
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF0284C7), // Vibrant Sky Blue
-                        Color(0xFF38BDF8), // Light Cyan Horizon
+                        Color(0xFF0284C7),
+                        Color(0xFF38BDF8),
                         Color(0xFFBAE6FD)
                     )
                 )
             )
 
-            // 2. SUN GLOW & RAYS
+            // 2. SUN GLOW
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(SunnyYellowLight, SunnyYellow.copy(alpha = 0.5f), Color.Transparent),
@@ -94,7 +94,7 @@ fun ScenicHighwayBackground(
                 radius = 200f
             )
 
-            // 3. PUFFY CARTOON CLOUDS
+            // 3. PUFFY CLOUDS
             val cloudX1 = w * (0.05f + cloudAnim.value * 0.12f)
             val cloudX2 = w * (0.65f - cloudAnim.value * 0.08f)
 
@@ -127,47 +127,14 @@ fun ScenicHighwayBackground(
                 lineTo(0f, h)
                 close()
             }
-            drawPath(hillPath, color = Color(0xFF16A34A)) // Vibrant Grass Green
-
-            // 6. ASPHALT HIGHWAY WINDING TO HORIZON
-            val roadPath = Path().apply {
-                moveTo(w * 0.05f, h)
-                cubicTo(
-                    w * 0.42f, h * 0.72f,
-                    w * 0.28f, h * 0.55f,
-                    w * 0.52f, h * 0.45f
-                )
-                lineTo(w * 0.58f, h * 0.45f)
-                cubicTo(
-                    w * 0.38f, h * 0.6f,
-                    w * 0.55f, h * 0.8f,
-                    w * 0.45f, h
-                )
-                close()
-            }
-            drawPath(roadPath, color = Color(0xFF334155))
-
-            // 7. YELLOW DASHED CENTER ROAD LINE
-            val dashPath = Path().apply {
-                moveTo(w * 0.25f, h)
-                cubicTo(
-                    w * 0.42f, h * 0.74f,
-                    w * 0.32f, h * 0.58f,
-                    w * 0.55f, h * 0.46f
-                )
-            }
-            drawPath(
-                path = dashPath,
-                color = SunnyYellow,
-                style = Stroke(width = 6f)
-            )
+            drawPath(hillPath, color = Color(0xFF16A34A))
         }
 
         content()
     }
 }
 
-// ANIMATED REGION-AWARE HERO SCENE
+// ANIMATED REGION-AWARE HERO SCENE WITH HORIZONTAL DRIVING HIGHWAY
 @Composable
 fun HeroRoadTripGraphic(
     region: Region = Region.UNIVERSAL,
@@ -180,7 +147,7 @@ fun HeroRoadTripGraphic(
         roadMotion.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(800, easing = LinearEasing),
+                animation = tween(600, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
             )
         )
@@ -190,7 +157,7 @@ fun HeroRoadTripGraphic(
         carBounce.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(250, easing = LinearEasing),
+                animation = tween(220, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
             )
         )
@@ -227,7 +194,7 @@ fun HeroRoadTripGraphic(
                 radius = 120f
             )
 
-            // REGION-SPECIFIC BACKGROUND LANDSCAPE
+            // REGION-SPECIFIC SCENERY
             when (region) {
                 Region.SOUTHWEST -> {
                     // RED ROCK MESAS & SAGUARO CACTI
@@ -246,11 +213,11 @@ fun HeroRoadTripGraphic(
                     drawPath(mesaPath, color = Color(0xFF9A3412))
 
                     // Cactus Silhouettes
-                    drawRoundRect(color = Color(0xFF431407), topLeft = Offset(w * 0.88f, h * 0.42f), size = Size(10f, 40f), cornerRadius = CornerRadius(4f, 4f))
-                    drawRoundRect(color = Color(0xFF431407), topLeft = Offset(w * 0.82f, h * 0.5f), size = Size(22f, 8f), cornerRadius = CornerRadius(2f, 2f))
+                    drawRoundRect(color = Color(0xFF431407), topLeft = Offset(w * 0.88f, h * 0.35f), size = Size(10f, 40f), cornerRadius = CornerRadius(4f, 4f))
+                    drawRoundRect(color = Color(0xFF431407), topLeft = Offset(w * 0.82f, h * 0.42f), size = Size(22f, 8f), cornerRadius = CornerRadius(2f, 2f))
                 }
                 Region.MOUNTAIN_WEST, Region.PACIFIC_NORTHWEST -> {
-                    // SNOW-CAPPED PEAKS & PINES
+                    // SNOW-CAPPED PEAKS
                     val mtnPath = Path().apply {
                         moveTo(0f, h * 0.65f)
                         lineTo(w * 0.25f, h * 0.25f)
@@ -276,8 +243,8 @@ fun HeroRoadTripGraphic(
                 else -> {
                     // UNIVERSAL GREEN HILLS
                     val hillPath = Path().apply {
-                        moveTo(0f, h * 0.55f)
-                        cubicTo(w * 0.35f, h * 0.45f, w * 0.65f, h * 0.6f, w, h * 0.5f)
+                        moveTo(0f, h * 0.65f)
+                        cubicTo(w * 0.35f, h * 0.5f, w * 0.65f, h * 0.62f, w, h * 0.52f)
                         lineTo(w, h)
                         lineTo(0f, h)
                         close()
@@ -286,45 +253,62 @@ fun HeroRoadTripGraphic(
                 }
             }
 
-            // ASPHALT ROAD
-            val roadPath = Path().apply {
-                moveTo(w * 0.1f, h)
-                lineTo(w * 0.48f, h * 0.55f)
-                lineTo(w * 0.52f, h * 0.55f)
-                lineTo(w * 0.9f, h)
-                close()
-            }
-            drawPath(roadPath, color = Color(0xFF334155))
+            // HORIZONTAL HIGHWAY ROAD ACROSS THE BOTTOM
+            val roadTopY = h * 0.68f
+            val roadHeight = h * 0.32f
 
-            // ANIMATED DASHED CENTER LINE (MOVING HIGHWAY EFFECT)
-            val dashOffset = roadMotion.value * 30f
-            for (i in 0..5) {
-                val lineY = h * 0.56f + (i * 20f + dashOffset) % 90f
-                val lineWidth = 4f + (lineY - h * 0.55f) * 0.08f
-                drawRect(
+            drawRect(
+                color = Color(0xFF334155), // Dark Asphalt Gray
+                topLeft = Offset(0f, roadTopY),
+                size = Size(w, roadHeight)
+            )
+
+            // TOP & BOTTOM WHITE ROAD BORDER LINES
+            drawRect(color = Color.White.copy(alpha = 0.8f), topLeft = Offset(0f, roadTopY), size = Size(w, 3f))
+            drawRect(color = Color.White.copy(alpha = 0.8f), topLeft = Offset(0f, h - 3f), size = Size(w, 3f))
+
+            // HORIZONTAL DASHED YELLOW CENTER LINE WITH SCROLLING MOTION
+            val dashY = roadTopY + roadHeight * 0.5f
+            val dashOffset = roadMotion.value * 50f
+
+            for (x in -50..w.toInt() step 50) {
+                val currentX = x.toFloat() + dashOffset
+                drawRoundRect(
                     color = SunnyYellow,
-                    topLeft = Offset(w * 0.5f - lineWidth / 2, lineY),
-                    size = Size(lineWidth, 12f)
+                    topLeft = Offset(currentX, dashY - 3f),
+                    size = Size(28f, 6f),
+                    cornerRadius = CornerRadius(2f, 2f)
                 )
             }
 
-            // DRIVING ADVENTURE CAR WITH SUSPENSION BOUNCE
-            val carX = w * 0.3f
-            val bounceY = carBounce.value * 2.5f
-            val carY = h * 0.72f - bounceY
+            // HORIZONTALLY DRIVING CAR WITH SUSPENSION BOUNCE
+            val carX = w * 0.4f
+            val bounceY = carBounce.value * 3f
+            val carY = roadTopY + roadHeight * 0.32f - bounceY
 
             // Car Shadow
-            drawOval(color = Color.Black.copy(alpha = 0.45f), topLeft = Offset(carX - 30f, carY + 16f), size = Size(75f, 16f))
+            drawOval(color = Color.Black.copy(alpha = 0.5f), topLeft = Offset(carX - 35f, carY + 22f), size = Size(80f, 14f))
+
             // Car Body
-            drawRoundRect(color = VividOrange, topLeft = Offset(carX - 22f, carY - 8f), size = Size(64f, 24f), cornerRadius = CornerRadius(10f, 10f))
-            // Cabin
-            drawRoundRect(color = Color(0xFFC2410C), topLeft = Offset(carX - 10f, carY - 22f), size = Size(40f, 16f), cornerRadius = CornerRadius(8f, 8f))
-            // Windows
-            drawRoundRect(color = Color(0xFFBAE6FD), topLeft = Offset(carX - 5f, carY - 18f), size = Size(14f, 11f), cornerRadius = CornerRadius(3f, 3f))
-            drawRoundRect(color = Color(0xFFBAE6FD), topLeft = Offset(carX + 11f, carY - 18f), size = Size(14f, 11f), cornerRadius = CornerRadius(3f, 3f))
+            drawRoundRect(color = VividOrange, topLeft = Offset(carX - 30f, carY - 4f), size = Size(72f, 24f), cornerRadius = CornerRadius(8f, 8f))
+            // Cabin Roof
+            drawRoundRect(color = Color(0xFFC2410C), topLeft = Offset(carX - 12f, carY - 20f), size = Size(42f, 18f), cornerRadius = CornerRadius(8f, 8f))
+
+            // Windows (Facing right)
+            drawRoundRect(color = Color(0xFFBAE6FD), topLeft = Offset(carX - 6f, carY - 16f), size = Size(15f, 12f), cornerRadius = CornerRadius(3f, 3f))
+            drawRoundRect(color = Color(0xFFBAE6FD), topLeft = Offset(carX + 13f, carY - 16f), size = Size(14f, 12f), cornerRadius = CornerRadius(3f, 3f))
+
+            // Headlight (Right)
+            drawCircle(color = SunnyYellowLight, radius = 4f, center = Offset(carX + 41f, carY + 4f))
+
             // Wheels
-            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX - 8f, carY + 16f))
-            drawCircle(color = Color(0xFF020617), radius = 8f, center = Offset(carX + 28f, carY + 16f))
+            drawCircle(color = Color(0xFF020617), radius = 9f, center = Offset(carX - 14f, carY + 20f))
+            drawCircle(color = Color(0xFF020617), radius = 9f, center = Offset(carX + 26f, carY + 20f))
+            drawCircle(color = Color.Gray, radius = 4f, center = Offset(carX - 14f, carY + 20f))
+            drawCircle(color = Color.Gray, radius = 4f, center = Offset(carX + 26f, carY + 20f))
+
+            // Roof Luggage
+            drawRoundRect(color = SunnyYellow, topLeft = Offset(carX - 6f, carY - 30f), size = Size(28f, 10f), cornerRadius = CornerRadius(4f, 4f))
         }
     }
 }
@@ -450,13 +434,13 @@ fun BeveledGameButton(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(18.dp))
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(buttonColor, buttonColor.copy(alpha = 0.88f))
                     )
                 )
-                .border(2.5.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(20.dp)),
+                .border(2.5.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(18.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
