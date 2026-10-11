@@ -53,7 +53,6 @@ import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.GameMode
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.BingoColumnHeaders
-import app.vercel.windowwander.ui.components.CategoryIconGraphic
 import app.vercel.windowwander.ui.components.ConfettiCelebrationGraphic
 import app.vercel.windowwander.ui.components.ScenicHighwayBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
@@ -489,12 +488,6 @@ fun BingoTileView(
         else -> Brush.verticalGradient(listOf(Color(0xFF2A364F), MediumNavy))
     }
 
-    val textColor = when {
-        tile.isCenter -> DeepNavy
-        tile.isCompleted -> Color.White
-        else -> Color.White
-    }
-
     Box(
         modifier = Modifier
             .aspectRatio(1f)
@@ -507,7 +500,7 @@ fun BingoTileView(
                 color = when {
                     isWinningLine -> GoldWinnerLight
                     tile.isCompleted -> CompletedGreen
-                    else -> Color.White.copy(alpha = 0.2f)
+                    else -> Color.White.copy(alpha = 0.25f)
                 },
                 shape = RoundedCornerShape(12.dp)
             )
@@ -524,34 +517,26 @@ fun BingoTileView(
             verticalArrangement = Arrangement.Center
         ) {
             if (tile.isCenter) {
-                Text(text = "⭐", fontSize = 16.sp)
+                Text(text = "⭐", fontSize = 18.sp)
                 Text(
                     text = "FREE",
-                    fontSize = 10.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Black,
-                    color = DeepNavy
+                    color = Color.White
                 )
             } else {
-                CategoryIconGraphic(
-                    category = tile.prompt.category,
-                    modifier = Modifier.size(16.dp),
-                    tint = if (tile.isCompleted) Color.White else SunnyYellow
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
                 Text(
                     text = tile.prompt.name,
-                    fontSize = 9.sp,
-                    fontWeight = if (tile.isCompleted) FontWeight.Bold else FontWeight.Medium,
-                    color = textColor,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
                     textAlign = TextAlign.Center,
-                    lineHeight = 11.sp,
-                    maxLines = 2
+                    lineHeight = 15.sp,
+                    maxLines = 3
                 )
 
                 if (tile.isCompleted) {
-                    Text(text = "✓", fontSize = 10.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    Text(text = "✓", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White)
                 }
             }
         }

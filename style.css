@@ -152,20 +152,6 @@ body {
   display: block;
 }
 
-.hero-tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: #F97316;
-  color: white;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 4px 10px;
-  border-radius: 8px;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
 .hero-title {
   position: absolute;
   top: 36px;
@@ -360,9 +346,10 @@ body {
   justify-content: center;
   text-align: center;
   padding: 4px;
-  font-size: 10px;
-  font-weight: 800;
-  color: white;
+  font-size: 13px; /* BOLDER & LARGER TEXT */
+  font-weight: 900; /* HEAVY FUN CARTOON FONT */
+  color: #FFFFFF; /* PURE WHITE TEXT */
+  line-height: 1.2;
   cursor: pointer;
   user-select: none;
   box-shadow: 0 6px 12px rgba(0,0,0,0.3);
@@ -375,17 +362,18 @@ body {
 
 .tile.completed {
   background: linear-gradient(180deg, #10B981, #059669);
-  color: white;
+  color: #FFFFFF;
   border-color: #34D399;
   box-shadow: 0 6px 18px rgba(16, 185, 129, 0.6);
 }
 
 .tile.center {
   background: linear-gradient(180deg, #FDE047, #F59E0B);
-  color: #0F172A;
+  color: #FFFFFF;
   font-weight: 900;
   border-color: #FDE047;
   box-shadow: 0 6px 18px rgba(245, 158, 11, 0.6);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* FOOTER NAV */
