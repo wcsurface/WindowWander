@@ -129,7 +129,7 @@ fun BingoGameScreen(
         }
     }
 
-    ScenicHighwayBackground(region = deck.region) {
+    ScenicHighwayBackground(deckId = deck.id, region = deck.region) {
         Box(
             modifier = Modifier
                 .fillMaxSize()

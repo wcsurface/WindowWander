@@ -45,41 +45,39 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// REGION-AWARE FULL SCREEN BACKGROUND (ROCKY MOUNTAINS IMAGE BACKDROP FOR MOUNTAIN WEST DECK)
+// DECK-AWARE FULL SCREEN ARTWORK BACKGROUND FOR ALL 8 DECKS
 @Composable
 fun ScenicHighwayBackground(
+    deckId: String = "deck_c",
     region: Region = Region.UNIVERSAL,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val bgResId = when {
+        deckId == "deck_a" -> R.drawable.bg_classic_roadtrip
+        deckId == "deck_b" -> R.drawable.bg_weird_roadtrip
+        deckId == "deck_c" || region == Region.MOUNTAIN_WEST -> R.drawable.bg_rocky_mountains
+        deckId == "deck_d" || region == Region.SOUTHWEST -> R.drawable.bg_desert_southwest
+        deckId == "deck_e" || region == Region.NORTHEAST -> R.drawable.bg_northeast
+        deckId == "deck_f" || region == Region.SOUTHEAST || region == Region.TEXAS_SOUTH_CENTRAL -> R.drawable.bg_south
+        deckId == "deck_g" || region == Region.PACIFIC_SOUTHWEST || region == Region.PACIFIC_NORTHWEST -> R.drawable.bg_west_coast
+        deckId == "deck_h" || region == Region.MIDWEST -> R.drawable.bg_heartland
+        else -> R.drawable.bg_classic_roadtrip
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
-        if (region == Region.MOUNTAIN_WEST) {
-            Image(
-                painter = painterResource(id = R.drawable.bg_rocky_mountains),
-                contentDescription = "Rocky Mountains Scenic Background",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-            // Light darkening scrim overlay for UI element contrast
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.15f))
-            )
-        } else {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF0284C7),
-                            Color(0xFF38BDF8),
-                            Color(0xFF0284C7),
-                            Color(0xFF0369A1)
-                        )
-                    )
-                )
-            }
-        }
+        Image(
+            painter = painterResource(id = bgResId),
+            contentDescription = "Scenic Deck Background Artwork",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        // Light darkening scrim overlay for crisp tile readability
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.15f))
+        )
 
         content()
     }
