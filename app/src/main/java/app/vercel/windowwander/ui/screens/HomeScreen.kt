@@ -71,6 +71,8 @@ fun HomeScreen(
     isSearchingOpponent: Boolean,
     opponentFoundName: String?,
     onQuickPlay: () -> Unit,
+    onPlayInCarHost: () -> Unit,
+    onPlayInCarJoin: (String) -> Unit,
     onStartOnlineMatchmaking: (Deck) -> Unit,
     onCancelMatchmaking: () -> Unit,
     onChooseDeck: () -> Unit,
@@ -79,7 +81,10 @@ fun HomeScreen(
     onOpenPrivacy: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    var showInCarPlayModal by remember { mutableStateOf(false) }
     var showOnlineMultiplayerModal by remember { mutableStateOf(false) }
+    var showJoinCodeInput by remember { mutableStateOf(false) }
+    var joinCodeInputText by remember { mutableStateOf("") }
     var currentDeckChoice by remember { mutableStateOf(selectedDeck) }
     var deckDropdownExpanded by remember { mutableStateOf(false) }
 
@@ -127,10 +132,10 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // HUGE 3D BEVELED GOLDEN PLAY BUTTON -> OPENS ONLINE MULTIPLAYER MODAL
+                // HUGE 3D BEVELED GOLDEN PLAY BUTTON -> OPENS IN-CAR SAME-CAR PLAY MODAL (HOST/JOIN)
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
-                    onClick = { showOnlineMultiplayerModal = true },
+                    onClick = { showInCarPlayModal = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp),
@@ -147,7 +152,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // MULTIPLAYER ROAD SIGN
+                    // MULTIPLAYER ROAD SIGN (ONLINE MATCHMAKING)
                     CartoonRoadSignCard(
                         title = "Multiplayer",
                         subtitle = "Play online room",
@@ -276,6 +281,150 @@ fun HomeScreen(
                     color = Color.White.copy(alpha = 0.5f),
                     modifier = Modifier.clickable { onOpenPrivacy() }
                 )
+            }
+
+            // SAME-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE/QR)
+            AnimatedVisibility(
+                visible = showInCarPlayModal,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.88f))
+                        .clickable {
+                            showInCarPlayModal = false
+                            showJoinCodeInput = false
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .shadow(24.dp, RoundedCornerShape(24.dp))
+                            .clickable(enabled = false) {},
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "🚗 IN-CAR PLAY",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow
+                            )
+                            Text(
+                                text = "Play bingo with passengers in your car!",
+                                fontSize = 13.sp,
+                                color = Color.White.copy(alpha = 0.8f),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 4.dp, bottom = 18.dp)
+                            )
+
+                            if (!showJoinCodeInput) {
+                                // 1. HOST A GAME (GENERATES QR CODE & 4-LETTER CODE)
+                                BeveledGameButton(
+                                    text = "🚗 START A GAME (HOST)",
+                                    onClick = {
+                                        showInCarPlayModal = false
+                                        onPlayInCarHost()
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp),
+                                    buttonColor = SunnyYellow,
+                                    bevelColor = Color(0xFFD97706),
+                                    textColor = DeepNavy,
+                                    fontSize = 16
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // 2. JOIN A GAME (SHOWS CODE INPUT)
+                                BeveledGameButton(
+                                    text = "📱 JOIN A GAME (CODE)",
+                                    onClick = { showJoinCodeInput = true },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp),
+                                    buttonColor = Color(0xFF2563EB),
+                                    bevelColor = Color(0xFF1D4ED8),
+                                    textColor = Color.White,
+                                    fontSize = 16
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // SOLO PLAY OPTION
+                                Button(
+                                    onClick = {
+                                        showInCarPlayModal = false
+                                        onQuickPlay()
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                                ) {
+                                    Text(text = "Play Solo Single-Player ▶", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+                                }
+                            } else {
+                                // CODE INPUT FOR JOINING HOST'S GAME LOBBY
+                                Text(
+                                    text = "Enter 4-Letter Code from Host:",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+
+                                OutlinedTextField(
+                                    value = joinCodeInputText,
+                                    onValueChange = { if (it.length <= 4) joinCodeInputText = it.uppercase() },
+                                    placeholder = { Text("e.g. ROAD", color = Color.Gray) },
+                                    singleLine = true,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedTextColor = Color.White,
+                                        unfocusedTextColor = Color.White,
+                                        focusedBorderColor = SunnyYellow,
+                                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(14.dp))
+
+                                BeveledGameButton(
+                                    text = "JOIN CAR ROOM ▶",
+                                    onClick = {
+                                        if (joinCodeInputText.length >= 4) {
+                                            showInCarPlayModal = false
+                                            showJoinCodeInput = false
+                                            onPlayInCarJoin(joinCodeInputText)
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(52.dp),
+                                    buttonColor = CompletedGreen,
+                                    bevelColor = Color(0xFF047857),
+                                    textColor = Color.White,
+                                    fontSize = 16
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                Button(
+                                    onClick = { showJoinCodeInput = false },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                                ) {
+                                    Text(text = "◀ Back", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // ONLINE MULTIPLAYER POPUP MODAL (DECK SELECTOR & CLASSIC BINGO)

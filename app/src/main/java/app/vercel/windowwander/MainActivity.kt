@@ -43,6 +43,8 @@ class MainActivity : ComponentActivity() {
                             isSearchingOpponent = uiState.isSearchingOpponent,
                             opponentFoundName = uiState.opponentFoundName,
                             onQuickPlay = { viewModel.startNewGame() },
+                            onPlayInCarHost = { viewModel.createLocalQuickPlayRoom() },
+                            onPlayInCarJoin = { code -> viewModel.joinMultiplayerRoom(code) },
                             onStartOnlineMatchmaking = { deck -> viewModel.startOnlineMatchmaking(deck) },
                             onCancelMatchmaking = { viewModel.cancelMatchmaking() },
                             onChooseDeck = { viewModel.navigateTo(Screen.DECK_SELECT) },

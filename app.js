@@ -117,9 +117,11 @@ class Router {
   constructor() {
     this.currentScreen = 'home';
     this.selectedDeck = DECKS[2]; // Defaulted to location deck (Mountain West)
-    this.selectedMode = GAME_MODES[0]; // Strictly Classic Bingo for Online
+    this.selectedMode = GAME_MODES[0];
     this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
     this.roomCode = 'ROAD';
+    this.showInCarModal = false;
+    this.showJoinCodeInput = false;
     this.showOnlineModal = false;
     this.isSearchingOpponent = false;
     this.opponentName = null;
@@ -179,12 +181,16 @@ class Router {
     let code = '';
     for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
     this.roomCode = code;
+    this.showInCarModal = false;
+    this.showJoinCodeInput = false;
     this.navigate('multiplayer');
   }
 
   joinCarRoom(code) {
     if (!code || code.length < 4) return;
     this.roomCode = code.toUpperCase().trim();
+    this.showInCarModal = false;
+    this.showJoinCodeInput = false;
     this.navigate('multiplayer');
   }
 
@@ -284,7 +290,8 @@ class Router {
           <h1 class="hero-title">ROAD TRIP BINGO</h1>
         </div>
 
-        <button class="btn btn-primary-hero btn-beveled" onclick="router.showOnlineModal=true;router.render();" style="margin-bottom:14px;">
+        <!-- ⚡ PLAY NOW ▶ BUTTON OPENS IN-CAR PLAY MODAL (HOST / JOIN) -->
+        <button class="btn btn-primary-hero btn-beveled" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:14px;">
           ⚡ PLAY NOW ▶
         </button>
 
@@ -314,6 +321,37 @@ class Router {
           </div>
           <p style="font-size:12px;color:#E2E8F0;margin-top:6px;">Spot a yellow vehicle, semi-truck, and an out-of-state plate today!</p>
         </div>
+
+        <!-- IN-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE) -->
+        ${this.showInCarModal ? `
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
+            <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
+              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 IN-CAR PLAY</h2>
+              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Play bingo with passengers in your car!</p>
+
+              ${!this.showJoinCodeInput ? `
+                <button class="btn btn-yellow btn-beveled" style="margin-bottom:12px;" onclick="router.startCarRoom()">
+                  🚗 START A GAME (HOST)
+                </button>
+                <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;" onclick="router.showJoinCodeInput=true;router.render();">
+                  📱 JOIN A GAME (CODE)
+                </button>
+                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showInCarModal=false;router.navigate('game');">
+                  Play Solo Single-Player ▶
+                </button>
+              ` : `
+                <p style="font-size:13px;font-weight:800;color:white;margin-bottom:8px;">Enter 4-Letter Code from Host:</p>
+                <input id="in-car-code-input" type="text" maxlength="4" placeholder="e.g. ROAD" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;margin-bottom:14px;" />
+                <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;" onclick="router.joinCarRoom(document.getElementById('in-car-code-input').value)">
+                  JOIN CAR ROOM ▶
+                </button>
+                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showJoinCodeInput=false;router.render();">
+                  ◀ Back
+                </button>
+              `}
+            </div>
+          </div>
+        ` : ''}
 
         <!-- ONLINE MULTIPLAYER MODAL OVERLAY -->
         ${this.showOnlineModal && !this.isSearchingOpponent ? `
@@ -390,11 +428,11 @@ class Router {
           <div style="font-size:12px;font-weight:900;color:#F59E0B;">CAR ROOM CODE</div>
           <div style="font-size:42px;font-weight:900;letter-spacing:4px;color:white;margin:4px 0;">${this.roomCode}</div>
 
-          <!-- QR CODE FOR SCANNING -->
+          <!-- QR CODE FOR SCANNING & DOWNLOADING APP -->
           <div style="display:inline-block;background:white;padding:10px;border-radius:16px;margin:12px 0;">
             <img src="${qrUrl}" alt="Scan QR Code to Join" style="width:140px;height:140px;display:block;" />
           </div>
-          <div style="font-size:12px;color:#CBD5E1;">Scan QR code with phone camera or enter code <strong>${this.roomCode}</strong> to join!</div>
+          <div style="font-size:12px;color:#CBD5E1;">Scan QR code with phone camera to download app & join room, or enter code <strong>${this.roomCode}</strong>!</div>
         </div>
 
         <h3 style="margin:16px 0 8px 0;">Connected Passengers</h3>
