@@ -16,7 +16,7 @@ object DeckRepository {
     ): Prompt = Prompt(id, text, hint, category, emptyList(), region == Region.UNIVERSAL, region)
 
     // -------------------------------------------------------------
-    // DECK A: CLASSIC ROAD TRIP (40+ PROMPTS)
+    // DECK A: CLASSIC ROAD TRIP (42 CONCISE PROMPTS)
     // -------------------------------------------------------------
     val DECK_A_PROMPTS = listOf(
         p("a1", "Red Car", "Any red passenger car, truck, or SUV", "vehicles"),
@@ -64,7 +64,7 @@ object DeckRepository {
     )
 
     // -------------------------------------------------------------
-    // DECK B: WEIRD ROAD TRIP (40+ PROMPTS)
+    // DECK B: WEIRD ROAD TRIP (42 CONCISE PROMPTS)
     // -------------------------------------------------------------
     val DECK_B_PROMPTS = listOf(
         p("b1", "Bumper Sticker Nonsense", "A sticker with an utterly baffling message", "weird"),
@@ -112,63 +112,55 @@ object DeckRepository {
     )
 
     // -------------------------------------------------------------
-    // DECK C: MOUNTAIN WEST & ROCKIES (50 EXACT USER PROMPTS)
+    // DECK C: MOUNTAIN WEST & ROCKIES (42 CONCISE PROMPTS)
     // -------------------------------------------------------------
     val DECK_C_PROMPTS = listOf(
-        p("c1", "Mountain peaks covered in snow", "Snow-capped summits visible in distance", "mountain", false, Region.MOUNTAIN_WEST),
-        p("c2", "Elk crossing sign", "Yellow warning sign depicting an elk", "signs", false, Region.MOUNTAIN_WEST),
-        p("c3", "Real elk or deer", "Elk or deer spotted in field or forest", "nature", false, Region.MOUNTAIN_WEST),
-        p("c4", "Bighorn sheep sign", "Highway sign warning for bighorn sheep", "signs", false, Region.MOUNTAIN_WEST),
-        p("c5", "A moose warning sign", "Warning sign for moose along road", "signs", false, Region.MOUNTAIN_WEST),
-        p("c6", "A real bison", "Live bison in field, park, or ranch", "nature", false, Region.MOUNTAIN_WEST),
-        p("c7", "A ski resort sign", "Directional or billboard sign for ski area", "signs", false, Region.MOUNTAIN_WEST),
-        p("c8", "Gondola or ski lift", "Chairlift towers or gondola line visible", "structures", false, Region.MOUNTAIN_WEST),
-        p("c9", "A snowboard on a car", "Vehicle carrying snowboard on roof rack", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c10", "A vehicle with a rooftop cargo box", "Car with hardshell cargo carrier on roof", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c11", "A truck carrying firewood", "Pickup or flatbed loaded with firewood logs", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c12", "A camper van", "Custom Sprinter or overland camper van", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c13", "A fifth-wheel RV", "Large fifth-wheel travel trailer towed by truck", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c14", "pickup with mud-covered tires", "Truck with heavy mud splatter on tires/body", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c15", "mountain road with a hairpin turn", "Sharp switchback turn on mountain pass", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c16", "Falling Rock Sign", "Warning sign for rockfall hazard", "signs", false, Region.MOUNTAIN_WEST),
-        p("c17", "A sign warning about avalanches", "Avalanche danger area warning sign", "signs", false, Region.MOUNTAIN_WEST),
-        p("c18", "A scenic overlook", "Designated pullover spot for mountain views", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c19", "A river running alongside the highway", "Highway parallel to mountain river", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c20", "rushing mountain stream", "Fast-moving creek or stream visible", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c21", "lake surrounded by mountains", "Alpine lake with mountain background", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c22", "A waterfall", "Natural waterfall cascading down rocks", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c23", "pine forest", "Dense pine or spruce tree forest", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c24", "Aspen trees with white trunks", "Aspen grove with distinct white bark", "nature", false, Region.MOUNTAIN_WEST),
-        p("c25", "Forest fire danger sign", "Smokey Bear fire risk indicator sign", "signs", false, Region.MOUNTAIN_WEST),
-        p("c26", "A Car with a roof rack", "Vehicle equipped with roof luggage rack", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c27", "truck hauling an ATV", "Pickup or trailer carrying quad/ATV", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c28", "mountain bike on a vehicle", "Vehicle carrying mountain bikes", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c29", "A whitewater rafting outfitter", "Rafting company building or trailer", "outdoor", false, Region.MOUNTAIN_WEST),
-        p("c30", "A natural hot springs sign", "Sign for geothermal hot springs resort", "signs", false, Region.MOUNTAIN_WEST),
-        p("c31", "A roadside rock shop", "Store selling crystals, rocks, and fossils", "structures", false, Region.MOUNTAIN_WEST),
-        p("c32", "A town with a ski-themed name or logo", "Town welcome sign featuring skis or snow", "signs", false, Region.MOUNTAIN_WEST),
-        p("c33", "A mountain town with wooden storefronts", "Old-fashioned rustic timber storefronts", "structures", false, Region.MOUNTAIN_WEST),
-        p("c34", "A general store in a small mountain town", "Local mountain general store", "structures", false, Region.MOUNTAIN_WEST),
-        p("c35", "A historic mining town sign", "Sign marking 1800s gold/silver mining town", "signs", false, Region.MOUNTAIN_WEST),
-        p("c36", "An old mining structure", "Historic headframe or wooden mine ruin", "history", false, Region.MOUNTAIN_WEST),
-        p("c37", "A gold panning advertisement", "Sign offering gold sluicing or panning tours", "signs", false, Region.MOUNTAIN_WEST),
-        p("c38", "steep grade warning", "Yellow sign warning of 6%+ downhill grade", "signs", false, Region.MOUNTAIN_WEST),
-        p("c39", "runaway truck ramp", "Gravel emergency escape ramp for trucks", "structures", false, Region.MOUNTAIN_WEST),
-        p("c40", "A chain-up area sign", "Highway sign for tire chain installation", "signs", false, Region.MOUNTAIN_WEST),
-        p("c41", "A road passing through a mountain tunnel", "Vehicle driving into highway tunnel", "structures", false, Region.MOUNTAIN_WEST),
-        p("c42", "Wildflowers", "Colorful wildflowers along mountain meadow", "nature", false, Region.MOUNTAIN_WEST),
-        p("c43", "a sign showing the elevation above 8,000 feet", "Elevation sign over 8,000 ft", "signs", false, Region.MOUNTAIN_WEST),
-        p("c44", "cowboy hat in a truck window", "Cowboy hat placed on dashboard or rear seat", "decor", false, Region.MOUNTAIN_WEST),
-        p("c45", "national park sign", "Brown/green National Park welcome sign", "signs", false, Region.MOUNTAIN_WEST),
-        p("c46", "campground sign", "Sign directing to public or private camping", "signs", false, Region.MOUNTAIN_WEST),
-        p("c47", "A vehicle towing a boat", "Car or truck pulling powerboat or pontoon", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c48", "horse trailer", "Trailer hauling horses or livestock", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c49", "Ranch with horses or cattle", "Working mountain ranch with stock in field", "farm", false, Region.MOUNTAIN_WEST),
-        p("c50", "A bumper sticker about skiing", "Car bumper sticker mentioning ski resort or snow", "vehicles", false, Region.MOUNTAIN_WEST)
+        p("c1", "Ski Rack on Car", "Vehicle equipped with roof ski or snowboard carriers", "mountain", false, Region.MOUNTAIN_WEST),
+        p("c2", "Snow-Capped Peak", "A mountain summit visible with snow cover", "mountain", false, Region.MOUNTAIN_WEST),
+        p("c3", "Wildlife Crossing Sign", "Sign depicting elk, bighorn sheep, or deer", "signs", false, Region.MOUNTAIN_WEST),
+        p("c4", "Elk or Deer in Distance", "Large game animals visible in a valley or forest edge", "nature", false, Region.MOUNTAIN_WEST),
+        p("c5", "Mountain Pass Sign", "Elevation marker sign for a high pass", "signs", false, Region.MOUNTAIN_WEST),
+        p("c6", "Trailhead Parking Sign", "Designated hiking trailhead sign", "signs", false, Region.MOUNTAIN_WEST),
+        p("c7", "River Rafting Billboard", "Advert for whitewater rafting or kayak rentals", "outdoor", false, Region.MOUNTAIN_WEST),
+        p("c8", "National Forest Boundary", "Green Smokey Bear or US Forest Service sign", "signs", false, Region.MOUNTAIN_WEST),
+        p("c9", "Rock Formation Cliffs", "Sheer mountain canyon walls or red rock ridges", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c10", "Evergreen Forest", "Dense pine, fir, or spruce forest along highway", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c11", "Dust-Covered 4x4", "A Jeep or truck thick with trail dust", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c12", "Overland Camper Van", "Sprinter or custom 4x4 camper van", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c13", "Fly Fishing Access", "Public river fishing access point sign", "outdoor", false, Region.MOUNTAIN_WEST),
+        p("c14", "Wildfire Danger Sign", "Smokey Bear sign showing fire risk level", "signs", false, Region.MOUNTAIN_WEST),
+        p("c15", "Winding Canyon Road", "A series of sharp switchbacks through a canyon", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c16", "Mountain Lake / Reservoir", "A clear alpine lake visible from the road", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c17", "Ranch Gate Structure", "Large timber or iron archway gate over driveway", "structures", false, Region.MOUNTAIN_WEST),
+        p("c18", "Cattle Guard in Road", "Metal grid across road replacing a fence gate", "structures", false, Region.MOUNTAIN_WEST),
+        p("c19", "Log Cabin Lodge", "Log construction building or resort", "structures", false, Region.MOUNTAIN_WEST),
+        p("c20", "Snowplow Parked or Active", "Highway department heavy snowplow truck", "equipment", false, Region.MOUNTAIN_WEST),
+        p("c21", "Ski Resort Chairlift", "Gondola or chairlift towers visible in distance", "structures", false, Region.MOUNTAIN_WEST),
+        p("c22", "Continental Divide Sign", "Sign marking the crest of the divide", "signs", false, Region.MOUNTAIN_WEST),
+        p("c23", "Moose Crossing Warning", "A highway warning sign specifically for moose", "signs", false, Region.MOUNTAIN_WEST),
+        p("c24", "Timber Hauling Truck", "Semi-truck carrying massive freshly cut logs", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c25", "Bouldering Crash Pad", "Car with thick climbing foam pads stacked on top", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c26", "Runaway Truck Ramp", "Emergency gravel ramp on steep mountain descent", "structures", false, Region.MOUNTAIN_WEST),
+        p("c27", "Hot Springs Advert", "Sign for natural geothermal hot springs bath", "signs", false, Region.MOUNTAIN_WEST),
+        p("c28", "Avalanche Chute Sign", "Highway sign warning of avalanche area", "signs", false, Region.MOUNTAIN_WEST),
+        p("c29", "Ghost Town Landmark", "Sign or ruins of a 1800s mining town", "history", false, Region.MOUNTAIN_WEST),
+        p("c30", "Mountain Bike Trailhead", "Cyclists or signs for singletrack trails", "outdoor", false, Region.MOUNTAIN_WEST),
+        p("c31", "High Altitude Prairie", "Open valley floor surrounded by peaks", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c32", "Park Ranger Truck", "National Park Service green/white truck", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c33", "Geology Information Board", "Historical display explaining rock layers", "signs", false, Region.MOUNTAIN_WEST),
+        p("c34", "Solar Peak Weather Station", "Mountaintop weather radar or radio tower", "structures", false, Region.MOUNTAIN_WEST),
+        p("c35", "Frozen Waterfall", "Ice cascade hanging on a rock wall in winter/spring", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c36", "Gold Panning Tour Sign", "Sign offering gold sluicing or mining tours", "fun", false, Region.MOUNTAIN_WEST),
+        p("c37", "Fly Shop Fly Statue", "A shop with a giant trout or fishing fly sign", "structures", false, Region.MOUNTAIN_WEST),
+        p("c38", "Hay Bale Stacks in Canyon", "Stacked round bales against a rocky mesa", "farm", false, Region.MOUNTAIN_WEST),
+        p("c39", "Rodeo Arena Grounds", "Rodeo fence and grandstands near town", "structures", false, Region.MOUNTAIN_WEST),
+        p("c40", "Wild Mustang Crossing", "Warning sign for wild horses on highway", "signs", false, Region.MOUNTAIN_WEST),
+        p("c41", "Windy Mountain Summit Flag", "Flag fluttering on top of a mountain pass", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c42", "High Altitude Solar Farm", "Panels tilted sharply toward mountain sun", "structures", false, Region.MOUNTAIN_WEST)
     )
 
     // -------------------------------------------------------------
-    // DECK D: DESERT & SOUTHWEST (40+ PROMPTS)
+    // DECK D: DESERT & SOUTHWEST (42 CONCISE PROMPTS)
     // -------------------------------------------------------------
     val DECK_D_PROMPTS = listOf(
         p("d1", "Saguaro Cactus", "Tall branching desert cactus", "desert", false, Region.SOUTHWEST),
