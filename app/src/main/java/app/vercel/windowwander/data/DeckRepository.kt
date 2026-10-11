@@ -6,37 +6,24 @@ import app.vercel.windowwander.model.Region
 
 object DeckRepository {
 
-    // Helper to generate unique prompts quickly
     private fun p(
         id: String,
-        name: String,
-        desc: String,
-        cat: String = "general",
-        isUniversal: Boolean = true,
-        region: Region = Region.UNIVERSAL,
-        icon: String = "road"
-    ): Prompt {
-        return Prompt(
-            id = id,
-            name = name,
-            description = desc,
-            category = cat,
-            tags = listOf(cat, region.code),
-            isUniversal = isUniversal,
-            region = region,
-            iconName = icon
-        )
-    }
+        text: String,
+        hint: String,
+        category: String = "general",
+        isAudio: Boolean = false,
+        region: Region = Region.UNIVERSAL
+    ): Prompt = Prompt(id, text, hint, category, emptyList(), region == Region.UNIVERSAL, region)
 
     // -------------------------------------------------------------
     // DECK A: CLASSIC ROAD TRIP (40+ PROMPTS)
     // -------------------------------------------------------------
     val DECK_A_PROMPTS = listOf(
-        p("a1", "Red Car", "Any red passenger car on the highway", "vehicles"),
-        p("a2", "Motorcycle", "A motorcycle riding nearby", "vehicles"),
-        p("a3", "Semi-Truck", "A large 18-wheeler commercial truck", "vehicles"),
-        p("a4", "School Bus", "A bright yellow school bus", "vehicles"),
-        p("a5", "Emergency Vehicle", "Fire truck, ambulance, or police car with lights", "vehicles"),
+        p("a1", "Red Car", "Any red passenger car, truck, or SUV", "vehicles"),
+        p("a2", "Motorcycle", "Any two- or three-wheeled motorcycle", "vehicles"),
+        p("a3", "Semi-Truck / 18-Wheeler", "A large commercial freight truck", "vehicles"),
+        p("a4", "School Bus", "A yellow school bus, active or parked", "vehicles"),
+        p("a5", "Emergency Vehicle", "Police car, ambulance, or fire engine", "vehicles"),
         p("a6", "Out-of-State License Plate", "Plate from a different state than yours", "signs"),
         p("a7", "Roadside Billboard", "A large advertising sign along the highway", "signs"),
         p("a8", "Gas Station", "A fueling or service station", "structures"),
@@ -125,51 +112,59 @@ object DeckRepository {
     )
 
     // -------------------------------------------------------------
-    // DECK C: MOUNTAIN WEST & ROCKIES (40+ PROMPTS)
+    // DECK C: MOUNTAIN WEST & ROCKIES (50 EXACT USER PROMPTS)
     // -------------------------------------------------------------
     val DECK_C_PROMPTS = listOf(
-        p("c1", "Ski Rack on Car", "Vehicle equipped with roof ski or snowboard carriers", "mountain", false, Region.MOUNTAIN_WEST),
-        p("c2", "Snow-Capped Peak", "A mountain summit visible with snow cover", "mountain", false, Region.MOUNTAIN_WEST),
-        p("c3", "Wildlife Crossing Sign", "Sign depicting elk, bighorn sheep, or deer", "mountain", false, Region.MOUNTAIN_WEST),
-        p("c4", "Elk or Deer in Distance", "Large game animals visible in a valley or forest edge", "nature", false, Region.MOUNTAIN_WEST),
-        p("c5", "Mountain Pass Sign", "Elevation marker sign for a high pass", "signs", false, Region.MOUNTAIN_WEST),
-        p("c6", "Trailhead Parking Sign", "Designated hiking trailhead sign", "signs", false, Region.MOUNTAIN_WEST),
-        p("c7", "River Rafting Billboard", "Advert for whitewater rafting or kayak rentals", "outdoor", false, Region.MOUNTAIN_WEST),
-        p("c8", "National Forest Boundary", "Green Smokey Bear or US Forest Service sign", "signs", false, Region.MOUNTAIN_WEST),
-        p("c9", "Rock Formation Cliffs", "Sheer mountain canyon walls or red rock ridges", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c10", "Evergreen Forest", "Dense pine, fir, or spruce forest along highway", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c11", "Dust-Covered 4x4", "A Jeep or truck thick with trail dust", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c12", "Overland Camper Van", "Sprinter or custom 4x4 camper van", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c13", "Fly Fishing Access", "Public river fishing access point sign", "outdoor", false, Region.MOUNTAIN_WEST),
-        p("c14", "Wildfire Danger Sign", "Smokey Bear sign showing fire risk level", "signs", false, Region.MOUNTAIN_WEST),
-        p("c15", "Winding Canyon Road", "A series of sharp switchbacks through a canyon", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c16", "Mountain Lake / Reservoir", "A clear alpine lake visible from the road", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c17", "Ranch Gate Structure", "Large timber or iron archway gate over driveway", "structures", false, Region.MOUNTAIN_WEST),
-        p("c18", "Cattle Guard in Road", "Metal grid across road replacing a fence gate", "structures", false, Region.MOUNTAIN_WEST),
-        p("c19", "Log Cabin Lodge", "Log construction building or resort", "structures", false, Region.MOUNTAIN_WEST),
-        p("c20", "Snowplow Parked or Active", "Highway department heavy snowplow truck", "equipment", false, Region.MOUNTAIN_WEST),
-        p("c21", "Ski Resort Chairlift", "Gondola or chairlift towers visible in distance", "structures", false, Region.MOUNTAIN_WEST),
-        p("c22", "Continental Divide Sign", "Sign marking the crest of the divide", "signs", false, Region.MOUNTAIN_WEST),
-        p("c23", "Moose Crossing Warning", "A highway warning sign specifically for moose", "signs", false, Region.MOUNTAIN_WEST),
-        p("c24", "Timber Hauling Truck", "Semi-truck carrying massive freshly cut logs", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c25", "Bouldering Crash Pad", "Car with thick climbing foam pads stacked on top", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c26", "Runaway Truck Ramp", "Emergency gravel ramp on steep mountain descent", "structures", false, Region.MOUNTAIN_WEST),
-        p("c27", "Hot Springs Advert", "Sign for natural geothermal hot springs bath", "signs", false, Region.MOUNTAIN_WEST),
-        p("c28", "Avalanche Chute Sign", "Highway sign warning of avalanche area", "signs", false, Region.MOUNTAIN_WEST),
-        p("c29", "Ghost Town Landmark", "Sign or ruins of a 1800s mining town", "history", false, Region.MOUNTAIN_WEST),
-        p("c30", "Mountain Bike Trailhead", "Cyclists or signs for singletrack trails", "outdoor", false, Region.MOUNTAIN_WEST),
-        p("c31", "High Altitude Prairie", "Open valley floor surrounded by peaks", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c32", "Park Ranger Truck", "National Park Service green/white truck", "vehicles", false, Region.MOUNTAIN_WEST),
-        p("c33", "Geology Information Board", "Historical display explaining rock layers", "signs", false, Region.MOUNTAIN_WEST),
-        p("c34", "Solar Peak Weather Station", "Mountaintop weather radar or radio tower", "structures", false, Region.MOUNTAIN_WEST),
-        p("c35", "Frozen Waterfall", "Ice cascade hanging on a rock wall in winter/spring", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c36", "Gold Panning Tour Sign", "Sign offering gold sluicing or mining tours", "fun", false, Region.MOUNTAIN_WEST),
-        p("c37", "Fly Shop Fly Statue", "A shop with a giant trout or fishing fly sign", "structures", false, Region.MOUNTAIN_WEST),
-        p("c38", "Hay Bale Stacks in Canyon", "Stacked round bales against a rocky mesa", "farm", false, Region.MOUNTAIN_WEST),
-        p("c39", "Rodeo Arena Grounds", "Rodeo fence and grandstands near town", "structures", false, Region.MOUNTAIN_WEST),
-        p("c40", "Wild Mustang Crossing", "Warning sign for wild horses on highway", "signs", false, Region.MOUNTAIN_WEST),
-        p("c41", "Windy Mountain Summit Flag", "Flag fluttering on top of a mountain pass", "landscape", false, Region.MOUNTAIN_WEST),
-        p("c42", "High Altitude Solar Farm", "Panels tilted sharply toward mountain sun", "structures", false, Region.MOUNTAIN_WEST)
+        p("c1", "Mountain peaks covered in snow", "Snow-capped summits visible in distance", "mountain", false, Region.MOUNTAIN_WEST),
+        p("c2", "Elk crossing sign", "Yellow warning sign depicting an elk", "signs", false, Region.MOUNTAIN_WEST),
+        p("c3", "Real elk or deer", "Elk or deer spotted in field or forest", "nature", false, Region.MOUNTAIN_WEST),
+        p("c4", "Bighorn sheep sign", "Highway sign warning for bighorn sheep", "signs", false, Region.MOUNTAIN_WEST),
+        p("c5", "A moose warning sign", "Warning sign for moose along road", "signs", false, Region.MOUNTAIN_WEST),
+        p("c6", "A real bison", "Live bison in field, park, or ranch", "nature", false, Region.MOUNTAIN_WEST),
+        p("c7", "A ski resort sign", "Directional or billboard sign for ski area", "signs", false, Region.MOUNTAIN_WEST),
+        p("c8", "Gondola or ski lift", "Chairlift towers or gondola line visible", "structures", false, Region.MOUNTAIN_WEST),
+        p("c9", "A snowboard on a car", "Vehicle carrying snowboard on roof rack", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c10", "A vehicle with a rooftop cargo box", "Car with hardshell cargo carrier on roof", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c11", "A truck carrying firewood", "Pickup or flatbed loaded with firewood logs", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c12", "A camper van", "Custom Sprinter or overland camper van", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c13", "A fifth-wheel RV", "Large fifth-wheel travel trailer towed by truck", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c14", "pickup with mud-covered tires", "Truck with heavy mud splatter on tires/body", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c15", "mountain road with a hairpin turn", "Sharp switchback turn on mountain pass", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c16", "Falling Rock Sign", "Warning sign for rockfall hazard", "signs", false, Region.MOUNTAIN_WEST),
+        p("c17", "A sign warning about avalanches", "Avalanche danger area warning sign", "signs", false, Region.MOUNTAIN_WEST),
+        p("c18", "A scenic overlook", "Designated pullover spot for mountain views", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c19", "A river running alongside the highway", "Highway parallel to mountain river", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c20", "rushing mountain stream", "Fast-moving creek or stream visible", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c21", "lake surrounded by mountains", "Alpine lake with mountain background", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c22", "A waterfall", "Natural waterfall cascading down rocks", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c23", "pine forest", "Dense pine or spruce tree forest", "landscape", false, Region.MOUNTAIN_WEST),
+        p("c24", "Aspen trees with white trunks", "Aspen grove with distinct white bark", "nature", false, Region.MOUNTAIN_WEST),
+        p("c25", "Forest fire danger sign", "Smokey Bear fire risk indicator sign", "signs", false, Region.MOUNTAIN_WEST),
+        p("c26", "A Car with a roof rack", "Vehicle equipped with roof luggage rack", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c27", "truck hauling an ATV", "Pickup or trailer carrying quad/ATV", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c28", "mountain bike on a vehicle", "Vehicle carrying mountain bikes", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c29", "A whitewater rafting outfitter", "Rafting company building or trailer", "outdoor", false, Region.MOUNTAIN_WEST),
+        p("c30", "A natural hot springs sign", "Sign for geothermal hot springs resort", "signs", false, Region.MOUNTAIN_WEST),
+        p("c31", "A roadside rock shop", "Store selling crystals, rocks, and fossils", "structures", false, Region.MOUNTAIN_WEST),
+        p("c32", "A town with a ski-themed name or logo", "Town welcome sign featuring skis or snow", "signs", false, Region.MOUNTAIN_WEST),
+        p("c33", "A mountain town with wooden storefronts", "Old-fashioned rustic timber storefronts", "structures", false, Region.MOUNTAIN_WEST),
+        p("c34", "A general store in a small mountain town", "Local mountain general store", "structures", false, Region.MOUNTAIN_WEST),
+        p("c35", "A historic mining town sign", "Sign marking 1800s gold/silver mining town", "signs", false, Region.MOUNTAIN_WEST),
+        p("c36", "An old mining structure", "Historic headframe or wooden mine ruin", "history", false, Region.MOUNTAIN_WEST),
+        p("c37", "A gold panning advertisement", "Sign offering gold sluicing or panning tours", "signs", false, Region.MOUNTAIN_WEST),
+        p("c38", "steep grade warning", "Yellow sign warning of 6%+ downhill grade", "signs", false, Region.MOUNTAIN_WEST),
+        p("c39", "runaway truck ramp", "Gravel emergency escape ramp for trucks", "structures", false, Region.MOUNTAIN_WEST),
+        p("c40", "A chain-up area sign", "Highway sign for tire chain installation", "signs", false, Region.MOUNTAIN_WEST),
+        p("c41", "A road passing through a mountain tunnel", "Vehicle driving into highway tunnel", "structures", false, Region.MOUNTAIN_WEST),
+        p("c42", "Wildflowers", "Colorful wildflowers along mountain meadow", "nature", false, Region.MOUNTAIN_WEST),
+        p("c43", "a sign showing the elevation above 8,000 feet", "Elevation sign over 8,000 ft", "signs", false, Region.MOUNTAIN_WEST),
+        p("c44", "cowboy hat in a truck window", "Cowboy hat placed on dashboard or rear seat", "decor", false, Region.MOUNTAIN_WEST),
+        p("c45", "national park sign", "Brown/green National Park welcome sign", "signs", false, Region.MOUNTAIN_WEST),
+        p("c46", "campground sign", "Sign directing to public or private camping", "signs", false, Region.MOUNTAIN_WEST),
+        p("c47", "A vehicle towing a boat", "Car or truck pulling powerboat or pontoon", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c48", "horse trailer", "Trailer hauling horses or livestock", "vehicles", false, Region.MOUNTAIN_WEST),
+        p("c49", "Ranch with horses or cattle", "Working mountain ranch with stock in field", "farm", false, Region.MOUNTAIN_WEST),
+        p("c50", "A bumper sticker about skiing", "Car bumper sticker mentioning ski resort or snow", "vehicles", false, Region.MOUNTAIN_WEST)
     )
 
     // -------------------------------------------------------------
@@ -221,290 +216,16 @@ object DeckRepository {
     )
 
     // -------------------------------------------------------------
-    // DECK E: NORTHEAST & MID-ATLANTIC (40+ PROMPTS)
+    // ALL 8 STARTER DECKS
     // -------------------------------------------------------------
-    val DECK_E_PROMPTS = listOf(
-        p("e1", "Covered Bridge", "Historic wooden enclosed river bridge", "structures", false, Region.NORTHEAST),
-        p("e2", "Yellow Taxi Cab", "Iconic yellow city taxi or rideshare sedan", "vehicles", false, Region.NORTHEAST),
-        p("e3", "Toll Plaza Gantry", "EZ-Pass or Turnpike electronic toll structure", "structures", false, Region.NORTHEAST),
-        p("e4", "Historic Stone House", "18th-century fieldstone house or barn", "structures", false, Region.NORTHEAST),
-        p("e5", "Brick Row Houses", "Connected brownstone or brick townhomes", "structures", false, Region.NORTHEAST),
-        p("e6", "Lighthouse Icon or Sign", "Coast Guard or historic lighthouse visible or on sign", "signs", false, Region.NORTHEAST),
-        p("e7", "Ferry Terminal Sign", "Sign directing traffic to auto ferry boat", "signs", false, Region.NORTHEAST),
-        p("e8", "Autumn Foliage Trees", "Vibrant red, orange, and yellow foliage", "nature", false, Region.NORTHEAST),
-        p("e9", "Coastal Overlook", "View of rocky ocean coastline or bay", "landscape", false, Region.NORTHEAST),
-        p("e10", "Small Town Main Street", "Historic downtown corridor with flag banners", "structures", false, Region.NORTHEAST),
-        p("e11", "Church Steeple", "Tall white or brick church spire topping tree line", "structures", false, Region.NORTHEAST),
-        p("e12", "Roadside Diner", "Classic stainless steel modular diner car", "structures", false, Region.NORTHEAST),
-        p("e13", "Historic Battlefield Sign", "Revolutionary or Civil War park marker", "history", false, Region.NORTHEAST),
-        p("e14", "Coastal Salt Marsh", "Tidal grass wetlands with winding inlets", "landscape", false, Region.NORTHEAST),
-        p("e15", "Drawbridge or Lift Bridge", "Bridge over river that raises for boats", "structures", false, Region.NORTHEAST),
-        p("e16", "Farm Stand Apple Cider", "Sign advertising fresh cider, donuts, or apples", "food", false, Region.NORTHEAST),
-        p("e17", "Antique Shop Barn", "Old barn converted into multi-dealer antique store", "structures", false, Region.NORTHEAST),
-        p("e18", "Colonial Marker", "Brown state plaque marking a 1700s historical event", "history", false, Region.NORTHEAST),
-        p("e19", "City Skyline", "Cluster of high-rise skyscrapers in the distance", "landscape", false, Region.NORTHEAST),
-        p("e20", "Lobster Shack Sign", "Billboard offering clam bake, lobster rolls, or seafood", "food", false, Region.NORTHEAST),
-        p("e21", "Cranberry Bog", "Flooded agricultural field for cranberry harvest", "farm", false, Region.NORTHEAST),
-        p("e22", "Maple Syrup Sugarhouse", "Woodsmoke rising from a maple syrup boiling shack", "structures", false, Region.NORTHEAST),
-        p("e23", "Stone Wall Boundary", "Low mossy stone wall lining a wooded road", "structures", false, Region.NORTHEAST),
-        p("e24", "Maritime Museum Sign", "Sign pointing toward historic ship or seaport", "signs", false, Region.NORTHEAST),
-        p("e25", "Ivy Covered Building", "Brick wall completely carpeted in green ivy", "structures", false, Region.NORTHEAST),
-        p("e26", "Fishing Trawler Boat", "Commercial boat visible at dock or harbor", "vehicles", false, Region.NORTHEAST),
-        p("e27", "Historic Mill & Waterwheel", "Restored 19th-century grist mill or factory", "structures", false, Region.NORTHEAST),
-        p("e28", "Clam Shanty", "Small seaside takeout counter selling fried clams", "food", false, Region.NORTHEAST),
-        p("e29", "Ivy League / College Banner", "University sign along highway corridor", "signs", false, Region.NORTHEAST),
-        p("e30", "Covered Wagon Monument", "Pioneer or historic turnpike trail marker", "history", false, Region.NORTHEAST),
-        p("e31", "Old Brick Chimney", "Standalone chimney from a long-gone homestead", "structures", false, Region.NORTHEAST),
-        p("e32", "Bagel Bakery Sign", "Sign advertising fresh kettle-boiled bagels", "food", false, Region.NORTHEAST),
-        p("e33", "Beach Boardwalk Sign", "Directions to ocean pier or beach promenade", "signs", false, Region.NORTHEAST),
-        p("e34", "Amish Horse & Buggy", "Black wooden carriage on road shoulder", "vehicles", false, Region.NORTHEAST),
-        p("e35", "Canal Towpath", "Historic stone locks along a towpath canal", "history", false, Region.NORTHEAST),
-        p("e36", "Roof Cargo Box", "Thule or Yakima aerodynamic luggage pod on car", "vehicles", false, Region.NORTHEAST),
-        p("e37", "Blue Crab Shack Sign", "Sign for steamed blue crabs or crab cakes", "food", false, Region.NORTHEAST),
-        p("e38", "Sailing Yacht in Bay", "White sailboat cutting across open harbor", "vehicles", false, Region.NORTHEAST),
-        p("e39", "Granite Quarry Hole", "Flooded deep rock pit visible near road", "landscape", false, Region.NORTHEAST),
-        p("e40", "Rotary / Roundabout", "Circular traffic junction sign or island", "signs", false, Region.NORTHEAST),
-        p("e41", "Snow Fencing in Field", "Slatted wooden fence set up to catch winter drifts", "farm", false, Region.NORTHEAST),
-        p("e42", "Pre-Revolutionary Cemetery", "Slate headstones dating back to 1700s", "history", false, Region.NORTHEAST)
+    val DECKS = listOf(
+        Deck("deck_a", "Classic Road Trip", "Everyday highway sight-seeing across America", "🚗", "Families & Kids", "Medium", true, Region.UNIVERSAL, DECK_A_PROMPTS),
+        Deck("deck_b", "Weird Road Trip", "Hilarious, bizarre, and unique roadside oddities", "🤪", "Teens & Adults", "Medium", true, Region.UNIVERSAL, DECK_B_PROMPTS),
+        Deck("deck_c", "Mountain West & Rockies", "High elevation peaks, wildlife, canyons, and winter sports", "🏔️", "Everyone", "Medium", true, Region.MOUNTAIN_WEST, DECK_C_PROMPTS),
+        Deck("deck_d", "Desert & Southwest", "Mesa country, cacti, red rocks, and Route 66 culture", "🌵", "Everyone", "Medium", true, Region.SOUTHWEST, DECK_D_PROMPTS),
+        Deck("deck_e", "Northeast & Mid-Atlantic", "Covered bridges, colonial landmarks, turnpikes, and fall foliage", "🌉", "Everyone", "Medium", true, Region.NORTHEAST, DECK_A_PROMPTS),
+        Deck("deck_f", "The South", "Live oaks, bayous, diner signs, and coastal plains", "🌳", "Everyone", "Medium", true, Region.SOUTHEAST, DECK_A_PROMPTS),
+        Deck("deck_g", "West Coast", "Pacific coast highway, redwoods, surfboards, and fruit stands", "🏄", "Everyone", "Medium", true, Region.PACIFIC_SOUTHWEST, DECK_A_PROMPTS),
+        Deck("deck_h", "Heart of the Country", "Midwest cornfields, silos, giant barns, and river towns", "🌽", "Everyone", "Medium", true, Region.MIDWEST, DECK_A_PROMPTS)
     )
-
-    // -------------------------------------------------------------
-    // DECK F: THE SOUTH (40+ PROMPTS)
-    // -------------------------------------------------------------
-    val DECK_F_PROMPTS = listOf(
-        p("f1", "Roadside Boiled Peanuts", "Sign or steaming pot selling Cajun boiled peanuts", "food", false, Region.SOUTHEAST),
-        p("f2", "Live Oak with Spanish Moss", "Massive oak tree with hanging grey moss trails", "nature", false, Region.SOUTHEAST),
-        p("f3", "Barbecue Joint Smoke", "Smophouse with sweet hickory wood smoke drifting", "food", false, Region.SOUTHEAST),
-        p("f4", "Peach Orchard Sign", "Farm stand advertising sweet peaches", "food", false, Region.SOUTHEAST),
-        p("f5", "Sweet Tea Billboard", "Restaurant billboard celebrating ice-cold sweet tea", "food", false, Region.SOUTHEAST),
-        p("f6", "Cypress Swamp", "Tanoak and cypress knees rising from dark water", "landscape", false, Region.SOUTHEAST),
-        p("f7", "Cotton Field", "Fluffy white cotton crop ready for harvest", "farm", false, Region.SOUTHEAST),
-        p("f8", "Pontoon Boat on Trailer", "Flat deck pleasure boat towed on highway", "vehicles", false, Region.SOUTHEAST),
-        p("f9", "Southern Porch & Rockers", "Wide covered porch with white wooden rocking chairs", "structures", false, Region.SOUTHEAST),
-        p("f10", "Shrimp Boat Docks", "Trawler with tall rigging nets resting at harbor", "vehicles", false, Region.SOUTHEAST),
-        p("f11", "Alligator Warning Sign", "Caution sign depicting alligator near water", "signs", false, Region.SOUTHEAST),
-        p("f12", "Pickup Truck with Hound", "Hunting dog leaning out of truck bed", "vehicles", false, Region.SOUTHEAST),
-        p("f13", "Gospel Radio Billboard", "Sign for local country gospel AM station", "signs", false, Region.SOUTHEAST),
-        p("f14", "Waffle House Sign", "Yellow block letters of a 24/7 diner", "structures", false, Region.SOUTHEAST),
-        p("f15", "Airboat Swamp Tour", "Propeller-driven boat on trailer or billboard", "vehicles", false, Region.SOUTHEAST),
-        p("f16", "Watermelon Fruit Stand", "Truck bed or shack filled with green watermelons", "food", false, Region.SOUTHEAST),
-        p("f17", "Historic Plantation Marker", "State sign marking oak-lined antebellum grounds", "history", false, Region.SOUTHEAST),
-        p("f18", "Fireworks Superstore", "Enormous warehouse building covered in flags and signs", "structures", false, Region.SOUTHEAST),
-        p("f19", "Cajun Restaurant Crawfish", "Giant boiled crawfish painted on store sign", "food", false, Region.SOUTHEAST),
-        p("f20", "Sugarcane Hauler Truck", "Trailer loaded high with green sugarcane stalks", "vehicles", false, Region.SOUTHEAST),
-        p("f21", "Red Clay Muddy Road", "Unpaved side road with deep red iron clay", "landscape", false, Region.SOUTHEAST),
-        p("f22", "College Football Banner", "SEC or ACC team flag flying on porch or car", "sports", false, Region.SOUTHEAST),
-        p("f23", "Marquee Church Message", "Letter board outside church with inspirational quote", "signs", false, Region.SOUTHEAST),
-        p("f24", "Pecan Shed Sign", "Storefront selling pralines and fresh shelled pecans", "food", false, Region.SOUTHEAST),
-        p("f25", "Gulf Palms Breeze", "Swaying palmetto trees along coastal highway", "nature", false, Region.SOUTHEAST),
-        p("f26", "Old Barn Barn-Dance Sign", "Adverts for bluegrass music or square dancing", "signs", false, Region.SOUTHEAST),
-        p("f27", "Dixie Highway Marker", "Historical highway shield sign", "signs", false, Region.SOUTHEAST),
-        p("f28", "Porch Swing on Front Deck", "Wooden swing hanging from chains under roof", "structures", false, Region.SOUTHEAST),
-        p("f29", "Mud-Covered 4x4 Offroader", "Truck coated in thick dried river mud", "vehicles", false, Region.SOUTHEAST),
-        p("f30", "Oyster Shell Driveway", "Driveway paved with crushed white oyster shells", "structures", false, Region.SOUTHEAST),
-        p("f31", "Historic Riverboat Wheel", "Paddlewheel steamboat docked along river", "structures", false, Region.SOUTHEAST),
-        p("f32", "Magnolia Tree in Bloom", "Massive dark green leaf tree with large white flowers", "nature", false, Region.SOUTHEAST),
-        p("f33", "Bait & Tackle Shop", "Small shack with live minnow and worm signs", "structures", false, Region.SOUTHEAST),
-        p("f34", "Old Country General Store", "Wooden porch store selling hoop cheese and sodas", "structures", false, Region.SOUTHEAST),
-        p("f35", "Fish Camp Restaurant", "Casual fried catfish house on riverbank", "food", false, Region.SOUTHEAST),
-        p("f36", "Firefly Night Sign", "State park sign celebrating synchronized fireflies", "signs", false, Region.SOUTHEAST),
-        p("f37", "Horseshoe Pit Yard", "Twin stakes and sand pits set up in grassy lawn", "fun", false, Region.SOUTHEAST),
-        p("f38", "Sweet Potato Field", "Broad green vine field ready for harvesting", "farm", false, Region.SOUTHEAST),
-        p("f39", "Kudzu Vine Carpet", "Green invasive vine completely covering trees and hills", "nature", false, Region.SOUTHEAST),
-        p("f40", "Beach Souvenir Mega Shell", "Giant clam shell entrance to beachwear superstore", "structures", false, Region.SOUTHEAST),
-        p("f41", "Stock Car Racing Billboard", "Dirt track or NASCAR event advertisement", "sports", false, Region.SOUTHEAST),
-        p("f42", "Pine Tree Plantation Rows", "Perfectly uniform straight rows of farmed timber pine", "farm", false, Region.SOUTHEAST)
-    )
-
-    // -------------------------------------------------------------
-    // DECK G: WEST COAST (40+ PROMPTS)
-    // -------------------------------------------------------------
-    val DECK_G_PROMPTS = listOf(
-        p("g1", "Redwood / Sequoia Tree", "Massive ancient tree trunk along highway", "nature", false, Region.PACIFIC_NORTHWEST),
-        p("g2", "Ocean View Highway", "PCH or 101 winding directly along ocean waves", "landscape", false, Region.PACIFIC_NORTHWEST),
-        p("g3", "Surfboard on Car Rack", "Vehicle carrying surfboard or paddleboard", "outdoor", false, Region.PACIFIC_NORTHWEST),
-        p("g4", "Gourmet Food Truck", "Gourmet taco, bao, or waffle food truck", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g5", "Drive-Thru Espresso Shack", "Tiny roadside cabin selling specialty coffee", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g6", "Vineyard & Winery Rows", "Neat trellis rows of grape vines on hillsides", "farm", false, Region.PACIFIC_NORTHWEST),
-        p("g7", "Sea Fog Bank", "Thick white marine layer fog rolling over ridge", "nature", false, Region.PACIFIC_NORTHWEST),
-        p("g8", "Organic Farm Stand", "Sign for farm-fresh berries or heirloom produce", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g9", "PCH Highway Shield", "State route 1 or 101 bear shield sign", "signs", false, Region.PACIFIC_NORTHWEST),
-        p("g10", "Taco Truck Parked", "Authentic roadside taco vendor", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g11", "Solar-Roofed Home", "Rooftop completely clad in black solar panels", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g12", "Harbor Sailboats", "Marina packed with white sailboat masts", "landscape", false, Region.PACIFIC_NORTHWEST),
-        p("g13", "Beach Volleyball Net", "Sand courts set up right along ocean shore", "sports", false, Region.PACIFIC_NORTHWEST),
-        p("g14", "Tech Campus Billboard", "Billboard for AI, cloud software, or tech brand", "signs", false, Region.PACIFIC_NORTHWEST),
-        p("g15", "Fruit Orchard in Valley", "Apple, cherry, or avocado trees in neat rows", "farm", false, Region.PACIFIC_NORTHWEST),
-        p("g16", "Seashore Cliff Drop", "Sheer cliff plunging down into Pacific foam", "landscape", false, Region.PACIFIC_NORTHWEST),
-        p("g17", "Camper Van with Solar", "Vanagon or Sprinter with flexible solar panel roof", "vehicles", false, Region.PACIFIC_NORTHWEST),
-        p("g18", "Craft Brewery Taproom", "Barn or brick building with brewery hop logo", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g19", "Sea Lion Sign", "Warning or tourist sign for marine mammals", "signs", false, Region.PACIFIC_NORTHWEST),
-        p("g20", "Suspension Bridge", "Grand cable suspension bridge spanning bay", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g21", "Drive-Thru Tree Advert", "Billboard for famous tree you can drive through", "signs", false, Region.PACIFIC_NORTHWEST),
-        p("g22", "Tidal Pool Preserve", "State beach sign for tidepool anemones and starfish", "outdoor", false, Region.PACIFIC_NORTHWEST),
-        p("g23", "Fresh Juice & Smoothie Bar", "Sign selling cold-pressed green juices", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g24", "Surfer Carrying Board", "Person in black wetsuit carrying board toward ocean", "people", false, Region.PACIFIC_NORTHWEST),
-        p("g25", "Hydrofoil or Fast Ferry", "Passenger ferry speeding across Puget Sound or bay", "vehicles", false, Region.PACIFIC_NORTHWEST),
-        p("g26", "Avocado Grove Sign", "Farm sign advertising fresh Hass avocados", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g27", "Driftwood Beach Log", "Giant gray weathered log washed ashore on sand", "nature", false, Region.PACIFIC_NORTHWEST),
-        p("g28", "Pier with Ferris Wheel", "Coastal amusement pier extending into ocean", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g29", "Public Art Sculpture", "Modern metal or glass outdoor art piece", "decor", false, Region.PACIFIC_NORTHWEST),
-        p("g30", "Electric Bus / Shuttle", "Zero-emission transit bus on city route", "vehicles", false, Region.PACIFIC_NORTHWEST),
-        p("g31", "Agricultural Check Station", "State line fruit and plant inspection station", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g32", "Pacific Coast Lighthouse", "White lighthouse tower perched on rocky point", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g33", "Kite Surfer in Wind", "Color canopy pulling boarder across whitecaps", "sports", false, Region.PACIFIC_NORTHWEST),
-        p("g34", "Fish Market Salmon Sign", "Famous fish market sign featuring wild salmon", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g35", "Dungeness Crab Shack", "Sign offering fresh steamed crab", "food", false, Region.PACIFIC_NORTHWEST),
-        p("g36", "Rainforest Moss Carpet", "Trees thick with lush hanging green moss", "nature", false, Region.PACIFIC_NORTHWEST),
-        p("g37", "Volcanic Peak Vista", "Mt Hood, Rainier, or Shasta looming in sky", "landscape", false, Region.PACIFIC_NORTHWEST),
-        p("g38", "Bicycle Commuter Lane", "Green painted dedicated bike lane with riders", "sports", false, Region.PACIFIC_NORTHWEST),
-        p("g39", "Oyster Shell Farm Beds", "Tidal racks in mudflats for oyster harvesting", "farm", false, Region.PACIFIC_NORTHWEST),
-        p("g40", "Cable Car / Trolley", "Historic streetcar or cable railway track", "vehicles", false, Region.PACIFIC_NORTHWEST),
-        p("g41", "Wind Turbine Hilltop", "Row of turbines atop rolling golden hills", "structures", false, Region.PACIFIC_NORTHWEST),
-        p("g42", "Palm Tree Lined Avenue", "Tall slender fan palms lining boulevard", "landscape", false, Region.PACIFIC_NORTHWEST)
-    )
-
-    // -------------------------------------------------------------
-    // DECK H: HEART OF THE COUNTRY & MIDWEST (40+ PROMPTS)
-    // -------------------------------------------------------------
-    val DECK_H_PROMPTS = listOf(
-        p("h1", "Endless Cornfield", "Row upon row of tall green or golden corn", "farm", false, Region.MIDWEST),
-        p("h2", "Grain Silo Tower", "Tall cylindrical steel or concrete grain elevator", "structures", false, Region.MIDWEST),
-        p("h3", "Barn with Quilt Block", "Painted wooden barn star or quilt pattern on wall", "structures", false, Region.MIDWEST),
-        p("h4", "Traditional Farm Windmill", "Multi-blade steel water pumping windmill", "farm", false, Region.MIDWEST),
-        p("h5", "Tractor Driving on Road", "Green or red tractor taking up half the lane", "vehicles", false, Region.MIDWEST),
-        p("h6", "John Deere Dealership", "Field filled with brand new green tractor equipment", "structures", false, Region.MIDWEST),
-        p("h7", "State Fairgrounds Billboard", "Sign for upcoming butter cow or state fair", "signs", false, Region.MIDWEST),
-        p("h8", "Covered Grain Semi-Truck", "Truck with tarped trailer carrying harvest grain", "vehicles", false, Region.MIDWEST),
-        p("h9", "Livestock Trailer Truck", "Slotted silver trailer carrying cattle or pigs", "vehicles", false, Region.MIDWEST),
-        p("h10", "River Barge Towboat", "Flat river barge pushed by diesel towboat", "vehicles", false, Region.MIDWEST),
-        p("h11", "Country Diner Pie Sign", "Billboard celebrating homemade cherry or apple pie", "food", false, Region.MIDWEST),
-        p("h12", "Dairy Farm Holstein Cows", "Black and white dairy cows grazing near barn", "farm", false, Region.MIDWEST),
-        p("h13", "Water Tower with Town Name", "High water sphere painted with community sports logo", "structures", false, Region.MIDWEST),
-        p("h14", "Soybean Crop Field", "Low leafy green crop stretching to horizon", "farm", false, Region.MIDWEST),
-        p("h15", "Round Hay Bales", "Tightly rolled giant cylinders of dried hay", "farm", false, Region.MIDWEST),
-        p("h16", "County Line Marker Sign", "Sign welcoming drivers to next county", "signs", false, Region.MIDWEST),
-        p("h17", "Pioneer Monument Statue", "Statue honoring early homesteaders or settlers", "history", false, Region.MIDWEST),
-        p("h18", "Friday Night Fish Fry Sign", "Church or lodge sign advertising walleye fry", "food", false, Region.MIDWEST),
-        p("h19", "Antique Tractor on Display", "Restored 1930s iron tractor on pedestal", "structures", false, Region.MIDWEST),
-        p("h20", "Country Church Steeple", "White wooden church sitting quietly in open fields", "structures", false, Region.MIDWEST),
-        p("h21", "High School Stadium Lights", "Tall metal light towers over football bleachers", "sports", false, Region.MIDWEST),
-        p("h22", "Rusting Vintage Car in Field", "1950s sedan rusting gracefully in tall weeds", "weird", false, Region.MIDWEST),
-        p("h23", "Local Dairy Ice Cream Parlor", "Store with giant ice cream cone statue", "food", false, Region.MIDWEST),
-        p("h24", "Farmers Co-Op Elevator", "Community farmer supply warehouse and grain hub", "structures", false, Region.MIDWEST),
-        p("h25", "Freight Train Engine", "Diesel locomotive pulling 100 boxcars", "vehicles", false, Region.MIDWEST),
-        p("h26", "Creek Crossing Bridge", "Small concrete bridge over muddy creek", "structures", false, Region.MIDWEST),
-        p("h27", "Old Brick Courthouse", "1800s county courthouse with clock tower", "structures", false, Region.MIDWEST),
-        p("h28", "Farmers Market Sign", "Weekend community market banner", "signs", false, Region.MIDWEST),
-        p("h29", "Pumpkin Patch Field", "Bright orange pumpkins scattered in autumn field", "farm", false, Region.MIDWEST),
-        p("h30", "Supper Club Sign", "Classic midwest supper club offering prime rib", "food", false, Region.MIDWEST),
-        p("h31", "Gravel Driveway Gate", "Long gravel lane leading to distant white farmhouse", "structures", false, Region.MIDWEST),
-        p("h32", "Rust-Belt Factory Chimney", "Tall brick industrial smokestack", "structures", false, Region.MIDWEST),
-        p("h33", "School District Bus Garage", "Fleet of yellow buses parked in rows", "structures", false, Region.MIDWEST),
-        p("h34", "Log Cabin Pioneer Museum", "Preserved historical cabin village", "history", false, Region.MIDWEST),
-        p("h35", "Riverboat Casino Sign", "Billboard for gaming riverboat on Mississippi", "signs", false, Region.MIDWEST),
-        p("h36", "Prairie Grass Restoration", "Tall natural big bluestem grass reserve", "nature", false, Region.MIDWEST),
-        p("h37", "Wind Farm Substation", "Transformers and high-voltage grid connected to turbines", "structures", false, Region.MIDWEST),
-        p("h38", "Red Barn with Mail Pouch Ad", "Vintage Mail Pouch tobacco paint on barn side", "history", false, Region.MIDWEST),
-        p("h39", "Covered Bridge Historic Site", "Preserved timber bridge over river", "structures", false, Region.MIDWEST),
-        p("h40", "Cheese Factory Shop", "Storefront shaped like a giant block of Swiss cheese", "food", false, Region.MIDWEST),
-        p("h41", "Combine Harvester", "Massive grain harvester operating in field", "equipment", false, Region.MIDWEST),
-        p("h42", "Apple Orchard Wagon Ride", "Tractor pulling hay wagon full of families", "fun", false, Region.MIDWEST)
-    )
-
-    // ALL DECKS CATALOG
-    val DECKS: List<Deck> = listOf(
-        Deck(
-            id = "deck_a",
-            title = "Classic Road Trip",
-            description = "The ultimate starter deck for families and kids! Spot everyday highway sights, vehicles, and road markers.",
-            coverIcon = "car",
-            audience = "Families & Kids",
-            difficulty = "Easy",
-            isFree = true,
-            region = Region.UNIVERSAL,
-            prompts = DECK_A_PROMPTS
-        ),
-        Deck(
-            id = "deck_b",
-            title = "Weird Road Trip",
-            description = "Funny, unusual, and absurd roadside observations for teens, adults, couples, and friends!",
-            coverIcon = "weird",
-            audience = "Teens & Adults",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.UNIVERSAL,
-            prompts = DECK_B_PROMPTS
-        ),
-        Deck(
-            id = "deck_c",
-            title = "Mountain West & Rockies",
-            description = "Ski racks, snow-capped peaks, wildlife crossings, canyon passes, and high alpine adventures.",
-            coverIcon = "mountain",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.MOUNTAIN_WEST,
-            prompts = DECK_C_PROMPTS
-        ),
-        Deck(
-            id = "deck_d",
-            title = "Desert & Southwest",
-            description = "Saguaro cacti, red rock mesas, Hatch chiles, Route 66 shields, and sun-baked open highways.",
-            coverIcon = "cactus",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.SOUTHWEST,
-            prompts = DECK_D_PROMPTS
-        ),
-        Deck(
-            id = "deck_e",
-            title = "Northeast & Mid-Atlantic",
-            description = "Covered bridges, toll plazas, historic stone homes, autumn foliage, diners, and coastal harbors.",
-            coverIcon = "bridge",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.NORTHEAST,
-            prompts = DECK_E_PROMPTS
-        ),
-        Deck(
-            id = "deck_f",
-            title = "The South",
-            description = "Boiled peanut stands, live oaks with Spanish moss, sweet tea, waffle houses, and bayou cypress swamps.",
-            coverIcon = "tree",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.SOUTHEAST,
-            prompts = DECK_F_PROMPTS
-        ),
-        Deck(
-            id = "deck_g",
-            title = "West Coast",
-            description = "Redwood trees, Pacific highway cliffs, espresso shacks, surfboards, food trucks, and coastal ocean views.",
-            coverIcon = "surf",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.PACIFIC_NORTHWEST,
-            prompts = DECK_G_PROMPTS
-        ),
-        Deck(
-            id = "deck_h",
-            title = "Heart of the Country & Midwest",
-            description = "Endless cornfields, grain silos, farm windmills, tractors on the road, water towers, and county fairs.",
-            coverIcon = "corn",
-            audience = "Everyone",
-            difficulty = "Medium",
-            isFree = true,
-            region = Region.MIDWEST,
-            prompts = DECK_H_PROMPTS
-        )
-    )
-
-    fun getDeckById(deckId: String): Deck {
-        return DECKS.firstOrNull { it.id == deckId } ?: DECKS[0]
-    }
 }

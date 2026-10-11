@@ -3,7 +3,7 @@
 const DECKS = [
   { id: 'deck_a', title: 'Classic Road Trip', audience: 'Families & Kids', count: 42, icon: '🚗', bg: 'linear-gradient(135deg, #2563EB, #1E293B)' },
   { id: 'deck_b', title: 'Weird Road Trip', audience: 'Teens & Adults', count: 42, icon: '🤪', bg: 'linear-gradient(135deg, #F97316, #1E293B)' },
-  { id: 'deck_c', title: 'Mountain West & Rockies', audience: 'Everyone', count: 42, icon: '🏔️', bg: 'linear-gradient(135deg, #0D9488, #1E293B)' },
+  { id: 'deck_c', title: 'Mountain West & Rockies', audience: 'Everyone', count: 50, icon: '🏔️', bg: 'linear-gradient(135deg, #0D9488, #1E293B)' },
   { id: 'deck_d', title: 'Desert & Southwest', audience: 'Everyone', count: 42, icon: '🌵', bg: 'linear-gradient(135deg, #F59E0B, #1E293B)' },
   { id: 'deck_e', title: 'Northeast & Mid-Atlantic', audience: 'Everyone', count: 42, icon: '🌉', bg: 'linear-gradient(135deg, #3B82F6, #1E293B)' },
   { id: 'deck_f', title: 'The South', audience: 'Everyone', count: 42, icon: '🌳', bg: 'linear-gradient(135deg, #10B981, #1E293B)' },
@@ -17,12 +17,57 @@ const GAME_MODES = [
   { id: 'blackout', title: 'Blackout Bingo', desc: 'Find all 24 discoverable items and fill your card.' }
 ];
 
-const SAMPLE_PROMPTS = [
-  "Red Car", "Motorcycle", "Semi-Truck", "School Bus", "Emergency Vehicle",
-  "Out-of-State Plate", "Billboard", "Gas Station", "Exit Sign", "Bridge",
-  "Railroad Crossing", "Wind Turbine", "Construction Equipment", "Tractor", "Farm Animals",
-  "Water Tower", "RV / Camper", "Pickup Truck", "Roof Rack", "Yellow Vehicle",
-  "Vehicle Towing Trailer", "Rest Area Sign", "Toll Booth", "Roadside Diner"
+const MOUNTAIN_WEST_PROMPTS = [
+  "Mountain peaks covered in snow",
+  "Elk crossing sign",
+  "Real elk or deer",
+  "Bighorn sheep sign",
+  "A moose warning sign",
+  "A real bison",
+  "A ski resort sign",
+  "Gondola or ski lift",
+  "A snowboard on a car",
+  "A vehicle with a rooftop cargo box",
+  "A truck carrying firewood",
+  "A camper van",
+  "A fifth-wheel RV",
+  "pickup with mud-covered tires",
+  "mountain road with a hairpin turn",
+  "Falling Rock Sign",
+  "A sign warning about avalanches",
+  "A scenic overlook",
+  "A river running alongside the highway",
+  "rushing mountain stream",
+  "lake surrounded by mountains",
+  "A waterfall",
+  "pine forest",
+  "Aspen trees with white trunks",
+  "Forest fire danger sign",
+  "A Car with a roof rack",
+  "truck hauling an ATV",
+  "mountain bike on a vehicle",
+  "A whitewater rafting outfitter",
+  "A natural hot springs sign",
+  "A roadside rock shop",
+  "A town with a ski-themed name or logo",
+  "A mountain town with wooden storefronts",
+  "A general store in a small mountain town",
+  "A historic mining town sign",
+  "An old mining structure",
+  "A gold panning advertisement",
+  "steep grade warning",
+  "runaway truck ramp",
+  "A chain-up area sign",
+  "A road passing through a mountain tunnel",
+  "Wildflowers",
+  "a sign showing the elevation above 8,000 feet",
+  "cowboy hat in a truck window",
+  "national park sign",
+  "campground sign",
+  "A vehicle towing a boat",
+  "horse trailer",
+  "Ranch with horses or cattle",
+  "A bumper sticker about skiing"
 ];
 
 class AudioEngine {
@@ -44,8 +89,9 @@ class AudioEngine {
 }
 
 class BingoWebEngine {
-  static generateBoard() {
-    const shuffled = [...SAMPLE_PROMPTS].sort(() => 0.5 - Math.random());
+  static generateBoard(deckId = 'deck_c') {
+    const prompts = MOUNTAIN_WEST_PROMPTS;
+    const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
     let promptIdx = 0;
 
@@ -80,7 +126,7 @@ class Router {
     this.currentScreen = 'home';
     this.selectedDeck = DECKS[2]; // Defaulted to location deck (Mountain West)
     this.selectedMode = GAME_MODES[0]; // Strictly Classic Bingo for Online
-    this.board = BingoWebEngine.generateBoard();
+    this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
     this.roomCode = 'ROAD';
     this.showOnlineModal = false;
     this.isSearchingOpponent = false;
@@ -124,7 +170,7 @@ class Router {
 
       setTimeout(() => {
         this.isSearchingOpponent = false;
-        this.board = BingoWebEngine.generateBoard();
+        this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
         this.navigate('game');
       }, 1200);
     }, 2000);
@@ -428,7 +474,7 @@ class Router {
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-          <button class="btn btn-outline" style="width:auto;min-height:42px;padding:0 16px;font-size:13px;" onclick="router.board=BingoWebEngine.generateBoard();router.render();">
+          <button class="btn btn-outline" style="width:auto;min-height:42px;padding:0 16px;font-size:13px;" onclick="router.board=BingoWebEngine.generateBoard(router.selectedDeck.id);router.render();">
             🔄 New Board
           </button>
           ${isWin ? '<div style="background:#F59E0B;color:#0F172A;font-weight:900;padding:8px 14px;border-radius:12px;font-size:13px;">🎉 BINGO!</div>' : ''}
@@ -469,9 +515,9 @@ class Router {
               <strong style="font-size:16px;color:white;">${d.icon} ${d.title}</strong>
               <span class="pill-badge-yellow">${d.audience}</span>
             </div>
-            <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">42 Distinct Roadside Prompts</p>
+            <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">${d.count} Distinct Roadside Prompts</p>
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11px;color:#94A3B8;">🎯 42 Prompts • Medium</span>
+              <span style="font-size:11px;color:#94A3B8;">🎯 ${d.count} Prompts • Medium</span>
               <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY DECK ▶</button>
             </div>
           </div>
