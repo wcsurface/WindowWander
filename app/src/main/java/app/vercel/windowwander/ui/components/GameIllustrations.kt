@@ -81,7 +81,7 @@ fun GradientPillNavigationBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. HOME (BLUE CONVERTIBLE CAR ICON)
+            // 1. HOME
             PillNavItem(
                 iconRes = R.drawable.nav_home_icon,
                 label = "Home",
@@ -98,7 +98,7 @@ fun GradientPillNavigationBar(
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 2. LOG IN / LOG OUT (SUITCASE WITH KEY ICON)
+            // 2. LOG IN / LOG OUT
             PillNavItem(
                 iconRes = R.drawable.nav_login_icon,
                 label = if (isLoggedIn) "Log Out" else "Log In",
@@ -115,7 +115,7 @@ fun GradientPillNavigationBar(
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 3. SHOP (TREASURE CHEST WITH COINS ICON)
+            // 3. SHOP
             PillNavItem(
                 iconRes = R.drawable.nav_shop_icon,
                 label = "Shop",
@@ -132,7 +132,7 @@ fun GradientPillNavigationBar(
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 4. SETTINGS (GEAR & WRENCH ICON)
+            // 4. SETTINGS
             PillNavItem(
                 iconRes = R.drawable.nav_settings_icon,
                 label = "Settings",
@@ -159,12 +159,38 @@ fun PillNavItem(
             .clickable { onClick() }
             .padding(vertical = 2.dp)
     ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = label,
-            modifier = Modifier.size(30.dp)
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(38.dp)
+        ) {
+            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON (MATCHING SAMPLE IMAGE)
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    Color(0xFF38BDF8).copy(alpha = 0.85f),
+                                    Color(0xFF0284C7).copy(alpha = 0.4f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
+            }
+
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = label,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(1.dp))
+
+        // GLOWING TEXT SHADOW MATCHING SAMPLE IMAGE
         Text(
             text = label,
             fontSize = 11.sp,
@@ -174,7 +200,7 @@ fun PillNavItem(
                 shadow = if (isSelected) Shadow(
                     color = Color(0xFF38BDF8), // Cyan glow
                     offset = Offset(0f, 0f),
-                    blurRadius = 14f
+                    blurRadius = 16f
                 ) else null
             )
         )

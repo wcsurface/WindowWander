@@ -162,8 +162,14 @@ class Router {
     ['home', 'login', 'shop', 'settings'].forEach(s => {
       const btn = document.getElementById(`nav-${s}`);
       if (btn) {
-        if (s === this.currentScreen) btn.classList.add('active');
-        else btn.classList.remove('active');
+        const wrapper = btn.querySelector('.nav-icon-wrapper');
+        if (s === this.currentScreen) {
+          btn.classList.add('active');
+          if (wrapper) wrapper.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+          if (wrapper) wrapper.classList.remove('active');
+        }
       }
     });
   }
@@ -293,6 +299,8 @@ class Router {
   render() {
     const main = document.getElementById('main-content');
     if (!main) return;
+
+    this.updateActiveNav();
 
     // UPDATE FOOTER NAV BUTTON LABEL FOR LOGIN / LOGOUT
     const navLoginBtn = document.getElementById('nav-login-label');
@@ -443,7 +451,7 @@ class Router {
           </div>
         ` : ''}
 
-        <!-- SEARCHING FOR OPPONENT MODAL OVERLAY -->
+        <!-- SEARCHING FOR OPPONENT STATUS OVERLAY -->
         ${this.isSearchingOpponent ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:28px;">
