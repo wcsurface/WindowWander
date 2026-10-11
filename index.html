@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Road Trip Bingo - Mobile Casual Game</title>
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
-  <meta name="theme-color" content="#070C18">
+  <meta name="theme-color" content="#0088CC">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
@@ -28,18 +28,18 @@
 
     <!-- FOOTER NAV -->
     <footer class="app-footer">
-      <button id="nav-home" onclick="router.navigate('home')">🏠 Home</button>
+      <button id="nav-home" class="active" onclick="router.navigate('home')">🏠 Home</button>
       <button id="nav-decks" onclick="router.navigate('decks')">🎴 Decks</button>
       <button id="nav-stats" onclick="router.navigate('stats')">🏆 Stats</button>
       <button id="nav-settings" onclick="router.navigate('settings')">⚙️ Settings</button>
     </footer>
   </div>
 
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=2').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=3').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
