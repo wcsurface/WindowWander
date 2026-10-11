@@ -395,9 +395,9 @@ body.deck-game-theme {
   transform: translateX(-50%);
   max-width: 400px;
   width: calc(100% - 32px);
-  height: 64px;
+  height: 66px;
   background: linear-gradient(90deg, #0F52BA 0%, #1E824C 50%, #512E5F 100%);
-  border-radius: 32px;
+  border-radius: 33px;
   border: 1.5px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -406,11 +406,18 @@ body.deck-game-theme {
   z-index: 100;
 }
 
+.nav-icon-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
 .app-footer button {
   background: none;
   border: none;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 900;
   color: #FFFFFF;
   cursor: pointer;
   display: flex;
@@ -421,6 +428,7 @@ body.deck-game-theme {
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-.app-footer button.active {
-  color: var(--color-yellow);
+.app-footer button.active span {
+  color: #FFFFFF;
+  text-shadow: 0 0 12px #38BDF8, 0 0 4px #38BDF8;
 }

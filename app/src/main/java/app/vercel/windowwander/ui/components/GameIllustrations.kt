@@ -74,16 +74,16 @@ fun GradientPillNavigationBar(
                 )
             )
             .border(1.5.dp, Color.White.copy(alpha = 0.5f), RoundedCornerShape(32.dp))
-            .padding(vertical = 6.dp)
+            .padding(vertical = 4.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. HOME
+            // 1. HOME (BLUE CONVERTIBLE CAR ICON)
             PillNavItem(
-                iconRes = R.drawable.ic_nav_home,
+                iconRes = R.drawable.nav_home_icon,
                 label = "Home",
                 isSelected = currentScreenName == "home",
                 onClick = onNavigateHome,
@@ -94,13 +94,13 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(28.dp)
+                    .height(30.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 2. LOG IN / LOG OUT
+            // 2. LOG IN / LOG OUT (SUITCASE WITH KEY ICON)
             PillNavItem(
-                iconRes = R.drawable.ic_nav_login,
+                iconRes = R.drawable.nav_login_icon,
                 label = if (isLoggedIn) "Log Out" else "Log In",
                 isSelected = currentScreenName == "login" || currentScreenName == "logout",
                 onClick = onNavigateLogin,
@@ -111,13 +111,13 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(28.dp)
+                    .height(30.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 3. SHOP
+            // 3. SHOP (TREASURE CHEST WITH COINS ICON)
             PillNavItem(
-                iconRes = R.drawable.ic_nav_shop,
+                iconRes = R.drawable.nav_shop_icon,
                 label = "Shop",
                 isSelected = currentScreenName == "shop",
                 onClick = onNavigateShop,
@@ -128,13 +128,13 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(28.dp)
+                    .height(30.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 4. SETTINGS
+            // 4. SETTINGS (GEAR & WRENCH ICON)
             PillNavItem(
-                iconRes = R.drawable.ic_nav_settings,
+                iconRes = R.drawable.nav_settings_icon,
                 label = "Settings",
                 isSelected = currentScreenName == "settings",
                 onClick = onNavigateSettings,
@@ -157,22 +157,22 @@ fun PillNavItem(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .clickable { onClick() }
-            .padding(vertical = 4.dp)
+            .padding(vertical = 2.dp)
     ) {
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = label,
-            modifier = Modifier.size(26.dp)
+            modifier = Modifier.size(30.dp)
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(1.dp))
         Text(
             text = label,
-            fontSize = 11.5.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Black,
             style = TextStyle(
                 color = Color.White,
                 shadow = if (isSelected) Shadow(
-                    color = Color(0xFF38BDF8), // Cyan glow matching Set 6
+                    color = Color(0xFF38BDF8), // Cyan glow
                     offset = Offset(0f, 0f),
                     blurRadius = 14f
                 ) else null
@@ -241,7 +241,7 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR (AVATAR, LEVEL, COINS - SETTINGS REMOVED SINCE IT'S IN MENU BAR NOW)
+// ARCADE HUD STATUS BAR
 @Composable
 fun ArcadeHudBar(
     nickname: String,
@@ -300,7 +300,7 @@ fun ArcadeHudBar(
             }
         }
 
-        // COINS PILL ONLY (SETTINGS GEAR REMOVED FROM TOP RIGHT)
+        // COINS PILL ONLY
         Box(
             modifier = Modifier
                 .shadow(8.dp, RoundedCornerShape(18.dp))

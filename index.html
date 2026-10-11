@@ -7,7 +7,7 @@
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
   <meta name="theme-color" content="#0284C7">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=39">
+  <link rel="stylesheet" href="style.css?v=40">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
@@ -19,18 +19,30 @@
 
     <!-- FLOATING 3D GRADIENT PILL NAVIGATION BAR (SET 6) -->
     <footer class="app-footer">
-      <button id="nav-home" class="active" onclick="router.navigate('home')">🏠 Home</button>
-      <button id="nav-login" onclick="router.navigate('login')"><span id="nav-login-label">🔑 Log In</span></button>
-      <button id="nav-shop" onclick="router.navigate('shop')">🏪 Shop</button>
-      <button id="nav-settings" onclick="router.navigate('settings')">⚙️ Settings</button>
+      <button id="nav-home" class="active" onclick="router.navigate('home')">
+        <img src="nav_home_icon.png" alt="Home" class="nav-icon-img" />
+        <span>Home</span>
+      </button>
+      <button id="nav-login" onclick="router.navigate('login')">
+        <img src="nav_login_icon.png" alt="Log In" class="nav-icon-img" />
+        <span id="nav-login-label">Log In</span>
+      </button>
+      <button id="nav-shop" onclick="router.navigate('shop')">
+        <img src="nav_shop_icon.png" alt="Shop" class="nav-icon-img" />
+        <span>Shop</span>
+      </button>
+      <button id="nav-settings" onclick="router.navigate('settings')">
+        <img src="nav_settings_icon.png" alt="Settings" class="nav-icon-img" />
+        <span>Settings</span>
+      </button>
     </footer>
   </div>
 
-  <script src="app.js?v=39"></script>
+  <script src="app.js?v=40"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=39').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=40').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
