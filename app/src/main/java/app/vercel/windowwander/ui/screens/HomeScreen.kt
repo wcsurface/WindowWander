@@ -1,9 +1,9 @@
 package app.vercel.windowwander.ui.screens
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,7 +44,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -63,6 +63,11 @@ import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.VividOrange
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +88,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenPrivacy: () -> Unit
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     var showInCarPlayModal by remember { mutableStateOf(false) }
     var showOnlineMultiplayerModal by remember { mutableStateOf(false) }
@@ -90,6 +96,18 @@ fun HomeScreen(
     var joinCodeInputText by remember { mutableStateOf("") }
     var currentDeckChoice by remember { mutableStateOf(selectedDeck) }
     var deckDropdownExpanded by remember { mutableStateOf(false) }
+
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
 
     ScenicHighwayBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -112,16 +130,19 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED TRANSPARENT LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT
+                // CENTERED TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(230.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.road_trip_bingo_logo),
-                        contentDescription = "Road Trip Bingo Logo",
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(R.drawable.road_trip_bingo_animated_logo)
+                            .build(),
+                        imageLoader = imageLoader,
+                        contentDescription = "Road Trip Bingo Animated Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize()
                     )

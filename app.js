@@ -117,7 +117,7 @@ class BingoWebEngine {
 class Router {
   constructor() {
     this.currentScreen = 'home';
-    this.selectedDeck = DECKS[2];
+    this.selectedDeck = DECKS[2]; // Defaulted to local region deck (Mountain West)
     this.selectedMode = GAME_MODES[0];
     this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
     this.history = [];
@@ -239,7 +239,7 @@ class Router {
       p.style.left = `${x}px`;
       p.style.top = `${y}px`;
       const angle = (i * (360 / 42)) + (Math.random() * 12);
-      const speed = 120 + Math.random() * 280; // SHOOTS OUT FAR BEYOND BUTTON ACROSS WHOLE SCREEN!
+      const speed = 120 + Math.random() * 280;
       p.style.setProperty('--dx', `${Math.cos(angle * Math.PI / 180) * speed}px`);
       p.style.setProperty('--dy', `${Math.sin(angle * Math.PI / 180) * speed}px`);
       document.body.appendChild(p);
@@ -286,9 +286,9 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
+        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
-          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+          <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
         <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
