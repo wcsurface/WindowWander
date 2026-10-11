@@ -146,15 +146,13 @@ class Router {
     });
   }
 
-  // CALLED FROM DECK SELECTION (DECK IS EXPLICITLY SAVED)
   selectDeckAndPlay(deck) {
     this.selectedDeck = deck;
     this.startCarRoom();
   }
 
-  // CALLED FROM HOME SCREEN "PLAY NOW ▶" (DEFAULT TO LOCAL REGION DECK)
   startCarRoomFromHome() {
-    this.selectedDeck = DECKS[2]; // Local region deck default (Mountain West)
+    this.selectedDeck = DECKS[2];
     this.startCarRoom();
   }
 
@@ -248,53 +246,9 @@ class Router {
           </div>
         </div>
 
-        <div class="hero-card">
-          <svg class="hero-svg" viewBox="0 0 400 200">
-            <defs>
-              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#0284C7"/>
-                <stop offset="50%" stop-color="#38BDF8"/>
-                <stop offset="100%" stop-color="#7DD3FC"/>
-              </linearGradient>
-            </defs>
-            <rect width="400" height="200" rx="20" fill="url(#skyGrad)" />
-            <circle cx="330" cy="50" r="45" fill="#F59E0B" opacity="0.4" />
-            <circle cx="330" cy="50" r="28" fill="#FBBF24" />
-            <!-- CLOUDS -->
-            <circle cx="60" cy="35" r="18" fill="white" opacity="0.85"/>
-            <circle cx="80" cy="32" r="24" fill="white" opacity="0.85"/>
-            <circle cx="100" cy="35" r="18" fill="white" opacity="0.85"/>
-            <!-- PARALLAX SCENERY MOUNTAINS -->
-            <path d="M0 130 L90 70 L180 120 L280 55 L360 100 L400 80 L400 200 L0 200 Z" fill="#1E3A8A" opacity="0.65"/>
-            <!-- GREEN ROLLING HILLS -->
-            <path d="M0 140 C 120 120, 240 150, 400 130 L400 200 L0 200 Z" fill="#15803D"/>
-
-            <!-- HORIZONTAL HIGHWAY ROAD ACROSS BOTTOM -->
-            <rect x="0" y="145" width="400" height="55" fill="#334155" />
-            <line x1="0" y1="145" x2="400" y2="145" stroke="#FFFFFF" stroke-width="2.5" />
-            <line x1="0" y1="198" x2="400" y2="198" stroke="#FFFFFF" stroke-width="2.5" />
-
-            <!-- FORWARD-DRIVING SCROLLING DASHED LINE -->
-            <line x1="0" y1="172" x2="400" y2="172" stroke="#F59E0B" stroke-width="4" stroke-dasharray="24 16">
-              <animate attributeName="stroke-dashoffset" from="0" to="40" dur="0.5s" repeatCount="indefinite"/>
-            </line>
-
-            <!-- FORWARD-DRIVING CAR WITH BOUNCE -->
-            <g>
-              <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="0.25s" repeatCount="indefinite"/>
-              <rect x="150" y="152" width="75" height="25" rx="8" fill="#F97316"/>
-              <rect x="168" y="138" width="42" height="18" rx="7" fill="#C2410C"/>
-              <rect x="172" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
-              <rect x="191" y="142" width="15" height="12" rx="3" fill="#BAE6FD"/>
-              <circle cx="223" cy="164" r="4" fill="#FDE047"/>
-              <circle cx="166" cy="178" r="9" fill="#020617"/>
-              <circle cx="210" cy="178" r="9" fill="#020617"/>
-              <circle cx="166" cy="178" r="4" fill="#94A3B8"/>
-              <circle cx="210" cy="178" r="4" fill="#94A3B8"/>
-              <rect x="174" y="128" width="28" height="10" rx="4" fill="#F59E0B"/>
-            </g>
-          </svg>
-          <h1 class="hero-title">ROAD TRIP BINGO</h1>
+        <!-- ROAD TRIP BINGO OFFICIAL LOGO HEADER CARD -->
+        <div class="hero-card" style="background:#E2E8F0;display:flex;align-items:center;justify-content:center;padding:10px;">
+          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;" />
         </div>
 
         <!-- ⚡ PLAY NOW ▶ BUTTON OPENS IN-CAR PLAY MODAL (HOST / JOIN) -->
@@ -448,7 +402,7 @@ class Router {
           <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
         </div>
 
-        <!-- 1. DECK / LOCATION SELECTOR BUTTON (PRE-SELECTED TO SAVED OR LOCAL REGION DECK) -->
+        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
         <div style="margin-bottom:12px;">
           <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
           <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">

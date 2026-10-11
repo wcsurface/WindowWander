@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,10 +44,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.vercel.windowwander.R
 import app.vercel.windowwander.data.DeckRepository
 import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.PlayerProfile
@@ -54,7 +58,6 @@ import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.components.ArcadeHudBar
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.CartoonRoadSignCard
-import app.vercel.windowwander.ui.components.HeroRoadTripGraphic
 import app.vercel.windowwander.ui.components.ScenicHighwayBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
@@ -109,23 +112,27 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // SCENIC ROAD TRIP HERO SCENE WITH ANIMATED CAR & REGION ARTWORK
-                Box(
-                    modifier = Modifier.fillMaxWidth()
+                // ROAD TRIP BINGO LOGO HEADER CARD
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(210.dp)
+                        .shadow(16.dp, RoundedCornerShape(26.dp)),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE2E8F0)),
+                    border = BorderStroke(3.dp, Color(0xFF38BDF8))
                 ) {
-                    HeroRoadTripGraphic(region = selectedRegion)
-
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(16.dp)
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "ROAD TRIP BINGO",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White,
-                            modifier = Modifier.shadow(8.dp)
+                        Image(
+                            painter = painterResource(id = R.drawable.road_trip_bingo_logo),
+                            contentDescription = "Road Trip Bingo Logo",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }
@@ -246,7 +253,7 @@ fun HomeScreen(
                         .shadow(12.dp, RoundedCornerShape(18.dp)),
                     shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(containerColor = VividOrange),
-                    border = BorderStroke(2.dp, Color(0xFFC2410C))
+                    border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFC2410C))
                 ) {
                     Column(
                         modifier = Modifier
