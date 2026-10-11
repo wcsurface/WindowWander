@@ -117,7 +117,7 @@ class BingoWebEngine {
 class Router {
   constructor() {
     this.currentScreen = 'home';
-    this.selectedDeck = DECKS[2]; // Defaulted to local region deck (Mountain West)
+    this.selectedDeck = DECKS[2];
     this.selectedMode = GAME_MODES[0];
     this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
     this.history = [];
@@ -127,7 +127,7 @@ class Router {
     this.showOnlineModal = false;
     this.isSearchingOpponent = false;
     this.opponentName = null;
-    this.leaderboardTab = 0; // 0 = Total Points, 1 = Items Found
+    this.leaderboardTab = 0;
     this.showAccountModal = false;
     this.isLoggedIn = false;
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
@@ -202,7 +202,7 @@ class Router {
     this.navigate('multiplayer');
   }
 
-  toggleTile(index) {
+  toggleTile(index, event) {
     if (index === 12) return;
 
     // SAVE HISTORY FOR UNDO FEATURE
@@ -214,6 +214,9 @@ class Router {
       AudioEngine.playPop();
       if (navigator.vibrate) navigator.vibrate(40);
       this.stats.items = (this.stats.items || 0) + 1;
+
+      // TRIGGER DOM STAR EXPLOSION BURST
+      if (event) this.triggerStarExplosion(event.clientX, event.clientY);
     }
 
     if (BingoWebEngine.checkWin(this.board, this.selectedMode.id)) {
@@ -225,6 +228,22 @@ class Router {
       }
     }
     this.render();
+  }
+
+  triggerStarExplosion(x, y) {
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('div');
+      p.className = 'star-particle';
+      p.innerText = ['⭐', '✨', '🌟', '💎'][i % 4];
+      p.style.left = `${x}px`;
+      p.style.top = `${y}px`;
+      const angle = i * 30;
+      const speed = 40 + Math.random() * 50;
+      p.style.setProperty('--dx', `${Math.cos(angle * Math.PI / 180) * speed}px`);
+      p.style.setProperty('--dy', `${Math.sin(angle * Math.PI / 180) * speed}px`);
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 600);
+    }
   }
 
   undoLastTap() {
@@ -266,19 +285,15 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
         <button class="btn btn-mockup-play" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:18px;">
           ⚡ PLAY NOW ▶
         </button>
 
-        <!-- TWO CARTOON ROAD SIGN CARDS -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <!-- MULTIPLAYER ARENA (KEEPS LIVE TEXT) -->
           <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🌐</span>
@@ -288,7 +303,6 @@ class Router {
             <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
           </div>
 
-          <!-- DECK LIBRARY (NO ORANGE HIGHLIGHTED BADGE AT ALL) -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
@@ -298,7 +312,6 @@ class Router {
           </div>
         </div>
 
-        <!-- LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER -->
         <div class="road-sign-card" onclick="router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:26px;">👑</span>
@@ -308,12 +321,10 @@ class Router {
           <div style="font-size:11px;color:#E2E8F0;">Points & Items Found Rankings</div>
         </div>
 
-        <!-- ORANGE PILL SAFETY BANNER -->
         <div class="safety-banner-pill" style="margin-bottom:16px;">
           Passengers Play. Drivers Drive.
         </div>
 
-        <!-- IN-CAR PLAY MODAL -->
         ${this.showInCarModal ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
@@ -344,7 +355,6 @@ class Router {
           </div>
         ` : ''}
 
-        <!-- ONLINE MULTIPLAYER MODAL OVERLAY -->
         ${this.showOnlineModal && !this.isSearchingOpponent ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showOnlineModal=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
@@ -369,7 +379,6 @@ class Router {
           </div>
         ` : ''}
 
-        <!-- SEARCHING FOR OPPONENT MODAL OVERLAY -->
         ${this.isSearchingOpponent ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:28px;">
@@ -474,8 +483,8 @@ class Router {
 
         <div class="bingo-grid">
           ${this.board.map(t => `
-            <div class="tile ${t.completed ? 'completed' : ''} ${t.isCenter ? 'center' : ''}" onclick="router.toggleTile(${t.index})">
-              ${t.isCenter ? '⭐<br>FREE' : `${t.name}${t.completed ? '<br>✓' : ''}`}
+            <div class="tile ${t.completed ? 'completed' : ''} ${t.isCenter ? 'center' : ''}" onclick="router.toggleTile(${t.index}, event)">
+              ${t.isCenter ? '⭐<br>FREE' : `${t.name}`}
             </div>
           `).join('')}
         </div>

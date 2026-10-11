@@ -313,18 +313,32 @@ body {
   cursor: pointer;
   user-select: none;
   box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-  transition: transform 0.1s ease, background 0.2s ease;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
 }
 
 .tile:active {
-  transform: scale(0.92);
+  transform: scale(0.85);
 }
 
 .tile.completed {
-  background: linear-gradient(180deg, #10B981, #059669);
+  background: linear-gradient(180deg, #10B981, #059669, #047857);
   color: #FFFFFF;
-  border-color: #34D399;
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.6);
+  border: 2.5px solid #FDE047; /* Gold Frame */
+  box-shadow: 0 8px 24px rgba(250, 204, 21, 0.6);
+  position: relative;
+}
+
+.tile.completed::after {
+  content: "⭐ FOUND!";
+  display: inline-block;
+  background: linear-gradient(90deg, #FDE047, #EAB308);
+  color: #0F172A;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-top: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .tile.center {
@@ -334,6 +348,26 @@ body {
   border-color: #FDE047;
   box-shadow: 0 6px 18px rgba(245, 158, 11, 0.6);
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* STAR EXPLOSION PARTICLE ANIMATION */
+.star-particle {
+  position: fixed;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 500;
+  animation: starBurst 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes starBurst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.6);
+  }
 }
 
 /* FOOTER NAV MATCHING MOCKUP */

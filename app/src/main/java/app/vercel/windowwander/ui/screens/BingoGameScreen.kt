@@ -1,11 +1,15 @@
 package app.vercel.windowwander.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,13 +40,17 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -60,7 +68,6 @@ import app.vercel.windowwander.ui.components.BingoColumnHeaders
 import app.vercel.windowwander.ui.components.ConfettiCelebrationGraphic
 import app.vercel.windowwander.ui.components.ScenicHighwayBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
-import app.vercel.windowwander.ui.theme.CompletedGreenDark
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.GoldWinnerLight
@@ -68,6 +75,9 @@ import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 
 @Composable
 fun BingoGameScreen(
@@ -483,24 +493,27 @@ fun BingoTileView(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
+    var showBurstAnimation by remember { mutableStateOf(false) }
+
     // SATISFYING SPRING POP ANIMATION ON TAPPING
     val scale by animateFloatAsState(
         targetValue = when {
-            isPressed -> 0.86f
-            tile.isCompleted -> 1.05f
+            isPressed -> 0.84f
+            tile.isCompleted -> 1.06f
             else -> 1.0f
         },
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
+            dampingRatio = Spring.DampingRatioHighBouncy,
+            stiffness = Spring.StiffnessMedium
         ),
         label = "tileSpringScale"
     )
 
+    // GLOSSY 3D GEM & GOLDEN EMBOSSED BRUSH FOR COMPLETED TILES
     val bgBrush = when {
         tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
-        tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(GoldWinnerLight, GoldWinner))
-        tile.isCompleted -> Brush.verticalGradient(listOf(CompletedGreen, CompletedGreenDark))
+        tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(SunnyYellowLight, GoldWinner, VividOrange))
+        tile.isCompleted -> Brush.verticalGradient(listOf(Color(0xFF34D399), Color(0xFF10B981), Color(0xFF047857))) // Emerald Gem
         else -> Brush.verticalGradient(listOf(Color(0xFF2A364F), MediumNavy))
     }
 
@@ -508,22 +521,27 @@ fun BingoTileView(
         modifier = Modifier
             .aspectRatio(1f)
             .scale(scale)
-            .shadow(if (tile.isCompleted) 8.dp else 3.dp, RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
+            .shadow(
+                elevation = if (tile.isCompleted) 12.dp else 3.dp,
+                shape = RoundedCornerShape(14.dp),
+                spotColor = if (tile.isCompleted) SunnyYellow else Color.Black
+            )
+            .clip(RoundedCornerShape(14.dp))
             .background(bgBrush)
             .border(
-                width = if (isWinningLine) 2.5.dp else 1.dp,
-                color = when {
-                    isWinningLine -> GoldWinnerLight
-                    tile.isCompleted -> CompletedGreen
-                    else -> Color.White.copy(alpha = 0.25f)
+                width = if (tile.isCompleted || isWinningLine) 2.5.dp else 1.dp,
+                brush = when {
+                    isWinningLine -> Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner, VividOrange))
+                    tile.isCompleted -> Brush.horizontalGradient(listOf(SunnyYellowLight, GoldWinner, Color.White))
+                    else -> Brush.linearGradient(listOf(Color.White.copy(alpha = 0.25f), Color.Transparent))
                 },
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(14.dp)
             )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = {
+                    showBurstAnimation = true
                     if (hapticsEnabled) {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
@@ -557,9 +575,69 @@ fun BingoTileView(
                 )
 
                 if (tile.isCompleted) {
-                    Text(text = "✓", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    // GOLDEN DISCOVERED STAMP BADGE
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner)))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "⭐ FOUND!",
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Black,
+                            color = DeepNavy
+                        )
+                    }
                 }
             }
+        }
+
+        // EXHILARATING STAR EXPLOSION BURST OVERLAY ON TAP
+        if (showBurstAnimation) {
+            StarExplosionBurst(onAnimationFinished = { showBurstAnimation = false })
+        }
+    }
+}
+
+// LOCAL STAR & SPARKLE PARTICLE EXPLOSION OVERLAY
+@Composable
+fun StarExplosionBurst(
+    onAnimationFinished: () -> Unit
+) {
+    val burstAnim = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        burstAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(550, easing = LinearEasing)
+        )
+        onAnimationFinished()
+    }
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val center = Offset(size.width / 2f, size.height / 2f)
+        val progress = burstAnim.value
+        val random = Random(42)
+
+        val particleColors = listOf(
+            SunnyYellow, VividOrange, GoldWinnerLight, Color(0xFF38BDF8), Color.White
+        )
+
+        for (i in 0..12) {
+            val angle = (i * (360f / 12f) + random.nextFloat() * 15f) * (Math.PI / 180f).toFloat()
+            val speed = 35f + random.nextFloat() * 45f
+            val distance = speed * progress
+
+            val px = center.x + cos(angle) * distance
+            val py = center.y + sin(angle) * distance
+
+            val alpha = (1f - progress).coerceIn(0f, 1f)
+            val color = particleColors[i % particleColors.size].copy(alpha = alpha)
+            val radius = (6f * (1f - progress * 0.5f)).coerceAtLeast(2f)
+
+            drawCircle(color = color, radius = radius, center = Offset(px, py))
         }
     }
 }
