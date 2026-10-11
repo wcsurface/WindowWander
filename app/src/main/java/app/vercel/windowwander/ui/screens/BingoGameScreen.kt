@@ -55,6 +55,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -100,6 +102,7 @@ fun BingoGameScreen(
     onBackToHome: () -> Unit
 ) {
     val completedCount = tiles.count { it.isCompleted }
+    var globalExplosionCenter by remember { mutableStateOf<Offset?>(null) }
 
     ScenicHighwayBackground {
         Box(
@@ -228,7 +231,10 @@ fun BingoGameScreen(
                             tile = tile,
                             isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
                             hapticsEnabled = hapticsEnabled,
-                            onTap = { onTapTile(tile.index) }
+                            onTapWithCenter = { center ->
+                                globalExplosionCenter = center
+                                onTapTile(tile.index)
+                            }
                         )
                     }
                 }
@@ -283,6 +289,14 @@ fun BingoGameScreen(
                     fontWeight = FontWeight.Medium,
                     color = Color.White.copy(alpha = 0.8f),
                     textAlign = TextAlign.Center
+                )
+            }
+
+            // SCREEN-WIDE UNBOUNDED STAR & CONFETTI EXPLOSION OVERLAY
+            globalExplosionCenter?.let { centerPos ->
+                GlobalStarExplosionOverlay(
+                    center = centerPos,
+                    onAnimationFinished = { globalExplosionCenter = null }
                 )
             }
 
@@ -488,13 +502,12 @@ fun BingoTileView(
     tile: BingoTile,
     isWinningLine: Boolean,
     hapticsEnabled: Boolean,
-    onTap: () -> Unit
+    onTapWithCenter: (Offset) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-
-    var showBurstAnimation by remember { mutableStateOf(false) }
+    var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
     // SATISFYING SPRING POP ANIMATION ON TAPPING
     val scale by animateFloatAsState(
@@ -510,7 +523,6 @@ fun BingoTileView(
         label = "tileSpringScale"
     )
 
-    // GLOSSY 3D GEM & GOLDEN EMBOSSED BRUSH FOR COMPLETED TILES
     val bgBrush = when {
         tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
         tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(SunnyYellowLight, GoldWinner, VividOrange))
@@ -522,6 +534,10 @@ fun BingoTileView(
         modifier = Modifier
             .aspectRatio(1f)
             .scale(scale)
+            .onGloballyPositioned { coordinates ->
+                val bounds = coordinates.boundsInWindow()
+                tileCenterOffset = Offset(bounds.left + bounds.width / 2f, bounds.top + bounds.height / 2f)
+            }
             .shadow(
                 elevation = if (tile.isCompleted) 14.dp else 3.dp,
                 shape = RoundedCornerShape(14.dp),
@@ -542,11 +558,10 @@ fun BingoTileView(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = {
-                    showBurstAnimation = true
                     if (hapticsEnabled) {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
-                    onTap()
+                    onTapWithCenter(tileCenterOffset)
                 }
             )
             .padding(3.dp),
@@ -577,7 +592,6 @@ fun BingoTileView(
 
                 if (tile.isCompleted) {
                     Spacer(modifier = Modifier.height(2.dp))
-                    // GOLDEN DISCOVERED STAMP BADGE
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
@@ -594,17 +608,13 @@ fun BingoTileView(
                 }
             }
         }
-
-        // EXHILARATING MUCH LARGER COLOR EXPLOSION BURST OVERLAY
-        if (showBurstAnimation) {
-            StarExplosionBurst(onAnimationFinished = { showBurstAnimation = false })
-        }
     }
 }
 
-// MUCH LARGER, MASSIVE COLORFUL STAR & SHOCKWAVE PARTICLE EXPLOSION OVERLAY
+// SCREEN-WIDE UNBOUNDED STAR & SHOCKWAVE PARTICLE EXPLOSION OVERLAY
 @Composable
-fun StarExplosionBurst(
+fun GlobalStarExplosionOverlay(
+    center: Offset,
     onAnimationFinished: () -> Unit
 ) {
     val burstAnim = remember { Animatable(0f) }
@@ -612,43 +622,52 @@ fun StarExplosionBurst(
     LaunchedEffect(Unit) {
         burstAnim.animateTo(
             targetValue = 1f,
-            animationSpec = tween(800, easing = LinearEasing)
+            animationSpec = tween(900, easing = LinearEasing)
         )
         onAnimationFinished()
     }
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val center = Offset(size.width / 2f, size.height / 2f)
         val progress = burstAnim.value
         val random = Random(42)
 
-        // EXPANDING GOLDEN SHOCKWAVE RING
-        val ringRadius = progress * 160f
+        // MASSIVE EXPANDING GOLDEN SHOCKWAVE RING (EXPANDS FAR BEYOND BUTTON ACROSS SCREEN)
+        val ringRadius = progress * 400f
         val ringAlpha = (1f - progress).coerceIn(0f, 1f)
         drawCircle(
-            color = SunnyYellow.copy(alpha = ringAlpha * 0.8f),
+            color = SunnyYellow.copy(alpha = ringAlpha * 0.85f),
             radius = ringRadius,
             center = center,
-            style = Stroke(width = 6f * (1f - progress))
+            style = Stroke(width = 8f * (1f - progress))
         )
 
-        // 32 MASSIVE RADIANT PARTICLES
+        // SECONDARY MINT GREEN SHOCKWAVE RING
+        val innerRingRadius = progress * 280f
+        drawCircle(
+            color = Color(0xFF34D399).copy(alpha = ringAlpha * 0.7f),
+            radius = innerRingRadius,
+            center = center,
+            style = Stroke(width = 5f * (1f - progress))
+        )
+
+        // 48 MASSIVE RADIANT PARTICLES SHOOTING ACROSS THE SCREEN
         val particleColors = listOf(
             SunnyYellow, VividOrange, GoldWinnerLight, Color(0xFF38BDF8),
-            CompletedGreen, Color(0xFFE11D48), Color.White, Color(0xFFA855F7)
+            CompletedGreen, Color(0xFFE11D48), Color.White, Color(0xFFA855F7), Color(0xFFFDE047)
         )
 
-        for (i in 0..32) {
-            val angle = (i * (360f / 32f) + random.nextFloat() * 12f) * (Math.PI / 180f).toFloat()
-            val speed = 80f + random.nextFloat() * 180f
+        for (i in 0..48) {
+            val angle = (i * (360f / 48f) + random.nextFloat() * 10f) * (Math.PI / 180f).toFloat()
+            val speed = 120f + random.nextFloat() * 320f
             val distance = speed * progress
 
             val px = center.x + cos(angle) * distance
             val py = center.y + sin(angle) * distance
 
+            // SLOW FADE OUT AS PARTICLES EXPLODE
             val alpha = (1f - progress).coerceIn(0f, 1f)
             val color = particleColors[i % particleColors.size].copy(alpha = alpha)
-            val particleRadius = (12f * (1f - progress * 0.4f)).coerceAtLeast(3f)
+            val particleRadius = (16f * (1f - progress * 0.4f)).coerceAtLeast(3f)
 
             drawCircle(color = color, radius = particleRadius, center = Offset(px, py))
         }

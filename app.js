@@ -215,7 +215,7 @@ class Router {
       if (navigator.vibrate) navigator.vibrate(40);
       this.stats.items = (this.stats.items || 0) + 1;
 
-      // TRIGGER MASSIVE COLORFUL STAR EXPLOSION BURST
+      // TRIGGER SCREEN-WIDE UNBOUNDED STAR EXPLOSION BURST
       if (event) this.triggerStarExplosion(event.clientX, event.clientY);
     }
 
@@ -232,18 +232,18 @@ class Router {
 
   triggerStarExplosion(x, y) {
     const icons = ['⭐', '✨', '🌟', '💎', '💥', '🎉', '💫', '🚀', '🔥', '⚡'];
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < 42; i++) {
       const p = document.createElement('div');
       p.className = 'star-particle';
       p.innerText = icons[i % icons.length];
       p.style.left = `${x}px`;
       p.style.top = `${y}px`;
-      const angle = (i * (360 / 32)) + (Math.random() * 15);
-      const speed = 100 + Math.random() * 180;
+      const angle = (i * (360 / 42)) + (Math.random() * 12);
+      const speed = 120 + Math.random() * 280; // SHOOTS OUT FAR BEYOND BUTTON ACROSS WHOLE SCREEN!
       p.style.setProperty('--dx', `${Math.cos(angle * Math.PI / 180) * speed}px`);
       p.style.setProperty('--dy', `${Math.sin(angle * Math.PI / 180) * speed}px`);
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), 800);
+      setTimeout(() => p.remove(), 950);
     }
   }
 
