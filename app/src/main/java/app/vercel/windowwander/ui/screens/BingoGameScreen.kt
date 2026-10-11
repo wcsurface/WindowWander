@@ -103,12 +103,16 @@ fun BingoGameScreen(
 ) {
     val completedCount = tiles.count { it.isCompleted }
     var globalExplosionCenter by remember { mutableStateOf<Offset?>(null) }
+    var rootBoxWindowOffset by remember { mutableStateOf(Offset.Zero) }
 
     ScenicHighwayBackground {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp)
+                .onGloballyPositioned { coordinates ->
+                    rootBoxWindowOffset = coordinates.boundsInWindow().topLeft
+                }
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -231,8 +235,13 @@ fun BingoGameScreen(
                             tile = tile,
                             isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
                             hapticsEnabled = hapticsEnabled,
-                            onTapWithCenter = { center ->
-                                globalExplosionCenter = center
+                            onTapWithCenter = { windowCenter ->
+                                // CONVERT WINDOW CENTER TO LOCAL CONTAINER CENTER
+                                val relativeCenter = Offset(
+                                    x = windowCenter.x - rootBoxWindowOffset.x,
+                                    y = windowCenter.y - rootBoxWindowOffset.y
+                                )
+                                globalExplosionCenter = relativeCenter
                                 onTapTile(tile.index)
                             }
                         )
@@ -292,7 +301,7 @@ fun BingoGameScreen(
                 )
             }
 
-            // SCREEN-WIDE UNBOUNDED STAR & CONFETTI EXPLOSION OVERLAY
+            // SCREEN-WIDE STAR & CONFETTI EXPLOSION OVERLAY (PERFECTLY CENTERED AT TAPPED TILE)
             globalExplosionCenter?.let { centerPos ->
                 GlobalStarExplosionOverlay(
                     center = centerPos,
@@ -523,6 +532,7 @@ fun BingoTileView(
         label = "tileSpringScale"
     )
 
+    // GLOSSY 3D GEM & GOLDEN EMBOSSED BRUSH FOR COMPLETED TILES
     val bgBrush = when {
         tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
         tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(SunnyYellowLight, GoldWinner, VividOrange))
