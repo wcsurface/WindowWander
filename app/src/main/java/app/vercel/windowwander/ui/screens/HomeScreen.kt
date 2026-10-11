@@ -78,6 +78,7 @@ fun HomeScreen(
     selectedDeck: Deck,
     isSearchingOpponent: Boolean,
     opponentFoundName: String?,
+    isLoggedIn: Boolean = false,
     onQuickPlay: () -> Unit,
     onPlayInCarHost: () -> Unit,
     onPlayInCarJoin: (String) -> Unit,
@@ -85,6 +86,8 @@ fun HomeScreen(
     onCancelMatchmaking: () -> Unit,
     onChooseDeck: () -> Unit,
     onOpenLeaderboard: () -> Unit,
+    onOpenLogin: () -> Unit,
+    onOpenShop: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenPrivacy: () -> Unit
@@ -119,14 +122,13 @@ fun HomeScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 86.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS, SETTINGS)
+                // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS - SETTINGS REMOVED FROM TOP RIGHT)
                 ArcadeHudBar(
                     nickname = profile.nickname,
                     level = profile.level,
                     xp = profile.xp,
                     coins = 1250,
-                    onOpenStats = onOpenStats,
-                    onOpenSettings = onOpenSettings
+                    onOpenStats = onOpenStats
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -239,9 +241,10 @@ fun HomeScreen(
             // FLOATING GRADIENT PILL 3D NAVIGATION BAR (SET 6)
             GradientPillNavigationBar(
                 currentScreenName = "home",
+                isLoggedIn = isLoggedIn,
                 onNavigateHome = { },
-                onNavigateDecks = onChooseDeck,
-                onNavigateRankings = onOpenLeaderboard,
+                onNavigateLogin = onOpenLogin,
+                onNavigateShop = onOpenShop,
                 onNavigateSettings = onOpenSettings,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )

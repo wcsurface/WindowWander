@@ -30,8 +30,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,13 +47,14 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// SHINY 3D GRADIENT PILL-SHAPED FLOATING NAVIGATION BAR
+// SHINY 3D GRADIENT PILL-SHAPED FLOATING NAVIGATION BAR (SET 6)
 @Composable
 fun GradientPillNavigationBar(
     currentScreenName: String = "home",
+    isLoggedIn: Boolean = false,
     onNavigateHome: () -> Unit,
-    onNavigateDecks: () -> Unit,
-    onNavigateRankings: () -> Unit,
+    onNavigateLogin: () -> Unit,
+    onNavigateShop: () -> Unit,
     onNavigateSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,12 +98,12 @@ fun GradientPillNavigationBar(
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 2. DECKS
+            // 2. LOG IN / LOG OUT
             PillNavItem(
                 iconRes = R.drawable.ic_nav_login,
-                label = "Decks",
-                isSelected = currentScreenName == "decks",
-                onClick = onNavigateDecks,
+                label = if (isLoggedIn) "Log Out" else "Log In",
+                isSelected = currentScreenName == "login" || currentScreenName == "logout",
+                onClick = onNavigateLogin,
                 modifier = Modifier.weight(1f)
             )
 
@@ -112,12 +115,12 @@ fun GradientPillNavigationBar(
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
-            // 3. RANKINGS
+            // 3. SHOP
             PillNavItem(
                 iconRes = R.drawable.ic_nav_shop,
-                label = "Rankings",
-                isSelected = currentScreenName == "leaderboard",
-                onClick = onNavigateRankings,
+                label = "Shop",
+                isSelected = currentScreenName == "shop",
+                onClick = onNavigateShop,
                 modifier = Modifier.weight(1f)
             )
 
@@ -159,14 +162,21 @@ fun PillNavItem(
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = label,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(26.dp)
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = label,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (isSelected) SunnyYellow else Color.White
+            fontSize = 11.5.sp,
+            fontWeight = FontWeight.Black,
+            style = TextStyle(
+                color = Color.White,
+                shadow = if (isSelected) Shadow(
+                    color = Color(0xFF38BDF8), // Cyan glow matching Set 6
+                    offset = Offset(0f, 0f),
+                    blurRadius = 14f
+                ) else null
+            )
         )
     }
 }
@@ -231,7 +241,7 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR (AVATAR, LEVEL, COINS, SETTINGS)
+// ARCADE HUD STATUS BAR (AVATAR, LEVEL, COINS - SETTINGS REMOVED SINCE IT'S IN MENU BAR NOW)
 @Composable
 fun ArcadeHudBar(
     nickname: String,
@@ -239,7 +249,7 @@ fun ArcadeHudBar(
     xp: Int = 0,
     coins: Int = 1250,
     onOpenStats: () -> Unit,
-    onOpenSettings: () -> Unit,
+    onOpenSettings: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -258,7 +268,7 @@ fun ArcadeHudBar(
                 .background(Color(0xFF0F172A))
                 .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
                 .clickable { onOpenStats() }
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 14.dp, vertical = 7.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -290,41 +300,24 @@ fun ArcadeHudBar(
             }
         }
 
-        // CURRENCY & SETTINGS PILLS
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            // COINS PILL
-            Box(
-                modifier = Modifier
-                    .shadow(8.dp, RoundedCornerShape(18.dp))
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color(0xFF0F172A))
-                    .border(2.dp, GoldWinner, RoundedCornerShape(18.dp))
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "🪙", fontSize = 15.sp)
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "$coins",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Black,
-                        color = GoldWinnerLight
-                    )
-                }
-            }
-
-            // SETTINGS BUTTON
-            Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .shadow(8.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(Color(0xFF0F172A))
-                    .border(2.dp, Color.White.copy(alpha = 0.5f), CircleShape)
-                    .clickable { onOpenSettings() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "⚙️", fontSize = 18.sp)
+        // COINS PILL ONLY (SETTINGS GEAR REMOVED FROM TOP RIGHT)
+        Box(
+            modifier = Modifier
+                .shadow(8.dp, RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(18.dp))
+                .background(Color(0xFF0F172A))
+                .border(2.dp, GoldWinner, RoundedCornerShape(18.dp))
+                .padding(horizontal = 14.dp, vertical = 7.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "🪙", fontSize = 16.sp)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "$coins",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Black,
+                    color = GoldWinnerLight
+                )
             }
         }
     }

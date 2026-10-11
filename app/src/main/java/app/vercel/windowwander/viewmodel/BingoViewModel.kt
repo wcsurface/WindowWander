@@ -28,6 +28,8 @@ enum class Screen {
     MULTIPLAYER_LOBBY,
     LEADERBOARD,
     STATS,
+    SHOP,
+    LOGIN,
     SETTINGS,
     PRIVACY_TERMS
 }
@@ -45,6 +47,7 @@ data class UiState(
     val showAccountPrompt: Boolean = false,
     val isSearchingOpponent: Boolean = false,
     val opponentFoundName: String? = null,
+    val isLoggedIn: Boolean = false,
     val soundEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val confirmTapEnabled: Boolean = false,
@@ -97,6 +100,30 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun selectDeck(deck: Deck) {
         _uiState.update { it.copy(selectedDeck = deck) }
+    }
+
+    fun loginUser(username: String, pass: String) {
+        val updated = _uiState.value.playerProfile.copy(
+            nickname = username,
+            earnedBadges = _uiState.value.playerProfile.earnedBadges + "cloud_backup"
+        )
+        preferences.saveProfile(updated)
+        _uiState.update {
+            it.copy(
+                playerProfile = updated,
+                isLoggedIn = true,
+                currentScreen = Screen.HOME
+            )
+        }
+    }
+
+    fun logoutUser() {
+        _uiState.update {
+            it.copy(
+                isLoggedIn = false,
+                currentScreen = Screen.HOME
+            )
+        }
     }
 
     fun startNewGame(
@@ -242,13 +269,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun handleGoogleSignIn() {
         val updated = _uiState.value.playerProfile.copy(
-            nickname = "RoadExplorer_Google",
+            nickname = "RoadExplorer_User",
             earnedBadges = _uiState.value.playerProfile.earnedBadges + "cloud_backup"
         )
         preferences.saveProfile(updated)
         _uiState.update {
             it.copy(
                 playerProfile = updated,
+                isLoggedIn = true,
                 showAccountPrompt = false
             )
         }

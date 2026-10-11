@@ -14,9 +14,11 @@ import app.vercel.windowwander.ui.screens.BingoGameScreen
 import app.vercel.windowwander.ui.screens.DeckSelectScreen
 import app.vercel.windowwander.ui.screens.HomeScreen
 import app.vercel.windowwander.ui.screens.LeaderboardScreen
+import app.vercel.windowwander.ui.screens.LoginScreen
 import app.vercel.windowwander.ui.screens.MultiplayerScreen
 import app.vercel.windowwander.ui.screens.PrivacyTermsScreen
 import app.vercel.windowwander.ui.screens.SettingsScreen
+import app.vercel.windowwander.ui.screens.ShopScreen
 import app.vercel.windowwander.ui.screens.StatsAchievementsScreen
 import app.vercel.windowwander.ui.theme.WindowWanderTheme
 import app.vercel.windowwander.viewmodel.BingoViewModel
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
                             selectedDeck = uiState.selectedDeck,
                             isSearchingOpponent = uiState.isSearchingOpponent,
                             opponentFoundName = uiState.opponentFoundName,
+                            isLoggedIn = uiState.isLoggedIn,
                             onQuickPlay = { viewModel.startNewGame() },
                             onPlayInCarHost = { viewModel.createLocalQuickPlayRoomFromHome() },
                             onPlayInCarJoin = { code -> viewModel.joinMultiplayerRoom(code) },
@@ -50,6 +53,8 @@ class MainActivity : ComponentActivity() {
                             onCancelMatchmaking = { viewModel.cancelMatchmaking() },
                             onChooseDeck = { viewModel.navigateTo(Screen.DECK_SELECT) },
                             onOpenLeaderboard = { viewModel.navigateTo(Screen.LEADERBOARD) },
+                            onOpenLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onOpenShop = { viewModel.navigateTo(Screen.SHOP) },
                             onOpenStats = { viewModel.navigateTo(Screen.STATS) },
                             onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },
                             onOpenPrivacy = { viewModel.navigateTo(Screen.PRIVACY_TERMS) }
@@ -95,6 +100,26 @@ class MainActivity : ComponentActivity() {
                         Screen.LEADERBOARD -> LeaderboardScreen(
                             profile = uiState.playerProfile,
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.SHOP -> ShopScreen(
+                            isLoggedIn = uiState.isLoggedIn,
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.LOGIN -> LoginScreen(
+                            profile = uiState.playerProfile,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onLoginSubmit = { user, pass -> viewModel.loginUser(user, pass) },
+                            onLogOut = { viewModel.logoutUser() },
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) }
                         )
 
                         Screen.STATS -> StatsAchievementsScreen(

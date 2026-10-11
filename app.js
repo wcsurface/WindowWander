@@ -130,6 +130,7 @@ class Router {
     this.leaderboardTab = 0;
     this.showAccountModal = false;
     this.isLoggedIn = false;
+    this.userNickname = 'Road Explorer';
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
 
     // REAL-TIME OPPONENT LIVE BOARD TILES
@@ -158,7 +159,7 @@ class Router {
   }
 
   updateActiveNav() {
-    ['home', 'decks', 'stats', 'settings'].forEach(s => {
+    ['home', 'login', 'shop', 'settings'].forEach(s => {
       const btn = document.getElementById(`nav-${s}`);
       if (btn) {
         if (s === this.currentScreen) btn.classList.add('active');
@@ -272,11 +273,17 @@ class Router {
     }
   }
 
-  handleGoogleSignIn() {
+  loginUser(user, pass) {
+    if (!user) return;
     this.isLoggedIn = true;
-    this.showAccountModal = false;
-    alert("✅ Signed in with Google! Your XP, Level, and Bingo achievements are safely backed up.");
-    this.render();
+    this.userNickname = user;
+    this.navigate('home');
+  }
+
+  logoutUser() {
+    this.isLoggedIn = false;
+    this.userNickname = 'Road Explorer';
+    this.navigate('home');
   }
 
   saveStats() {
@@ -287,8 +294,14 @@ class Router {
     const main = document.getElementById('main-content');
     if (!main) return;
 
-    // MAIN LOBBY BACKGROUND THEME ALWAYS USED ON HOME SCREEN
-    if (this.currentScreen === 'home') {
+    // UPDATE FOOTER NAV BUTTON LABEL FOR LOGIN / LOGOUT
+    const navLoginBtn = document.getElementById('nav-login-label');
+    if (navLoginBtn) {
+      navLoginBtn.innerText = this.isLoggedIn ? 'Log Out' : 'Log In';
+    }
+
+    // MAIN LOBBY BACKGROUND THEME USED ON HOME, LOGIN, AND SHOP
+    if (['home', 'login', 'shop'].includes(this.currentScreen)) {
       document.body.classList.add('main-home-theme');
       document.body.classList.remove('deck-game-theme');
     } else if (this.currentScreen === 'game') {
@@ -319,17 +332,15 @@ class Router {
           <div class="profile-badge">
             <div class="avatar-circle">🐻</div>
             <div>
-              <div style="font-weight:900;font-size:13px;color:white;">${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'}</div>
+              <div style="font-weight:900;font-size:13px;color:white;">${this.userNickname}</div>
               <div style="font-size:10px;color:#FBBF24;font-weight:800;">Lvl ${level} Explorer • ${this.stats.xp} XP</div>
             </div>
           </div>
-          <div style="display:flex;gap:8px;">
-            <div class="currency-pill">🪙 1,250</div>
-            <button class="settings-gear" onclick="router.navigate('settings')">⚙️</button>
-          </div>
+          <!-- COINS PILL ONLY (SETTINGS GEAR REMOVED FROM TOP RIGHT) -->
+          <div class="currency-pill">🪙 1,250</div>
         </div>
 
-        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
+        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
@@ -450,20 +461,91 @@ class Router {
           </div>
         ` : ''}
       `;
+    } else if (this.currentScreen === 'login') {
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">${this.isLoggedIn ? '👤 Account Profile' : '🔑 Log In / Join'}</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+        </div>
+
+        <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
+          <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+        </div>
+
+        ${!this.isLoggedIn ? `
+          <div class="card" style="text-align:center;padding:24px;">
+            <h3 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">LOG IN TO YOUR ACCOUNT</h3>
+            <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Enter your username and password to back up your level, XP, and bingo wins!</p>
+
+            <input id="web-user-input" type="text" placeholder="Username / Email" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:12px;" />
+            <input id="web-pass-input" type="password" placeholder="Password" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:18px;" />
+
+            <button class="btn btn-mockup-play" style="min-height:54px;font-size:18px;margin-bottom:12px;" onclick="router.loginUser(document.getElementById('web-user-input').value, document.getElementById('web-pass-input').value)">
+              🔑 LOG IN
+            </button>
+          </div>
+        ` : `
+          <div class="card" style="text-align:center;padding:24px;">
+            <div style="font-size:38px;margin-bottom:10px;">🐻</div>
+            <h3 style="font-weight:900;color:white;margin-bottom:4px;">${this.userNickname}</h3>
+            <p style="font-size:12px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
+            <div style="background:rgba(16,185,129,0.2);border:1.5px solid #10B981;border-radius:12px;padding:12px;color:#10B981;font-weight:900;font-size:13px;margin-bottom:20px;">
+              ✅ Account Synced & Backed Up!
+            </div>
+            <button class="btn btn-orange" style="min-height:48px;font-size:15px;" onclick="router.logoutUser()">
+              🚪 LOG OUT OF ACCOUNT
+            </button>
+          </div>
+        `}
+      `;
+    } else if (this.currentScreen === 'shop') {
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">🏪 Road Trip Shop</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+        </div>
+
+        <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
+          <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+        </div>
+
+        <!-- ROAD SIGN STYLE UNDER CONSTRUCTION CARD -->
+        <div class="road-sign-card" style="background:linear-gradient(180deg, #D97706, #B45309);margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:26px;">🏪</span>
+            <span class="sign-badge" style="background:#0F172A;color:#FBBF24;">COMING SOON</span>
+          </div>
+          <div style="font-weight:900;font-size:18px;margin-top:8px;color:white;">🚧 UNDER CONSTRUCTION 🚧</div>
+          <div style="font-size:12px;color:#FEF3C7;margin-top:2px;">The Road Trip Shop is opening soon!</div>
+        </div>
+
+        <div class="card" style="padding:20px;">
+          <h3 style="font-weight:900;color:#FBBF24;margin-bottom:10px;text-align:center;">🎁 What's Coming to the Shop?</h3>
+          <p style="font-size:13px;color:white;line-height:1.6;margin-bottom:16px;">
+            • Custom Vehicle Avatars & Car Color Skins<br>
+            • Unique Tile Stamps & Confetti Effects<br>
+            • Exclusive Roadside Badges & Titles<br>
+            • Premium Regional Deck Unlocks
+          </p>
+          <div style="background:#0F172A;border:1.5px solid #FBBF24;border-radius:12px;padding:12px;text-align:center;color:#FBBF24;font-weight:800;font-size:12px;">
+            Keep playing games to earn coins!
+          </div>
+        </div>
+      `;
     } else if (this.currentScreen === 'leaderboard') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       const pointsList = [
         { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 4850 },
         { rank: 2, name: "NomadNate", emoji: "🦅", val: 3920 },
         { rank: 3, name: "PacificWanderer", emoji: "🏄", val: 3100 },
-        { rank: 4, name: `${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true },
+        { rank: 4, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true },
         { rank: 5, name: "SierraScout", emoji: "🌲", val: 1840 }
       ].sort((a,b) => b.val - a.val);
 
       const itemsList = [
         { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 380 },
         { rank: 2, name: "NomadNate", emoji: "🦅", val: 295 },
-        { rank: 3, name: `${this.isLoggedIn ? 'RoadExplorer (Google)' : 'Road Explorer'} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true },
+        { rank: 3, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true },
         { rank: 4, name: "PacificWanderer", emoji: "🏄", val: 210 },
         { rank: 5, name: "SierraScout", emoji: "🌲", val: 145 }
       ].sort((a,b) => b.val - a.val);
@@ -596,14 +678,10 @@ class Router {
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;">
               <div style="font-size:36px;margin-bottom:8px;">💾</div>
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">SAVE YOUR ACHIEVEMENTS!</h2>
-              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with Google or create a free account to back up your Level, XP, earned badges, and lifetime Bingo wins!</p>
+              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with your account to back up your Level, XP, earned badges, and lifetime Bingo wins!</p>
 
-              <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="router.handleGoogleSignIn()">
-                🌐 SIGN IN WITH GOOGLE
-              </button>
-
-              <button class="btn btn-yellow btn-beveled" style="margin-bottom:14px;font-size:15px;" onclick="router.handleGoogleSignIn()">
-                ✉️ CREATE FREE ACCOUNT
+              <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="router.navigate('login')">
+                🔑 LOG IN / REGISTER NOW
               </button>
 
               <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showAccountModal=false;router.render();">
