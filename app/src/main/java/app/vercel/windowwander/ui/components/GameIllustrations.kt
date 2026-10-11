@@ -61,9 +61,9 @@ fun GradientPillNavigationBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 8.dp)
-            .shadow(16.dp, RoundedCornerShape(32.dp))
-            .clip(RoundedCornerShape(32.dp))
+            .padding(horizontal = 14.dp, vertical = 6.dp)
+            .shadow(20.dp, RoundedCornerShape(40.dp))
+            .clip(RoundedCornerShape(40.dp))
             .background(
                 Brush.horizontalGradient(
                     colors = listOf(
@@ -73,8 +73,8 @@ fun GradientPillNavigationBar(
                     )
                 )
             )
-            .border(1.5.dp, Color.White.copy(alpha = 0.5f), RoundedCornerShape(32.dp))
-            .padding(vertical = 4.dp)
+            .border(2.dp, Color.White.copy(alpha = 0.5f), RoundedCornerShape(40.dp))
+            .padding(vertical = 4.dp, horizontal = 4.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -94,7 +94,7 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(30.dp)
+                    .height(42.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
@@ -111,7 +111,7 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(30.dp)
+                    .height(42.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
@@ -128,7 +128,7 @@ fun GradientPillNavigationBar(
             Box(
                 modifier = Modifier
                     .width(1.dp)
-                    .height(30.dp)
+                    .height(42.dp)
                     .background(Color.White.copy(alpha = 0.25f))
             )
 
@@ -161,19 +161,19 @@ fun PillNavItem(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(38.dp)
+            modifier = Modifier.size(60.dp)
         ) {
-            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON (MATCHING SAMPLE IMAGE)
+            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON (PROMINENT & TWICE AS BIG)
             if (isSelected) {
                 Box(
                     modifier = Modifier
-                        .size(38.dp)
+                        .size(60.dp)
                         .clip(CircleShape)
                         .background(
                             Brush.radialGradient(
                                 colors = listOf(
                                     Color(0xFF38BDF8).copy(alpha = 0.85f),
-                                    Color(0xFF0284C7).copy(alpha = 0.4f),
+                                    Color(0xFF0284C7).copy(alpha = 0.45f),
                                     Color.Transparent
                                 )
                             )
@@ -184,7 +184,7 @@ fun PillNavItem(
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = label,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(52.dp) // TWICE AS BIG 3D ICON
             )
         }
 
@@ -193,12 +193,12 @@ fun PillNavItem(
         // GLOWING TEXT SHADOW MATCHING SAMPLE IMAGE
         Text(
             text = label,
-            fontSize = 11.sp,
+            fontSize = 11.5.sp,
             fontWeight = FontWeight.Black,
             style = TextStyle(
                 color = Color.White,
                 shadow = if (isSelected) Shadow(
-                    color = Color(0xFF38BDF8), // Cyan glow
+                    color = Color(0xFF38BDF8),
                     offset = Offset(0f, 0f),
                     blurRadius = 16f
                 ) else null
