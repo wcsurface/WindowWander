@@ -131,6 +131,24 @@ class Router {
     this.showAccountModal = false;
     this.isLoggedIn = false;
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
+
+    // REAL-TIME OPPONENT LIVE BOARD TILES
+    this.op1Tiles = [0, 4, 12, 18, 22];
+    this.op2Tiles = [2, 7, 12, 14, 20, 24];
+
+    setInterval(() => {
+      if (this.currentScreen === 'game') {
+        if (this.op1Tiles.length < 20) {
+          const rem1 = Array.from({length:25},(_,i)=>i).filter(i => !this.op1Tiles.includes(i));
+          if (rem1.length) this.op1Tiles.push(rem1[Math.floor(Math.random()*rem1.length)]);
+        }
+        if (this.op2Tiles.length < 20) {
+          const rem2 = Array.from({length:25},(_,i)=>i).filter(i => !this.op2Tiles.includes(i));
+          if (rem2.length) this.op2Tiles.push(rem2[Math.floor(Math.random()*rem2.length)]);
+        }
+        this.render();
+      }
+    }, 4000);
   }
 
   navigate(screen) {
@@ -286,7 +304,7 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
+        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
@@ -505,6 +523,46 @@ class Router {
             🔄 New Board
           </button>
           ${isWin ? '<div style="background:#F59E0B;color:#0F172A;font-weight:900;padding:8px 14px;border-radius:12px;font-size:13px;">🎉 BINGO!</div>' : ''}
+        </div>
+
+        <!-- LIVE OPPONENT BOARDS SECTION AT THE BOTTOM -->
+        <div style="margin-top:18px;width:100%;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;font-weight:900;color:#FBBF24;">LIVE OPPONENT BOARDS (2)</span>
+            <span style="font-size:11px;font-weight:800;color:#10B981;">⚡ Live Sync</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <!-- OPPONENT 1 MINI CARD -->
+            <div class="card" style="padding:10px;margin-bottom:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
+                <span>🦊 Alex (Passenger)</span>
+                <span style="color:#FBBF24;">${this.op1Tiles.length}/25</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
+                ${Array.from({length:25},(_,i)=>`
+                  <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':this.op1Tiles.includes(i)?'#10B981':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
+                    ${i===12?'⭐':this.op1Tiles.includes(i)?'✓':''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- OPPONENT 2 MINI CARD -->
+            <div class="card" style="padding:10px;margin-bottom:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
+                <span>🦅 Jordan (RV)</span>
+                <span style="color:#FBBF24;">${this.op2Tiles.length}/25</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
+                ${Array.from({length:25},(_,i)=>`
+                  <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':this.op2Tiles.includes(i)?'#10B981':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
+                    ${i===12?'⭐':this.op2Tiles.includes(i)?'✓':''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY -->

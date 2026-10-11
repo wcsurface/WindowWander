@@ -9,6 +9,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,8 +31,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -78,6 +81,7 @@ import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
+import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -101,9 +105,29 @@ fun BingoGameScreen(
     onDismissAccountPrompt: () -> Unit,
     onBackToHome: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
     val completedCount = tiles.count { it.isCompleted }
     var globalExplosionCenter by remember { mutableStateOf<Offset?>(null) }
     var rootBoxWindowOffset by remember { mutableStateOf(Offset.Zero) }
+
+    // REAL-TIME OPPONENT LIVE BOARD SIMULATION
+    var opponent1Tiles by remember { mutableStateOf(listOf(0, 4, 12, 18, 22)) }
+    var opponent2Tiles by remember { mutableStateOf(listOf(2, 7, 12, 14, 20, 24)) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(4000)
+            if (opponent1Tiles.size < 20) {
+                val next = (0..24).filter { !opponent1Tiles.contains(it) }.randomOrNull()
+                if (next != null) opponent1Tiles = opponent1Tiles + next
+            }
+            delay(3500)
+            if (opponent2Tiles.size < 20) {
+                val next = (0..24).filter { !opponent2Tiles.contains(it) }.randomOrNull()
+                if (next != null) opponent2Tiles = opponent2Tiles + next
+            }
+        }
+    }
 
     ScenicHighwayBackground {
         Box(
@@ -115,7 +139,9 @@ fun BingoGameScreen(
                 }
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // GAME HEADER BAR
@@ -228,7 +254,8 @@ fun BingoGameScreen(
                         .fillMaxWidth()
                         .aspectRatio(1f),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    userScrollEnabled = false
                 ) {
                     items(tiles) { tile ->
                         BingoTileView(
@@ -236,7 +263,6 @@ fun BingoGameScreen(
                             isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
                             hapticsEnabled = hapticsEnabled,
                             onTapWithCenter = { windowCenter ->
-                                // CONVERT WINDOW CENTER TO LOCAL CONTAINER CENTER
                                 val relativeCenter = Offset(
                                     x = windowCenter.x - rootBoxWindowOffset.x,
                                     y = windowCenter.y - rootBoxWindowOffset.y
@@ -289,7 +315,54 @@ fun BingoGameScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // LIVE OPPONENT BOARDS SECTION AT THE BOTTOM
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "LIVE OPPONENT BOARDS (2)",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Black,
+                            color = SunnyYellow
+                        )
+                        Text(
+                            text = "⚡ Live Sync",
+                            fontSize = 11.sp,
+                            color = CompletedGreen,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        OpponentMiniBoardCard(
+                            nickname = "Alex (Passenger)",
+                            avatarEmoji = "🦊",
+                            completedIndices = opponent1Tiles,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        OpponentMiniBoardCard(
+                            nickname = "Jordan (RV Traveler)",
+                            avatarEmoji = "🦅",
+                            completedIndices = opponent2Tiles,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // PASSENGER SAFETY FOOTER
                 Text(
@@ -301,7 +374,7 @@ fun BingoGameScreen(
                 )
             }
 
-            // SCREEN-WIDE STAR & CONFETTI EXPLOSION OVERLAY (PERFECTLY CENTERED AT TAPPED TILE)
+            // SCREEN-WIDE STAR & CONFETTI EXPLOSION OVERLAY
             globalExplosionCenter?.let { centerPos ->
                 GlobalStarExplosionOverlay(
                     center = centerPos,
@@ -506,6 +579,89 @@ fun BingoGameScreen(
     }
 }
 
+// OPPONENT LIVE MINI-BOARD CARD COMPOSABLE
+@Composable
+fun OpponentMiniBoardCard(
+    nickname: String,
+    avatarEmoji: String,
+    completedIndices: List<Int>,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.shadow(8.dp, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MediumNavy),
+        border = BorderStroke(1.5.dp, Color.White.copy(alpha = 0.2f))
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = avatarEmoji, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = nickname,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        maxLines = 1
+                    )
+                }
+                Text(
+                    text = "${completedIndices.size}/25",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    color = SunnyYellow
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // 5x5 MINI GRID PREVIEW
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(5),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                userScrollEnabled = false
+            ) {
+                items(25) { index ->
+                    val isDone = completedIndices.contains(index)
+                    val isCenter = index == 12
+
+                    Box(
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(
+                                when {
+                                    isCenter -> SunnyYellow
+                                    isDone -> CompletedGreen
+                                    else -> Color(0xFF2A364F)
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isCenter) {
+                            Text(text = "⭐", fontSize = 6.sp)
+                        } else if (isDone) {
+                            Text(text = "✓", fontSize = 6.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun BingoTileView(
     tile: BingoTile,
@@ -641,7 +797,7 @@ fun GlobalStarExplosionOverlay(
         val progress = burstAnim.value
         val random = Random(42)
 
-        // MASSIVE EXPANDING GOLDEN SHOCKWAVE RING (EXPANDS FAR BEYOND BUTTON ACROSS SCREEN)
+        // MASSIVE EXPANDING GOLDEN SHOCKWAVE RING
         val ringRadius = progress * 400f
         val ringAlpha = (1f - progress).coerceIn(0f, 1f)
         drawCircle(
