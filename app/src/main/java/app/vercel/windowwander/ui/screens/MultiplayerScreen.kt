@@ -55,14 +55,14 @@ import app.vercel.windowwander.ui.theme.VividOrange
 @Composable
 fun MultiplayerScreen(
     room: MultiplayerRoom?,
+    selectedDeck: Deck,
+    onSelectDeck: (Deck) -> Unit,
     onCreateRoom: () -> Unit,
     onJoinRoom: (String) -> Unit,
     onStartGame: () -> Unit,
     onBackToHome: () -> Unit
 ) {
     var roomInputCode by remember { mutableStateOf("") }
-
-    var selectedDeck by remember { mutableStateOf(DeckRepository.DECKS[0]) }
     var selectedGameMode by remember { mutableStateOf(GameMode.CLASSIC_LINE) }
 
     var deckDropdownExpanded by remember { mutableStateOf(false) }
@@ -297,7 +297,7 @@ fun MultiplayerScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 1. DECK SELECTION BUTTON (DEFAULTED TO LOCATION DECK)
+            // 1. DECK SELECTION BUTTON (DEFAULTED TO SAVED OR LOCAL REGION DECK)
             ExposedDropdownMenuBox(
                 expanded = deckDropdownExpanded,
                 onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
@@ -325,7 +325,7 @@ fun MultiplayerScreen(
                         DropdownMenuItem(
                             text = { Text("🎴 ${deck.title} (${deck.audience})") },
                             onClick = {
-                                selectedDeck = deck
+                                onSelectDeck(deck)
                                 deckDropdownExpanded = false
                             }
                         )

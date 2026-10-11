@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                             isSearchingOpponent = uiState.isSearchingOpponent,
                             opponentFoundName = uiState.opponentFoundName,
                             onQuickPlay = { viewModel.startNewGame() },
-                            onPlayInCarHost = { viewModel.createLocalQuickPlayRoom() },
+                            onPlayInCarHost = { viewModel.createLocalQuickPlayRoomFromHome() },
                             onPlayInCarJoin = { code -> viewModel.joinMultiplayerRoom(code) },
                             onStartOnlineMatchmaking = { deck -> viewModel.startOnlineMatchmaking(deck) },
                             onCancelMatchmaking = { viewModel.cancelMatchmaking() },
@@ -80,6 +80,8 @@ class MainActivity : ComponentActivity() {
 
                         Screen.MULTIPLAYER_LOBBY -> MultiplayerScreen(
                             room = uiState.multiplayerRoom,
+                            selectedDeck = uiState.selectedDeck,
+                            onSelectDeck = { deck -> viewModel.selectDeck(deck) },
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
                             onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },
                             onStartGame = { viewModel.startNewGame() },

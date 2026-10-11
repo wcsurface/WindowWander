@@ -33,11 +33,11 @@ enum class Screen {
 
 data class UiState(
     val currentScreen: Screen = Screen.HOME,
-    val selectedDeck: Deck = DeckRepository.DECKS[0],
+    val selectedDeck: Deck = DeckRepository.DECKS[2], // Mountain West default
     val currentBoard: List<BingoTile> = emptyList(),
     val winResult: WinResult = WinResult(false, 0, emptyList(), emptyList()),
     val gameMode: GameMode = GameMode.CLASSIC_LINE,
-    val selectedRegion: Region = Region.UNIVERSAL,
+    val selectedRegion: Region = Region.MOUNTAIN_WEST,
     val playerProfile: PlayerProfile = PlayerProfile(),
     val multiplayerRoom: MultiplayerRoom? = null,
     val showBingoCelebration: Boolean = false,
@@ -74,10 +74,13 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         val kidsMode = preferences.isKidsModeEasy()
         val darkMode = preferences.isDarkMode()
 
+        val defaultRegionDeck = DeckRepository.DECKS.find { it.region == region } ?: DeckRepository.DECKS[2]
+
         _uiState.update {
             it.copy(
                 playerProfile = profile,
                 selectedRegion = region,
+                selectedDeck = defaultRegionDeck,
                 soundEnabled = sound,
                 hapticsEnabled = haptics,
                 confirmTapEnabled = confirmTap,
@@ -138,14 +141,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update {
             it.copy(
                 selectedDeck = deck,
-                gameMode = GameMode.CLASSIC_LINE, // Online is strictly Classic Bingo
+                gameMode = GameMode.CLASSIC_LINE,
                 isSearchingOpponent = true,
                 opponentFoundName = null
             )
         }
 
         viewModelScope.launch {
-            delay(2000) // Matchmaking delay
+            delay(2000)
             val opponentNames = listOf("Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)")
             val opponent = opponentNames.random()
 
@@ -155,7 +158,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
 
-            delay(1200) // Transition to board
+            delay(1200)
             startNewGame(deck = deck, gameMode = GameMode.CLASSIC_LINE)
         }
     }
@@ -252,7 +255,8 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setRegion(region: Region) {
         preferences.setSelectedRegion(region)
-        _uiState.update { it.copy(selectedRegion = region) }
+        val defaultRegionDeck = DeckRepository.DECKS.find { it.region == region } ?: DeckRepository.DECKS[2]
+        _uiState.update { it.copy(selectedRegion = region, selectedDeck = defaultRegionDeck) }
     }
 
     fun updateProfile(nickname: String, avatarId: String) {
@@ -284,6 +288,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(kidsModeEasy = enabled) }
     }
 
+    // HOSTING FROM HOME SCREEN (DEFAULT TO LOCAL REGION DECK)
+    fun createLocalQuickPlayRoomFromHome() {
+        val regionDeck = DeckRepository.DECKS.find { it.region == _uiState.value.selectedRegion } ?: DeckRepository.DECKS[2]
+        _uiState.update { it.copy(selectedDeck = regionDeck) }
+        createLocalQuickPlayRoom()
+    }
+
+    // HOSTING FROM DECK SELECTION (USE PRE-SELECTED DECK)
     fun createLocalQuickPlayRoom() {
         val profile = _uiState.value.playerProfile
         val room = MultiplayerService.createLocalQuickPlayRoom(

@@ -116,7 +116,7 @@ class BingoWebEngine {
 class Router {
   constructor() {
     this.currentScreen = 'home';
-    this.selectedDeck = DECKS[2]; // Defaulted to location deck (Mountain West)
+    this.selectedDeck = DECKS[2]; // Defaulted to local region deck (Mountain West)
     this.selectedMode = GAME_MODES[0];
     this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
     this.roomCode = 'ROAD';
@@ -146,8 +146,15 @@ class Router {
     });
   }
 
+  // CALLED FROM DECK SELECTION (DECK IS EXPLICITLY SAVED)
   selectDeckAndPlay(deck) {
     this.selectedDeck = deck;
+    this.startCarRoom();
+  }
+
+  // CALLED FROM HOME SCREEN "PLAY NOW ▶" (DEFAULT TO LOCAL REGION DECK)
+  startCarRoomFromHome() {
+    this.selectedDeck = DECKS[2]; // Local region deck default (Mountain West)
     this.startCarRoom();
   }
 
@@ -330,7 +337,7 @@ class Router {
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Play bingo with passengers in your car!</p>
 
               ${!this.showJoinCodeInput ? `
-                <button class="btn btn-yellow btn-beveled" style="margin-bottom:12px;" onclick="router.startCarRoom()">
+                <button class="btn btn-yellow btn-beveled" style="margin-bottom:12px;" onclick="router.startCarRoomFromHome()">
                   🚗 START A GAME (HOST)
                 </button>
                 <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;" onclick="router.showJoinCodeInput=true;router.render();">
@@ -441,7 +448,7 @@ class Router {
           <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
         </div>
 
-        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
+        <!-- 1. DECK / LOCATION SELECTOR BUTTON (PRE-SELECTED TO SAVED OR LOCAL REGION DECK) -->
         <div style="margin-bottom:12px;">
           <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
           <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
