@@ -287,6 +287,13 @@ class Router {
     const main = document.getElementById('main-content');
     if (!main) return;
 
+    // ROCKY MOUNTAINS FULL-SCREEN BACKGROUND THEME SWITCHER
+    if (this.currentScreen === 'game' && this.selectedDeck.id === 'deck_c') {
+      document.body.classList.add('rocky-mountains-theme');
+    } else {
+      document.body.classList.remove('rocky-mountains-theme');
+    }
+
     if (this.currentScreen === 'home') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       main.innerHTML = `
@@ -304,7 +311,7 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
+        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>

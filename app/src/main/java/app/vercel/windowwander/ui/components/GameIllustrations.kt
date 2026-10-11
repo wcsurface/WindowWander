@@ -1,6 +1,7 @@
 package app.vercel.windowwander.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,9 +30,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.vercel.windowwander.R
+import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.GoldWinnerLight
@@ -40,24 +45,40 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// BRIGHT, VIBRANT SKY BLUE WORLD BACKGROUND
+// REGION-AWARE FULL SCREEN BACKGROUND (ROCKY MOUNTAINS IMAGE BACKDROP FOR MOUNTAIN WEST DECK)
 @Composable
 fun ScenicHighwayBackground(
+    region: Region = Region.UNIVERSAL,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRect(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0284C7), // Vibrant Sky Blue Top
-                        Color(0xFF38BDF8), // Light Cyan Horizon
-                        Color(0xFF0284C7), // Sky Blue Mid
-                        Color(0xFF0369A1)  // Rich Sky Blue Base
+        if (region == Region.MOUNTAIN_WEST) {
+            Image(
+                painter = painterResource(id = R.drawable.bg_rocky_mountains),
+                contentDescription = "Rocky Mountains Scenic Background",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            // Light darkening scrim overlay for UI element contrast
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.15f))
+            )
+        } else {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF0284C7),
+                            Color(0xFF38BDF8),
+                            Color(0xFF0284C7),
+                            Color(0xFF0369A1)
+                        )
                     )
                 )
-            )
+            }
         }
 
         content()
