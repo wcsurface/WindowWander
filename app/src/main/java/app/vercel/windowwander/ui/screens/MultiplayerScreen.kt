@@ -1,7 +1,6 @@
 package app.vercel.windowwander.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,10 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -37,6 +38,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.vercel.windowwander.data.DeckRepository
+import app.vercel.windowwander.model.Deck
+import app.vercel.windowwander.model.GameMode
 import app.vercel.windowwander.model.MultiplayerRoom
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.theme.DeepNavy
@@ -47,6 +51,7 @@ import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiplayerScreen(
     room: MultiplayerRoom?,
@@ -56,6 +61,12 @@ fun MultiplayerScreen(
     onBackToHome: () -> Unit
 ) {
     var roomInputCode by remember { mutableStateOf("") }
+
+    var selectedDeck by remember { mutableStateOf(DeckRepository.DECKS[0]) }
+    var selectedGameMode by remember { mutableStateOf(GameMode.CLASSIC_LINE) }
+
+    var deckDropdownExpanded by remember { mutableStateOf(false) }
+    var gameModeDropdownExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -204,7 +215,7 @@ fun MultiplayerScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Brush.verticalGradient(listOf(SunnyYellow.copy(alpha = 0.3f), MediumNavy)))
-                        .padding(20.dp),
+                        .padding(18.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "ROOM CODE", fontSize = 12.sp, fontWeight = FontWeight.Black, color = SunnyYellow)
@@ -216,52 +227,55 @@ fun MultiplayerScreen(
                         letterSpacing = 4.sp
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     // QR CODE DISPLAY BADGE FOR SCANNING
                     Box(
                         modifier = Modifier
-                            .size(130.dp)
+                            .size(120.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(Color.White)
                             .padding(8.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "📷\n[ QR CODE ]\nScan to Join", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = DeepNavy)
+                        Text(text = "📷\n[ QR CODE ]\nScan to Join", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = DeepNavy)
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
                         text = "Scan QR Code or enter code '${room.roomCode}' to join!",
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "Passengers Connected (${room.players.size})",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f, fill = false),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 items(room.players) { player ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = MediumNavy),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(14.dp),
+                                .padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -281,7 +295,110 @@ fun MultiplayerScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 1. DECK SELECTION BUTTON (DEFAULTED TO LOCATION DECK)
+            ExposedDropdownMenuBox(
+                expanded = deckDropdownExpanded,
+                onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
+            ) {
+                OutlinedTextField(
+                    value = "🎴 Deck: ${selectedDeck.title}",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Game Deck", color = SunnyYellow) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = SunnyYellow,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                    )
+                )
+
+                ExposedDropdownMenu(
+                    expanded = deckDropdownExpanded,
+                    onDismissRequest = { deckDropdownExpanded = false }
+                ) {
+                    DeckRepository.DECKS.forEach { deck ->
+                        DropdownMenuItem(
+                            text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                            onClick = {
+                                selectedDeck = deck
+                                deckDropdownExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // 2. GAME MODE SELECTION BUTTON (DEFAULTED TO CLASSIC BINGO)
+            ExposedDropdownMenuBox(
+                expanded = gameModeDropdownExpanded,
+                onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
+            ) {
+                OutlinedTextField(
+                    value = "🎯 Mode: ${selectedGameMode.displayName}",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Winning Condition", color = SunnyYellow) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = SunnyYellow,
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                    )
+                )
+
+                ExposedDropdownMenu(
+                    expanded = gameModeDropdownExpanded,
+                    onDismissRequest = { gameModeDropdownExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Column {
+                                Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
+                                Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
+                            }
+                        },
+                        onClick = {
+                            selectedGameMode = GameMode.CLASSIC_LINE
+                            gameModeDropdownExpanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Column {
+                                Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
+                                Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
+                            }
+                        },
+                        onClick = {
+                            selectedGameMode = GameMode.TWO_LINES
+                            gameModeDropdownExpanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Column {
+                                Text("Blackout Bingo", fontWeight = FontWeight.Bold)
+                                Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
+                            }
+                        },
+                        onClick = {
+                            selectedGameMode = GameMode.BLACKOUT
+                            gameModeDropdownExpanded = false
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             BeveledGameButton(
                 text = "START BINGO BOARD ▶",

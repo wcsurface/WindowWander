@@ -11,6 +11,12 @@ const DECKS = [
   { id: 'deck_h', title: 'Heart of the Country', audience: 'Everyone', count: 42, icon: '🌽', bg: 'linear-gradient(135deg, #EAB308, #1E293B)' }
 ];
 
+const GAME_MODES = [
+  { id: 'classic', title: 'Classic Line Bingo', desc: 'Complete a horizontal, vertical, or diagonal line.' },
+  { id: 'two_lines', title: 'Two Lines Bingo', desc: 'Complete two winning lines.' },
+  { id: 'blackout', title: 'Blackout Bingo', desc: 'Find all 24 discoverable items and fill your card.' }
+];
+
 const SAMPLE_PROMPTS = [
   "Red Car", "Motorcycle", "Semi-Truck", "School Bus", "Emergency Vehicle",
   "Out-of-State Plate", "Billboard", "Gas Station", "Exit Sign", "Bridge",
@@ -53,7 +59,7 @@ class BingoWebEngine {
     return tiles;
   }
 
-  static checkWin(tiles) {
+  static checkWin(tiles, mode = 'classic') {
     const grid = Array(5).fill(0).map(() => Array(5).fill(false));
     tiles.forEach(t => { if (t.completed) grid[Math.floor(t.index/5)][t.index%5] = true; });
 
@@ -63,17 +69,19 @@ class BingoWebEngine {
     if ([0,1,2,3,4].every(i => grid[i][i])) lines++;
     if ([0,1,2,3,4].every(i => grid[i][4-i])) lines++;
 
-    return lines > 0;
+    if (mode === 'two_lines') return lines >= 2;
+    if (mode === 'blackout') return tiles.every(t => t.completed);
+    return lines >= 1;
   }
 }
 
 class Router {
   constructor() {
     this.currentScreen = 'home';
-    this.selectedDeck = DECKS[0];
+    this.selectedDeck = DECKS[2]; // Defaulted to location deck (Mountain West)
+    this.selectedMode = GAME_MODES[0]; // Defaulted to Classic Line Bingo
     this.board = BingoWebEngine.generateBoard();
     this.roomCode = 'ROAD';
-    this.roomMode = 'start'; // 'start', 'join', 'lobby'
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0}');
   }
 
@@ -106,14 +114,12 @@ class Router {
     let code = '';
     for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
     this.roomCode = code;
-    this.roomMode = 'lobby';
     this.navigate('multiplayer');
   }
 
   joinCarRoom(code) {
     if (!code || code.length < 4) return;
     this.roomCode = code.toUpperCase().trim();
-    this.roomMode = 'lobby';
     this.navigate('multiplayer');
   }
 
@@ -121,7 +127,7 @@ class Router {
     if (index === 12) return;
     this.board[index].completed = !this.board[index].completed;
     AudioEngine.playClick();
-    if (BingoWebEngine.checkWin(this.board)) {
+    if (BingoWebEngine.checkWin(this.board, this.selectedMode.id)) {
       this.stats.bingos += 1;
       this.stats.xp += 100;
       this.saveStats();
@@ -264,17 +270,33 @@ class Router {
         </div>
 
         <h3 style="margin:16px 0 8px 0;">Connected Passengers</h3>
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <span>👑 <strong>Road Explorer (Host)</strong></span>
           <span style="color:#10B981;font-weight:800;font-size:12px;">Ready</span>
         </div>
 
-        <button class="btn btn-orange btn-beveled" style="margin-top:16px;" onclick="router.navigate('game')">
+        <!-- 1. DECK / LOCATION SELECTOR BUTTON -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 PLAY LOCATION / DECK</label>
+          <select id="lobby-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
+            ${DECKS.map(d => `<option value="${d.id}" ${d.id===this.selectedDeck.id ? 'selected' : ''}>🎴 ${d.title} (${d.audience})</option>`).join('')}
+          </select>
+        </div>
+
+        <!-- 2. GAME MODE / WINNING CONDITION BUTTON -->
+        <div style="margin-bottom:16px;">
+          <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎯 WINNING CONDITION</label>
+          <select id="lobby-mode-select" onchange="router.selectedMode=GAME_MODES.find(m=>m.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
+            ${GAME_MODES.map(m => `<option value="${m.id}" ${m.id===this.selectedMode.id ? 'selected' : ''}>🎯 ${m.title} — ${m.desc}</option>`).join('')}
+          </select>
+        </div>
+
+        <button class="btn btn-orange btn-beveled" onclick="router.navigate('game')">
           START BINGO BOARD ▶
         </button>
       `;
     } else if (this.currentScreen === 'game') {
-      const isWin = BingoWebEngine.checkWin(this.board);
+      const isWin = BingoWebEngine.checkWin(this.board, this.selectedMode.id);
       const completedCount = this.board.filter(t => t.completed).length;
 
       main.innerHTML = `
@@ -284,7 +306,7 @@ class Router {
             <span style="font-size:20px;">🐻</span>
             <div>
               <div style="font-weight:900;font-size:16px;">${this.selectedDeck.title}</div>
-              <div style="font-size:11px;color:#FBBF24;font-weight:700;">Classic Line Bingo</div>
+              <div style="font-size:11px;color:#FBBF24;font-weight:700;">${this.selectedMode.title}</div>
             </div>
           </div>
           <div style="width:50px;"></div>
