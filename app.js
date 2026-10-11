@@ -103,10 +103,7 @@ class Router {
 
   selectDeckAndPlay(deck) {
     this.selectedDeck = deck;
-    this.board = BingoWebEngine.generateBoard();
-    this.stats.games += 1;
-    this.saveStats();
-    this.navigate('game');
+    this.startCarRoom();
   }
 
   startCarRoom() {
