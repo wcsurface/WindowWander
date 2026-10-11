@@ -509,7 +509,7 @@ fun BingoTileView(
                 indication = null,
                 onClick = onTap
             )
-            .padding(4.dp),
+            .padding(3.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -517,26 +517,26 @@ fun BingoTileView(
             verticalArrangement = Arrangement.Center
         ) {
             if (tile.isCenter) {
-                Text(text = "⭐", fontSize = 18.sp)
+                Text(text = "⭐", fontSize = 16.sp)
                 Text(
                     text = "FREE",
-                    fontSize = 13.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
                 )
             } else {
                 Text(
                     text = tile.prompt.name,
-                    fontSize = 13.sp,
+                    fontSize = 10.5.sp, // REDUCED SLIGHTLY TO PREVENT TWO-LINE WRAPPING
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    lineHeight = 15.sp,
+                    lineHeight = 12.5.sp,
                     maxLines = 3
                 )
 
                 if (tile.isCompleted) {
-                    Text(text = "✓", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    Text(text = "✓", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
                 }
             }
         }

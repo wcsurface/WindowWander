@@ -345,8 +345,8 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4px;
-  font-size: 13px; /* BOLDER & LARGER TEXT */
+  padding: 3px;
+  font-size: 11px; /* REDUCED SLIGHTLY TO FIT WORDS ON 1-2 LINES */
   font-weight: 900; /* HEAVY FUN CARTOON FONT */
   color: #FFFFFF; /* PURE WHITE TEXT */
   line-height: 1.2;
