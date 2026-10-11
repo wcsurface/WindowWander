@@ -49,7 +49,6 @@ import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
-import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @Composable
@@ -98,23 +97,6 @@ fun HomeScreen(
                             .align(Alignment.TopStart)
                             .padding(16.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(VividOrange)
-                                .padding(horizontal = 8.dp, vertical = 3.dp)
-                        ) {
-                            Text(
-                                text = "CARTOON ROAD TRIP BINGO",
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White,
-                                letterSpacing = 1.sp
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
                         Text(
                             text = "ROAD TRIP BINGO",
                             fontSize = 26.sp,

@@ -221,7 +221,6 @@ class Router {
               <rect x="174" y="128" width="28" height="10" rx="4" fill="#F59E0B"/>
             </g>
           </svg>
-          <div class="hero-tag">CARTOON ROAD TRIP BINGO</div>
           <h1 class="hero-title">ROAD TRIP BINGO</h1>
         </div>
 
