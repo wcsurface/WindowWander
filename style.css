@@ -1,12 +1,12 @@
 :root {
-  --bg-gradient-top: #0088CC;
-  --bg-gradient-mid: #00A3E0;
-  --bg-gradient-bottom: #0D7058;
-  --bg-card-dark: #111A2E;
+  --bg-gradient-top: #0F172A;
+  --bg-gradient-mid: #1E293B;
+  --bg-gradient-bottom: #0F172A;
+  --bg-card-dark: #0F172A;
   --color-yellow: #FFB800;
   --color-yellow-light: #FDE047;
   --color-orange: #F97316;
-  --color-teal: #00A896;
+  --color-teal: #0D9488;
   --color-blue: #2563EB;
   --color-green: #10B981;
   --color-gold: #EAB308;
@@ -22,9 +22,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* EXACT MATCH CYAN-TO-GREEN GRADIENT BACKGROUND */
+/* SMOOTH DEEP MIDNIGHT NAVY GRADIENT BACKGROUND MATCHING MOCKUP */
 body {
-  background: linear-gradient(180deg, #0088CC 0%, #0099D8 30%, #00A3E0 55%, #0B8062 80%, #0D7058 100%);
+  background: linear-gradient(180deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
   background-attachment: fixed;
   color: var(--text-white);
   min-height: 100vh;
@@ -43,32 +43,6 @@ body {
   background: transparent;
   overflow-x: hidden;
   box-shadow: 0 0 50px rgba(0,0,0,0.5);
-}
-
-/* PROMINENT SAFETY BANNER (VIVID ORANGE, NO CAR ICON) */
-.safety-banner {
-  background: #F97316;
-  border-bottom: 3px solid #C2410C;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-}
-
-.safety-banner strong {
-  color: #FFFFFF;
-  font-size: 15px;
-  font-weight: 900;
-  display: block;
-  letter-spacing: 0.5px;
-}
-
-.safety-banner p {
-  font-size: 12px;
-  font-weight: 700;
-  color: #FFEDD5;
-  margin-top: 2px;
 }
 
 /* MAIN CONTENT */
@@ -134,35 +108,7 @@ body {
   box-shadow: 0 6px 16px rgba(0,0,0,0.35);
 }
 
-/* HERO CARD */
-.hero-card {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  border-radius: 26px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  border: 3.5px solid #38BDF8;
-}
-
-.hero-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.hero-title {
-  position: absolute;
-  top: 36px;
-  left: 14px;
-  font-size: 28px;
-  font-weight: 900;
-  color: white;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.9);
-}
-
-/* BUTTONS */
+/* BUTTONS MATCHING MOCKUP */
 .btn {
   width: 100%;
   min-height: 58px;
@@ -182,16 +128,20 @@ body {
   transform: scale(0.95);
 }
 
+.btn-mockup-play {
+  background: linear-gradient(180deg, #FFFDF0, #FEF08A);
+  color: #0F172A;
+  border: 3.5px solid #0F172A;
+  border-radius: 34px;
+  font-size: 24px;
+  font-weight: 900;
+  box-shadow: 0 10px 28px rgba(254, 240, 138, 0.4);
+  min-height: 64px;
+}
+
 .btn-beveled {
   border-bottom: 6px solid #C2410C;
   border-top: 2px solid rgba(255,255,255,0.7);
-}
-
-.btn-primary-hero {
-  background: linear-gradient(180deg, #FFB800, #F97316);
-  color: #0F172A;
-  box-shadow: 0 10px 28px rgba(249, 115, 22, 0.6);
-  font-size: 22px;
 }
 
 .btn-yellow {
@@ -226,7 +176,7 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* CARDS & ROAD SIGNS */
+/* CARDS & ROAD SIGNS MATCHING MOCKUP */
 .card {
   background: var(--bg-card-dark);
   border-radius: 22px;
@@ -239,27 +189,24 @@ body {
 .road-sign-card {
   border-radius: 22px;
   padding: 18px;
-  border-bottom: 6px solid rgba(0,0,0,0.4);
-  border-left: 2px solid rgba(255,255,255,0.3);
-  border-right: 2px solid rgba(255,255,255,0.3);
-  border-top: 2px solid rgba(255,255,255,0.6);
+  border: 2.5px solid rgba(255,255,255,0.85);
   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
 
 .sign-blue {
-  background: linear-gradient(180deg, #2563EB, #1D4ED8);
-}
-
-.sign-teal {
   background: linear-gradient(180deg, #0D9488, #0F766E);
 }
 
+.sign-teal {
+  background: linear-gradient(180deg, #047857, #065F46);
+}
+
 .sign-badge {
-  background: var(--color-yellow);
-  color: #0F172A;
-  font-size: 11px;
+  background: #F97316;
+  color: white;
+  font-size: 10px;
   font-weight: 900;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
@@ -280,6 +227,19 @@ body {
   font-weight: 900;
   padding: 3px 8px;
   border-radius: 6px;
+}
+
+/* ORANGE SAFETY BANNER PILL MATCHING MOCKUP */
+.safety-banner-pill {
+  background: #F97316;
+  border: 2px solid #C2410C;
+  border-radius: 20px;
+  padding: 12px 16px;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
 }
 
 /* PROGRESS BAR */
@@ -346,9 +306,9 @@ body {
   justify-content: center;
   text-align: center;
   padding: 3px;
-  font-size: 11px; /* REDUCED SLIGHTLY TO FIT WORDS ON 1-2 LINES */
-  font-weight: 900; /* HEAVY FUN CARTOON FONT */
-  color: #FFFFFF; /* PURE WHITE TEXT */
+  font-size: 11px;
+  font-weight: 900;
+  color: #FFFFFF;
   line-height: 1.2;
   cursor: pointer;
   user-select: none;
@@ -376,14 +336,14 @@ body {
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* FOOTER NAV */
+/* FOOTER NAV MATCHING MOCKUP */
 .app-footer {
   position: fixed;
   bottom: 0;
   max-width: 440px;
   width: 100%;
-  height: 62px;
-  background: #09101D;
+  height: 64px;
+  background: #0B132B;
   border-top: 2px solid rgba(255,255,255,0.18);
   display: flex;
   justify-content: space-around;
@@ -395,10 +355,14 @@ body {
 .app-footer button {
   background: none;
   border: none;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: var(--text-muted);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .app-footer button.active {

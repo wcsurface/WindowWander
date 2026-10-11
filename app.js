@@ -246,44 +246,42 @@ class Router {
           </div>
         </div>
 
-        <!-- ROAD TRIP BINGO OFFICIAL LOGO HEADER CARD -->
-        <div class="hero-card" style="background:#E2E8F0;display:flex;align-items:center;justify-content:center;padding:10px;">
-          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;" />
+        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON NAVY GRADIENT MATCHING MOCKUP -->
+        <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));" />
         </div>
 
-        <!-- ⚡ PLAY NOW ▶ BUTTON OPENS IN-CAR PLAY MODAL (HOST / JOIN) -->
-        <button class="btn btn-primary-hero btn-beveled" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:14px;">
+        <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON MATCHING MOCKUP -->
+        <button class="btn btn-mockup-play" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:18px;">
           ⚡ PLAY NOW ▶
         </button>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <!-- TWO CARTOON ROAD SIGN CARDS MATCHING MOCKUP -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
           <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🌐</span>
               <span class="sign-badge">LIVE</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:8px;">Multiplayer</div>
-            <div style="font-size:11px;color:#E2E8F0;">Play online room</div>
+            <div style="font-weight:900;font-size:16px;margin-top:10px;">Multiplayer Arena</div>
+            <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
           </div>
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
-              <span class="sign-badge">8 DECKS</span>
+              <span class="sign-badge">LIVE</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:8px;">Deck Library</div>
-            <div style="font-size:11px;color:#E2E8F0;">8 Themed Decks</div>
+            <div style="font-weight:900;font-size:16px;margin-top:10px;">Deck Library</div>
+            <div style="font-size:11px;color:#E2E8F0;">8 Decks!</div>
           </div>
         </div>
 
-        <div class="card card-gradient-teal">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:900;color:#10B981;font-size:12px;">🎯 DAILY ROAD TRIP PASS</span>
-            <span class="pill-badge">+150 XP</span>
-          </div>
-          <p style="font-size:12px;color:#E2E8F0;margin-top:6px;">Spot a yellow vehicle, semi-truck, and an out-of-state plate today!</p>
+        <!-- ORANGE PILL SAFETY BANNER MATCHING MOCKUP -->
+        <div class="safety-banner-pill" style="margin-bottom:16px;">
+          Passengers Play. Drivers Drive.
         </div>
 
-        <!-- IN-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE) -->
+        <!-- IN-CAR PLAY MODAL -->
         ${this.showInCarModal ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
@@ -291,10 +289,10 @@ class Router {
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Play bingo with passengers in your car!</p>
 
               ${!this.showJoinCodeInput ? `
-                <button class="btn btn-yellow btn-beveled" style="margin-bottom:12px;" onclick="router.startCarRoomFromHome()">
+                <button class="btn btn-mockup-play" style="margin-bottom:12px;font-size:16px;" onclick="router.startCarRoomFromHome()">
                   🚗 START A GAME (HOST)
                 </button>
-                <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;" onclick="router.showJoinCodeInput=true;router.render();">
+                <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;font-size:16px;" onclick="router.showJoinCodeInput=true;router.render();">
                   📱 JOIN A GAME (CODE)
                 </button>
                 <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showInCarModal=false;router.navigate('game');">

@@ -5,40 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Road Trip Bingo - Mobile Casual Game</title>
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
-  <meta name="theme-color" content="#0088CC">
+  <meta name="theme-color" content="#0B132B">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
   <div id="app">
-    <!-- PROMINENT SAFETY BANNER (NO CAR ICON, LARGER PROMINENT TEXT) -->
-    <header class="safety-banner">
-      <div style="text-align:center;width:100%;">
-        <strong>PASSENGERS PLAY. DRIVERS DRIVE.</strong>
-        <p>Stay safe! Never operate or look at the screen while driving.</p>
-      </div>
-    </header>
-
     <!-- MAIN CONTAINER -->
     <main id="main-content">
       <!-- Dynamic content rendered by app.js -->
     </main>
 
-    <!-- FOOTER NAV -->
+    <!-- FOOTER NAV MATCHING MOCKUP -->
     <footer class="app-footer">
       <button id="nav-home" class="active" onclick="router.navigate('home')">🏠 Home</button>
-      <button id="nav-decks" onclick="router.navigate('decks')">🎴 Decks</button>
-      <button id="nav-stats" onclick="router.navigate('stats')">🏆 Stats</button>
-      <button id="nav-settings" onclick="router.navigate('settings')">⚙️ Settings</button>
+      <button id="nav-decks" onclick="router.navigate('decks')">🧳 Decks</button>
+      <button id="nav-stats" onclick="router.navigate('stats')">🏆 Rankings</button>
+      <button id="nav-settings" onclick="router.navigate('settings')">🏪 Shop</button>
     </footer>
   </div>
 
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=21').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=22').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>

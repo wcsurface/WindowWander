@@ -3,7 +3,6 @@ package app.vercel.windowwander.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -97,7 +96,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS, SETTINGS)
@@ -110,184 +109,95 @@ fun HomeScreen(
                     onOpenSettings = onOpenSettings
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // ROAD TRIP BINGO LOGO HEADER CARD
-                Card(
+                // CENTERED OFFICIAL LOGO GRAPHIC (FLOATING DIRECTLY ON NAVY GRADIENT MATCHING MOCKUP)
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(210.dp)
-                        .shadow(16.dp, RoundedCornerShape(26.dp)),
-                    shape = RoundedCornerShape(26.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE2E8F0)),
-                    border = BorderStroke(3.dp, Color(0xFF38BDF8))
+                        .height(230.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
+                    Image(
+                        painter = painterResource(id = R.drawable.road_trip_bingo_logo),
+                        contentDescription = "Road Trip Bingo Logo",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.road_trip_bingo_logo),
-                            contentDescription = "Road Trip Bingo Logo",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                            .shadow(12.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // HUGE 3D BEVELED GOLDEN PLAY BUTTON -> OPENS IN-CAR SAME-CAR PLAY MODAL (HOST/JOIN)
+                // LARGE CAPSULE PLAY NOW BUTTON MATCHING MOCKUP
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
                     onClick = { showInCarPlayModal = true },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(64.dp),
-                    buttonColor = SunnyYellow,
-                    bevelColor = Color(0xFFD97706),
-                    textColor = DeepNavy,
-                    fontSize = 22
+                        .height(68.dp),
+                    textColor = Color(0xFF0F172A),
+                    fontSize = 24
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
-                // GAME MODES CARTOON ROAD SIGN CARDS
+                // TWO CARTOON ROAD SIGN CARDS MATCHING MOCKUP
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // MULTIPLAYER ROAD SIGN (ONLINE MATCHMAKING)
+                    // MULTIPLAYER ARENA ROAD SIGN
                     CartoonRoadSignCard(
-                        title = "Multiplayer",
-                        subtitle = "Play online room",
+                        title = "Multiplayer Arena",
+                        subtitle = "Online Now!",
                         icon = "🌐",
                         badgeText = "LIVE",
                         onClick = { showOnlineMultiplayerModal = true },
                         modifier = Modifier
                             .weight(1f)
-                            .height(120.dp),
-                        signColor = Color(0xFF2563EB)
+                            .height(130.dp),
+                        signColor = Color(0xFF0D9488) // Teal Blue Gradient
                     )
 
                     // DECK LIBRARY ROAD SIGN
                     CartoonRoadSignCard(
                         title = "Deck Library",
-                        subtitle = "8 Themed Decks",
+                        subtitle = "8 Decks!",
                         icon = "🎴",
-                        badgeText = "8 DECKS",
+                        badgeText = "LIVE",
                         onClick = onChooseDeck,
                         modifier = Modifier
                             .weight(1f)
-                            .height(120.dp),
-                        signColor = Color(0xFF0D9488)
+                            .height(130.dp),
+                        signColor = Color(0xFF047857) // Emerald Green Gradient
                     )
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
-                // DAILY CHALLENGE PASS CARD
-                Card(
+                // ORANGE PILL SAFETY BANNER MATCHING MOCKUP
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(12.dp, RoundedCornerShape(18.dp)),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                        .shadow(12.dp, RoundedCornerShape(20.dp))
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(VividOrange)
+                        .border(2.dp, Color(0xFFC2410C), RoundedCornerShape(20.dp))
+                        .padding(vertical = 12.dp, horizontal = 16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                Brush.linearGradient(
-                                    listOf(CompletedGreen.copy(alpha = 0.3f), MediumNavy)
-                                )
-                            )
-                            .border(1.5.dp, CompletedGreen, RoundedCornerShape(18.dp))
-                            .padding(16.dp)
-                    ) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text = "🎯", fontSize = 20.sp, modifier = Modifier.padding(end = 6.dp))
-                                    Text(
-                                        text = "DAILY ROAD TRIP PASS",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = CompletedGreen
-                                    )
-                                }
-
-                                Box(
-                                    modifier = Modifier
-                                        .shadow(4.dp, RoundedCornerShape(8.dp))
-                                        .background(CompletedGreen)
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                ) {
-                                    Text(text = "+150 XP", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = "Spot a yellow vehicle, semi-truck, and an out-of-state plate today!",
-                                fontSize = 13.sp,
-                                color = Color.White.copy(alpha = 0.9f)
-                            )
-                        }
-                    }
+                    Text(
+                        text = "Passengers Play. Drivers Drive.",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // PROMINENT SAFETY BANNER
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(12.dp, RoundedCornerShape(18.dp)),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = VividOrange),
-                    border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFC2410C))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "PASSENGERS PLAY. DRIVERS DRIVE.",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 0.5.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Stay safe! Never operate or look at the screen while driving.",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFFEDD5),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = "Privacy Policy & Terms of Service",
-                    fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.5f),
-                    modifier = Modifier.clickable { onOpenPrivacy() }
-                )
             }
 
             // SAME-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE/QR)
@@ -333,7 +243,7 @@ fun HomeScreen(
                             )
 
                             if (!showJoinCodeInput) {
-                                // 1. HOST A GAME (GENERATES QR CODE & 4-LETTER CODE)
+                                // 1. HOST A GAME
                                 BeveledGameButton(
                                     text = "🚗 START A GAME (HOST)",
                                     onClick = {
@@ -343,24 +253,20 @@ fun HomeScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(56.dp),
-                                    buttonColor = SunnyYellow,
-                                    bevelColor = Color(0xFFD97706),
                                     textColor = DeepNavy,
                                     fontSize = 16
                                 )
 
                                 Spacer(modifier = Modifier.height(12.dp))
 
-                                // 2. JOIN A GAME (SHOWS CODE INPUT)
+                                // 2. JOIN A GAME
                                 BeveledGameButton(
                                     text = "📱 JOIN A GAME (CODE)",
                                     onClick = { showJoinCodeInput = true },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(56.dp),
-                                    buttonColor = Color(0xFF2563EB),
-                                    bevelColor = Color(0xFF1D4ED8),
-                                    textColor = Color.White,
+                                    textColor = DeepNavy,
                                     fontSize = 16
                                 )
 
@@ -414,9 +320,7 @@ fun HomeScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(52.dp),
-                                    buttonColor = CompletedGreen,
-                                    bevelColor = Color(0xFF047857),
-                                    textColor = Color.White,
+                                    textColor = DeepNavy,
                                     fontSize = 16
                                 )
 
@@ -434,7 +338,7 @@ fun HomeScreen(
                 }
             }
 
-            // ONLINE MULTIPLAYER POPUP MODAL (DECK SELECTOR & CLASSIC BINGO)
+            // ONLINE MULTIPLAYER POPUP MODAL
             AnimatedVisibility(
                 visible = showOnlineMultiplayerModal && !isSearchingOpponent,
                 enter = scaleIn(),
@@ -511,7 +415,7 @@ fun HomeScreen(
 
                             Spacer(modifier = Modifier.height(12.dp))
 
-                            // FIXED GAME MODE BADGE (ONLINE IS CLASSIC BINGO ONLY)
+                            // FIXED GAME MODE BADGE
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -541,9 +445,7 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),
-                                buttonColor = VividOrange,
-                                bevelColor = Color(0xFFC2410C),
-                                textColor = Color.White,
+                                textColor = DeepNavy,
                                 fontSize = 18
                             )
                         }
