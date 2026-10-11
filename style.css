@@ -33,9 +33,17 @@ body {
   align-items: center;
 }
 
-/* ROCKY MOUNTAINS FULL-SCREEN BACKGROUND THEME */
-body.rocky-mountains-theme {
-  background: url('bg_rocky_mountains.jpg') center center / cover no-repeat fixed !important;
+/* MAIN HOME LOBBY BACKGROUND THEME */
+body.main-home-theme {
+  background: url('bg_main_home.jpg') center center / cover no-repeat fixed !important;
+}
+
+/* DECK GAMEPLAY BACKGROUND THEMES */
+body.deck-game-theme {
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
 }
 
 #app {

@@ -287,11 +287,29 @@ class Router {
     const main = document.getElementById('main-content');
     if (!main) return;
 
-    // ROCKY MOUNTAINS FULL-SCREEN BACKGROUND THEME SWITCHER
-    if (this.currentScreen === 'game' && this.selectedDeck.id === 'deck_c') {
-      document.body.classList.add('rocky-mountains-theme');
+    // MAIN LOBBY BACKGROUND THEME ALWAYS USED ON HOME SCREEN
+    if (this.currentScreen === 'home') {
+      document.body.classList.add('main-home-theme');
+      document.body.classList.remove('deck-game-theme');
+    } else if (this.currentScreen === 'game') {
+      document.body.classList.remove('main-home-theme');
+      document.body.classList.add('deck-game-theme');
+      const deckMap = {
+        'deck_a': 'bg_classic_roadtrip.jpg',
+        'deck_b': 'bg_weird_roadtrip.jpg',
+        'deck_c': 'bg_rocky_mountains.jpg',
+        'deck_d': 'bg_desert_southwest.jpg',
+        'deck_e': 'bg_northeast.jpg',
+        'deck_f': 'bg_south.jpg',
+        'deck_g': 'bg_west_coast.jpg',
+        'deck_h': 'bg_heartland.jpg'
+      };
+      const bgImg = deckMap[this.selectedDeck.id] || 'bg_classic_roadtrip.jpg';
+      document.body.style.backgroundImage = `url('${bgImg}')`;
     } else {
-      document.body.classList.remove('rocky-mountains-theme');
+      document.body.classList.remove('main-home-theme');
+      document.body.classList.remove('deck-game-theme');
+      document.body.style.backgroundImage = '';
     }
 
     if (this.currentScreen === 'home') {
@@ -311,7 +329,7 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT -->
+        <!-- CENTERED OFFICIAL TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>

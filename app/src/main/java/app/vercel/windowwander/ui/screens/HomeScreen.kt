@@ -57,7 +57,7 @@ import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.components.ArcadeHudBar
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.CartoonRoadSignCard
-import app.vercel.windowwander.ui.components.ScenicHighwayBackground
+import app.vercel.windowwander.ui.components.MainHomeBackground
 import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
@@ -109,7 +109,7 @@ fun HomeScreen(
             .build()
     }
 
-    ScenicHighwayBackground {
+    MainHomeBackground {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier

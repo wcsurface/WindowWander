@@ -45,7 +45,31 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// DECK-AWARE FULL SCREEN ARTWORK BACKGROUND FOR ALL 8 DECKS
+// MAIN LOBBY FULL SCREEN ARTWORK BACKGROUND (ALWAYS USED ON HOME SCREEN)
+@Composable
+fun MainHomeBackground(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.bg_main_home),
+            contentDescription = "Main Home Lobby Background Artwork",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        // Soft darkening scrim overlay for UI element contrast
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.15f))
+        )
+
+        content()
+    }
+}
+
+// DECK-AWARE FULL SCREEN ARTWORK BACKGROUND FOR GAMEPLAY SCREENS
 @Composable
 fun ScenicHighwayBackground(
     deckId: String = "deck_c",
