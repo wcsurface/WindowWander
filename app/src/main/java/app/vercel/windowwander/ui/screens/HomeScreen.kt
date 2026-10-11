@@ -111,7 +111,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED OFFICIAL LOGO GRAPHIC (FLOATING DIRECTLY ON NAVY GRADIENT MATCHING MOCKUP)
+                // CENTERED TRANSPARENT LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT (NO SURROUNDING BOX)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -122,15 +122,13 @@ fun HomeScreen(
                         painter = painterResource(id = R.drawable.road_trip_bingo_logo),
                         contentDescription = "Road Trip Bingo Logo",
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .shadow(12.dp)
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // LARGE CAPSULE PLAY NOW BUTTON MATCHING MOCKUP
+                // LARGE CAPSULE PLAY NOW BUTTON
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
                     onClick = { showInCarPlayModal = true },
@@ -143,7 +141,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // TWO CARTOON ROAD SIGN CARDS MATCHING MOCKUP
+                // TWO CARTOON ROAD SIGN CARDS
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
@@ -158,7 +156,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(130.dp),
-                        signColor = Color(0xFF0D9488) // Teal Blue Gradient
+                        signColor = Color(0xFF0D9488)
                     )
 
                     // DECK LIBRARY ROAD SIGN
@@ -171,13 +169,13 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(130.dp),
-                        signColor = Color(0xFF047857) // Emerald Green Gradient
+                        signColor = Color(0xFF047857)
                     )
                 }
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // ORANGE PILL SAFETY BANNER MATCHING MOCKUP
+                // ORANGE PILL SAFETY BANNER
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

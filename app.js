@@ -246,17 +246,17 @@ class Router {
           </div>
         </div>
 
-        <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON NAVY GRADIENT MATCHING MOCKUP -->
-        <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.5));" />
+        <!-- CENTERED OFFICIAL TRANSPARENT LOGO FLOATING DIRECTLY ON SMOOTH SKY BLUE GRADIENT -->
+        <div style="width:100%;height:230px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
+          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON MATCHING MOCKUP -->
+        <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
         <button class="btn btn-mockup-play" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:18px;">
           ⚡ PLAY NOW ▶
         </button>
 
-        <!-- TWO CARTOON ROAD SIGN CARDS MATCHING MOCKUP -->
+        <!-- TWO CARTOON ROAD SIGN CARDS -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
           <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -276,7 +276,7 @@ class Router {
           </div>
         </div>
 
-        <!-- ORANGE PILL SAFETY BANNER MATCHING MOCKUP -->
+        <!-- ORANGE PILL SAFETY BANNER -->
         <div class="safety-banner-pill" style="margin-bottom:16px;">
           Passengers Play. Drivers Drive.
         </div>
