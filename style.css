@@ -1,7 +1,7 @@
 :root {
-  --bg-gradient-top: #0F172A;
-  --bg-gradient-mid: #1E293B;
-  --bg-gradient-bottom: #0F172A;
+  --bg-gradient-top: #0284C7;
+  --bg-gradient-mid: #38BDF8;
+  --bg-gradient-bottom: #0369A1;
   --bg-card-dark: #0F172A;
   --color-yellow: #FFB800;
   --color-yellow-light: #FDE047;
@@ -22,9 +22,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* SMOOTH DEEP MIDNIGHT NAVY GRADIENT BACKGROUND MATCHING MOCKUP */
+/* VIBRANT, LIGHT SKY BLUE GRADIENT BACKGROUND */
 body {
-  background: linear-gradient(180deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+  background: linear-gradient(180deg, #0284C7 0%, #38BDF8 35%, #0284C7 70%, #0369A1 100%);
   background-attachment: fixed;
   color: var(--text-white);
   min-height: 100vh;

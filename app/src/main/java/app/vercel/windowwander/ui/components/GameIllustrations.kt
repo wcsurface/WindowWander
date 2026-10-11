@@ -1,10 +1,5 @@
 package app.vercel.windowwander.ui.components
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +40,7 @@ import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.random.Random
 
-// ULTRA-CLEAN DEEP MIDNIGHT NAVY GRADIENT WORLD BACKGROUND
+// BRIGHT, VIBRANT SKY BLUE WORLD BACKGROUND
 @Composable
 fun ScenicHighwayBackground(
     modifier: Modifier = Modifier,
@@ -55,13 +48,13 @@ fun ScenicHighwayBackground(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            // Smooth gradient top to bottom (no glitch lines)
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF0F172A), // Midnight Navy Top
-                        Color(0xFF1E293B), // Deep Blue-Navy Center
-                        Color(0xFF0F172A)  // Dark Base
+                        Color(0xFF0284C7), // Vibrant Sky Blue Top
+                        Color(0xFF38BDF8), // Light Cyan Horizon
+                        Color(0xFF0284C7), // Sky Blue Mid
+                        Color(0xFF0369A1)  // Rich Sky Blue Base
                     )
                 )
             )
@@ -176,7 +169,7 @@ fun BeveledGameButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    buttonColor: Color = Color(0xFFFFFBEB), // Cream fill matching mockup
+    buttonColor: Color = Color(0xFFFFFBEB),
     bevelColor: Color = Color(0xFFD97706),
     textColor: Color = DeepNavy,
     fontSize: Int = 22
@@ -195,7 +188,7 @@ fun BeveledGameButton(
                 .clip(RoundedCornerShape(30.dp))
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFFFFFDF0), Color(0xFFFEF08A))
+                        colors = listOf(buttonColor, buttonColor.copy(alpha = 0.9f))
                     )
                 )
                 .border(3.dp, Color(0xFF0F172A), RoundedCornerShape(30.dp)),
