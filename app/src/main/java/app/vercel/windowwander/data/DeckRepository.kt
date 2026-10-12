@@ -207,6 +207,54 @@ object DeckRepository {
         p("d42", "Desert Joshua Tree", "Twisted spiky Joshua tree plant", "nature", false, Region.SOUTHWEST)
     )
 
+    // -------------------------------------------------------------
+    // DECK E: NORTHEAST & MID-ATLANTIC (42 EXACT UPDATED PROMPTS)
+    // -------------------------------------------------------------
+    val DECK_E_PROMPTS = listOf(
+        p("ne1", "Historic Stone Wall", "Colonial-era stacked fieldstone wall lining the road", "landscape", false, Region.NORTHEAST),
+        p("ne2", "Covered Bridge", "Traditional wooden covered bridge", "structures", false, Region.NORTHEAST),
+        p("ne3", "Food Drive-Thru", "Food drive-thru", "structures", false, Region.NORTHEAST),
+        p("ne4", "State Toll Booth", "State turnpike or highway toll collection plaza", "structures", false, Region.NORTHEAST),
+        p("ne5", "Lighthouse", "Coastal or maritime lighthouse tower", "structures", false, Region.NORTHEAST),
+        p("ne6", "Historic Colonial Home", "Saltbox or Cape Cod style historic home", "structures", false, Region.NORTHEAST),
+        p("ne7", "Seafood Shack", "Roadside clam shack or lobster pound sign", "food", false, Region.NORTHEAST),
+        p("ne8", "Apple Stand", "Roadside farm stand selling apples or cider", "food", false, Region.NORTHEAST),
+        p("ne9", "Lush Rolling Hills", "Green rolling hills or New England pastureland", "landscape", false, Region.NORTHEAST),
+        p("ne10", "Pine Forest", "Dense deciduous and pine tree forest canopy", "nature", false, Region.NORTHEAST),
+        p("ne11", "Gas Station Sign", "Convenience store sign", "structures", false, Region.NORTHEAST),
+        p("ne12", "Giant Roadside Statue", "A giant roadside statue", "structures", false, Region.NORTHEAST),
+        p("ne13", "Interstate Route Shield", "Numbered US or Interstate shield sign", "signs", false, Region.NORTHEAST),
+        p("ne14", "Historic Town Sign", "historic town sign", "sign", false, Region.NORTHEAST),
+        p("ne15", "Antique Shop Sign", "Barn or storefront advertising antiques", "signs", false, Region.NORTHEAST),
+        p("ne16", "Police Car", "Police car", "vehicles", false, Region.NORTHEAST),
+        p("ne17", "Point of Interest Sign", "Sign pointing to interest", "sign", false, Region.NORTHEAST),
+        p("ne18", "Construction Zone", "Construction Zone", "landscape", false, Region.NORTHEAST),
+        p("ne19", "Lighthouse License Plate", "Specialty state lighthouse or coastal license plate", "decor", false, Region.NORTHEAST),
+        p("ne20", "Campground", "A campground", "outdoor", false, Region.NORTHEAST),
+        p("ne21", "Commuter bus", "Intercity commuter bus or coach", "vehicles", false, Region.NORTHEAST),
+        p("ne22", "Deer Crossing Sign", "Deer crossing road sign", "signs", false, Region.NORTHEAST),
+        p("ne23", "Dump Truck", "Dump Truck", "equipment", false, Region.NORTHEAST),
+        p("ne24", "Convertible Car", "Convertible Car", "vehicles", false, Region.NORTHEAST),
+        p("ne25", "Brick House", "Brick house", "structure", false, Region.NORTHEAST),
+        p("ne26", "Boat on Trailer", "Sailboat or motorboat hauled on a trailer", "vehicles", false, Region.NORTHEAST),
+        p("ne27", "Maple Syrup Sign", "Sign advertising local maple syrup or sugar shack", "food", false, Region.NORTHEAST),
+        p("ne28", "Golf Course Sign", "Advert for a golf course", "signs", false, Region.NORTHEAST),
+        p("ne29", "Giant American Flag", "Giant American flag", "decor", false, Region.NORTHEAST),
+        p("ne30", "Attorney Sign", "Sign for attorney", "signs", false, Region.NORTHEAST),
+        p("ne31", "Commuter Train", "Passenger commuter rail train running alongside highway", "vehicles", false, Region.NORTHEAST),
+        p("ne32", "Water Tower", "A water tower", "structures", false, Region.NORTHEAST),
+        p("ne33", "Historic Milestone", "Old stone milestone marker along older highways", "signs", false, Region.NORTHEAST),
+        p("ne34", "Multi-Level Overpass", "Complex highway interchange overpass structure", "structures", false, Region.NORTHEAST),
+        p("ne35", "Kayak on Roof", "Car carrying kayaks or canoes on roof racks", "vehicles", false, Region.NORTHEAST),
+        p("ne36", "Rain", "Rain", "outdoor", false, Region.NORTHEAST),
+        p("ne37", "Lighthouse Sign", "Lighthouse Sign", "sign", false, Region.NORTHEAST),
+        p("ne38", "Band Sticker", "Band sticker on a car", "sign", false, Region.NORTHEAST),
+        p("ne39", "Yellow Car", "Yellow Car", "vehicles", false, Region.NORTHEAST),
+        p("ne40", "Motorcycle", "A motorcycle", "vehicles", false, Region.NORTHEAST),
+        p("ne41", "Rest Area", "A rest area", "structures", false, Region.NORTHEAST),
+        p("ne42", "Weeping Willow Tree", "Large weeping willow tree by road or pond", "nature", false, Region.NORTHEAST)
+    )
+
     val DECKS = listOf(
         Deck(
             id = "deck_a",
@@ -261,7 +309,7 @@ object DeckRepository {
             difficulty = "Medium",
             isFree = true,
             region = Region.NORTHEAST,
-            prompts = DECK_A_PROMPTS.shuffled()
+            prompts = DECK_E_PROMPTS
         ),
         Deck(
             id = "deck_f",

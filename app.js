@@ -152,6 +152,51 @@ const DESERT_SOUTHWEST_PROMPTS = [
   "Desert Joshua Tree"
 ];
 
+const NORTHEAST_PROMPTS = [
+  "Historic Stone Wall",
+  "Covered Bridge",
+  "Food Drive-Thru",
+  "State Toll Booth",
+  "Lighthouse",
+  "Historic Colonial Home",
+  "Seafood Shack",
+  "Apple Stand",
+  "Lush Rolling Hills",
+  "Pine Forest",
+  "Gas Station Sign",
+  "Giant Roadside Statue",
+  "Interstate Route Shield",
+  "Historic Town Sign",
+  "Antique Shop Sign",
+  "Police Car",
+  "Point of Interest Sign",
+  "Construction Zone",
+  "Lighthouse License Plate",
+  "Campground",
+  "Commuter bus",
+  "Deer Crossing Sign",
+  "Dump Truck",
+  "Convertible Car",
+  "Brick House",
+  "Boat on Trailer",
+  "Maple Syrup Sign",
+  "Golf Course Sign",
+  "Giant American Flag",
+  "Attorney Sign",
+  "Commuter Train",
+  "Water Tower",
+  "Historic Milestone",
+  "Multi-Level Overpass",
+  "Kayak on Roof",
+  "Rain",
+  "Lighthouse Sign",
+  "Band Sticker",
+  "Yellow Car",
+  "Motorcycle",
+  "Rest Area",
+  "Weeping Willow Tree"
+];
+
 class AudioEngine {
   static playPop() {
     try {
@@ -176,6 +221,7 @@ class BingoWebEngine {
     let prompts = MOUNTAIN_WEST_PROMPTS;
     if (deckId === 'deck_b') prompts = WEIRD_PROMPTS;
     if (deckId === 'deck_d') prompts = DESERT_SOUTHWEST_PROMPTS;
+    if (deckId === 'deck_e') prompts = NORTHEAST_PROMPTS;
 
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
