@@ -677,6 +677,19 @@ fun BingoTileView(
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
+    // DYNAMIC FONT SIZING CALCULATION FOR MAXIMUM TEXT SIZE & ZERO WORD CLIPPING
+    val promptLength = tile.prompt.name.length
+    val longestWordLength = tile.prompt.name.split(" ").maxOfOrNull { it.length } ?: promptLength
+
+    val dynamicFontSize = when {
+        longestWordLength >= 12 -> 9.sp
+        promptLength <= 7 -> 13.5.sp
+        promptLength <= 12 -> 12.sp
+        promptLength <= 18 -> 10.5.sp
+        promptLength <= 24 -> 9.5.sp
+        else -> 8.5.sp
+    }
+
     // FAST & SMOOTH PRESS ANIMATION (100-160ms)
     val scale by animateFloatAsState(
         targetValue = when {
@@ -775,11 +788,11 @@ fun BingoTileView(
                 )
         )
 
-        // TILE CONTENT (HIGH CONTRAST BOLD WHITE TEXT WITH SHADOW)
+        // TILE CONTENT (HIGH CONTRAST DYNAMICALLY SIZED BOLD WHITE TEXT WITH SHADOW)
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 4.dp, vertical = 3.dp),
+                .padding(horizontal = 3.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
         ) {
             if (tile.isCenter) {
@@ -790,7 +803,7 @@ fun BingoTileView(
                     Text(text = "⭐", fontSize = 22.sp)
                     Text(
                         text = "FREE",
-                        fontSize = 13.sp,
+                        fontSize = 13.5.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White,
                         style = TextStyle(
@@ -805,12 +818,13 @@ fun BingoTileView(
             } else {
                 Text(
                     text = tile.prompt.name,
-                    fontSize = 10.5.sp,
+                    fontSize = dynamicFontSize,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    lineHeight = 12.5.sp,
+                    lineHeight = (dynamicFontSize.value * 1.15f).sp,
                     maxLines = 3,
+                    softWrap = true,
                     style = TextStyle(
                         shadow = Shadow(
                             color = Color.Black.copy(alpha = 0.85f),

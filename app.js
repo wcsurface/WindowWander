@@ -977,11 +977,22 @@ class Router {
         </div>
 
         <div class="bingo-grid">
-          ${this.board.map(t => `
-            <div class="tile ${t.completed ? 'completed' : ''} ${t.isCenter ? 'center' : ''}" onclick="router.toggleTile(${t.index}, event)">
-              ${t.isCenter ? '⭐<br>FREE' : `${t.name}`}
-            </div>
-          `).join('')}
+          ${this.board.map(t => {
+            if (t.isCenter) {
+              return `<div class="tile center" onclick="router.toggleTile(${t.index}, event)">⭐<br>FREE</div>`;
+            }
+            const pLen = t.name.length;
+            const maxWordLen = Math.max(...t.name.split(" ").map(w => w.length));
+            let fontSz = "12px";
+            if (maxWordLen >= 12) fontSz = "9px";
+            else if (pLen <= 7) fontSz = "13.5px";
+            else if (pLen <= 12) fontSz = "12px";
+            else if (pLen <= 18) fontSz = "10.5px";
+            else if (pLen <= 24) fontSz = "9.5px";
+            else fontSz = "8.5px";
+
+            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;word-break:keep-all;overflow-wrap:break-word;">${t.name}</span></div>`;
+          }).join('')}
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
