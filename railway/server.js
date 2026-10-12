@@ -364,15 +364,24 @@ app.get('/api/auth/leaderboard', async (req, res) => {
 // MULTIPLAYER ROOMS REST API & WEBSOCKET ENDPOINTS FOR LIVE IN-CAR GAMEPLAY
 // -------------------------------------------------------------
 app.post('/api/rooms/create', (req, res) => {
-  const { hostNickname, deckId } = req.body;
-  const code = generateRoomCode();
-  const room = {
-    code,
-    hostNickname,
-    deckId: deckId || 'deck_a',
-    players: [{ nickname: hostNickname, isHost: true, completedTiles: [12] }]
-  };
-  rooms.set(code, room);
+  const { code, hostNickname, deckId } = req.body;
+  const roomCode = (code || generateRoomCode()).toUpperCase().trim();
+
+  let room = rooms.get(roomCode);
+  if (!room) {
+    room = {
+      code: roomCode,
+      hostNickname: hostNickname || 'Host Passenger',
+      deckId: deckId || 'deck_a',
+      players: [{ nickname: hostNickname || 'Host Passenger', isHost: true, completedTiles: [12] }]
+    };
+    rooms.set(roomCode, room);
+  } else {
+    if (!room.players.some(p => p.nickname === hostNickname)) {
+      room.players.push({ nickname: hostNickname, isHost: true, completedTiles: [12] });
+    }
+  }
+
   res.json({ success: true, room });
 });
 
@@ -386,19 +395,19 @@ app.post('/api/rooms/join', (req, res) => {
   let room = rooms.get(upperCode);
 
   if (!room) {
-    // Create new room dynamically for testing code join
+    // Create new room for this code with joining user as host
     room = {
       code: upperCode,
-      hostNickname: 'Host Passenger',
+      hostNickname: nickname,
       deckId: 'deck_a',
-      players: [{ nickname: 'Host Passenger', isHost: true, completedTiles: [12] }]
+      players: [{ nickname, isHost: true, completedTiles: [12] }]
     };
     rooms.set(upperCode, room);
-  }
-
-  const existingPlayer = room.players.find(p => p.nickname === nickname);
-  if (!existingPlayer) {
-    room.players.push({ nickname, isHost: false, completedTiles: [12] });
+  } else {
+    const existingPlayer = room.players.find(p => p.nickname === nickname);
+    if (!existingPlayer) {
+      room.players.push({ nickname, isHost: false, completedTiles: [12] });
+    }
   }
 
   res.json({ success: true, room });

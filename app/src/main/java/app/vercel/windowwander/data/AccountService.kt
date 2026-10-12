@@ -1,6 +1,5 @@
 package app.vercel.windowwander.data
 
-import app.vercel.windowwander.model.MultiplayerRoom
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.model.RoomPlayer
 import kotlinx.coroutines.Dispatchers
@@ -201,7 +200,7 @@ object AccountService {
     }
 
     // LIVE RAILWAY MULTIPLAYER ROOM API
-    suspend fun createRoomOnRailway(hostNickname: String, deckId: String): RoomResult = withContext(Dispatchers.IO) {
+    suspend fun createRoomOnRailway(code: String, hostNickname: String, deckId: String): RoomResult = withContext(Dispatchers.IO) {
         try {
             val url = URL("$railwayBaseUrl/api/rooms/create")
             val conn = url.openConnection() as HttpURLConnection
@@ -212,6 +211,7 @@ object AccountService {
             conn.doOutput = true
 
             val body = JSONObject().apply {
+                put("code", code)
                 put("hostNickname", hostNickname)
                 put("deckId", deckId)
             }

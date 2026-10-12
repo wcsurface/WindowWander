@@ -252,17 +252,15 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         viewModelScope.launch {
-            val res = AccountService.createRoomOnRailway(hostNickname, deckId)
-            if (res.success && res.roomCode.isNotBlank()) {
+            val res = AccountService.createRoomOnRailway(localRoom.roomCode, hostNickname, deckId)
+            if (res.success) {
                 val railwayRoom = localRoom.copy(
-                    roomCode = res.roomCode,
+                    roomCode = res.roomCode.ifBlank { localRoom.roomCode },
                     players = res.players.ifEmpty { localRoom.players }
                 )
                 _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
-                startLiveRoomSync(res.roomCode)
-            } else {
-                startLiveRoomSync(localRoom.roomCode)
             }
+            startLiveRoomSync(localRoom.roomCode)
         }
     }
 
@@ -297,17 +295,15 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     players = res.players.ifEmpty { localRoom.players }
                 )
                 _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
-                startLiveRoomSync(cleanCode)
-            } else {
-                startLiveRoomSync(cleanCode)
             }
+            startLiveRoomSync(cleanCode)
         }
     }
 
     private fun startLiveRoomSync(roomCode: String) {
         viewModelScope.launch {
             while (_uiState.value.multiplayerRoom?.roomCode == roomCode) {
-                delay(2500)
+                delay(1500)
                 try {
                     val res = AccountService.getRoomFromRailway(roomCode)
                     if (res.success && res.players.isNotEmpty()) {
