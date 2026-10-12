@@ -11,6 +11,7 @@ import java.net.URL
 
 object AccountService {
 
+    var vercelBaseUrl: String = "https://windowwander.vercel.app"
     var railwayBaseUrl: String = "https://windowwander-production.up.railway.app"
 
     data class AuthResult(
@@ -199,10 +200,10 @@ object AccountService {
         }
     }
 
-    // LIVE RAILWAY MULTIPLAYER ROOM API
+    // LIVE VERCEL / RAILWAY MULTIPLAYER ROOM API
     suspend fun createRoomOnRailway(code: String, hostNickname: String, deckId: String): RoomResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/rooms/create")
+            val url = URL("$vercelBaseUrl/api/rooms")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
@@ -211,6 +212,7 @@ object AccountService {
             conn.doOutput = true
 
             val body = JSONObject().apply {
+                put("action", "create")
                 put("code", code)
                 put("hostNickname", hostNickname)
                 put("deckId", deckId)
@@ -237,7 +239,7 @@ object AccountService {
 
     suspend fun joinRoomOnRailway(code: String, nickname: String): RoomResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/rooms/join")
+            val url = URL("$vercelBaseUrl/api/rooms")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
@@ -246,6 +248,7 @@ object AccountService {
             conn.doOutput = true
 
             val body = JSONObject().apply {
+                put("action", "join")
                 put("code", code)
                 put("nickname", nickname)
             }
@@ -271,7 +274,7 @@ object AccountService {
 
     suspend fun getRoomFromRailway(code: String): RoomResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/rooms/get")
+            val url = URL("$vercelBaseUrl/api/rooms")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
@@ -280,6 +283,7 @@ object AccountService {
             conn.doOutput = true
 
             val body = JSONObject().apply {
+                put("action", "get")
                 put("code", code)
             }
 

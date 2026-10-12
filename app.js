@@ -410,10 +410,10 @@ class RailwayAuthService {
 
   static async createRoom(hostNickname, deckId) {
     try {
-      const res = await fetch(`${this.baseUrl}/api/rooms/create`, {
+      const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hostNickname, deckId })
+        body: JSON.stringify({ action: 'create', hostNickname, deckId })
       });
       return await res.json();
     } catch(err) {
@@ -423,10 +423,10 @@ class RailwayAuthService {
 
   static async joinRoom(code, nickname) {
     try {
-      const res = await fetch(`${this.baseUrl}/api/rooms/join`, {
+      const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, nickname })
+        body: JSON.stringify({ action: 'join', code, nickname })
       });
       return await res.json();
     } catch(err) {
@@ -436,10 +436,10 @@ class RailwayAuthService {
 
   static async getRoom(code) {
     try {
-      const res = await fetch(`${this.baseUrl}/api/rooms/get`, {
+      const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
+        body: JSON.stringify({ action: 'get', code })
       });
       return await res.json();
     } catch(err) {
@@ -618,7 +618,7 @@ class Router {
           this.render();
         }
       }
-    }, 2000);
+    }, 1500);
   }
 
   toggleTile(index, event) {
