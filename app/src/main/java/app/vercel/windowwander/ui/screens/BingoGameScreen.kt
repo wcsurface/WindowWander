@@ -691,7 +691,7 @@ fun BingoTileView(
         label = "tilePressScale"
     )
 
-    // BASE GEL GRADIENT COLORS
+    // BASE GEL GRADIENT COLORS (DARKENED RICH COBALT BLUE FOR UNDISCOVERED TILES)
     val baseGradient = when {
         tile.isCenter -> listOf(
             Color(0xFFFFF066), // Bright Luminous Yellow Top
@@ -704,9 +704,9 @@ fun BingoTileView(
             Color(0xFF047857)  // Deeper Forest Green Bottom
         )
         else -> listOf(
-            Color(0xFF38BDF8), // Radiant Cyan-Blue Top
-            Color(0xFF0284C7), // Saturated Luminous Royal Blue
-            Color(0xFF0369A1)  // Deep Oceanic Blue Bottom
+            Color(0xFF0284C7), // Saturated Royal Blue Top
+            Color(0xFF0369A1), // Deep Rich Cobalt Blue
+            Color(0xFF075985)  // Dark Saturated Navy Blue Bottom
         )
     }
 
@@ -719,7 +719,7 @@ fun BingoTileView(
             listOf(Color.White, Color(0xFF86EFAC), Color(0xFF065F46))
         )
         else -> Brush.verticalGradient(
-            listOf(Color.White.copy(alpha = 0.9f), Color(0xFF38BDF8), Color(0xFF0284C7).copy(alpha = 0.5f))
+            listOf(Color.White.copy(alpha = 0.85f), Color(0xFF0284C7), Color(0xFF075985).copy(alpha = 0.6f))
         )
     }
 
@@ -737,7 +737,7 @@ fun BingoTileView(
                 spotColor = when {
                     tile.isCenter -> SunnyYellow
                     tile.isCompleted -> CompletedGreen
-                    else -> Color(0xFF0284C7)
+                    else -> Color(0xFF0369A1)
                 }
             )
             .clip(RoundedCornerShape(18.dp))
@@ -762,20 +762,20 @@ fun BingoTileView(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(24.dp)
+                .height(22.dp)
                 .padding(horizontal = 4.dp, vertical = 2.dp)
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 8.dp, bottomEnd = 8.dp))
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            Color.White.copy(alpha = 0.70f),
-                            Color.White.copy(alpha = 0.10f)
+                            Color.White.copy(alpha = 0.55f),
+                            Color.White.copy(alpha = 0.05f)
                         )
                     )
                 )
         )
 
-        // TILE CONTENT (NO GOLDEN FOUND BADGE!)
+        // TILE CONTENT (HIGH CONTRAST BOLD WHITE TEXT WITH SHADOW)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -795,7 +795,7 @@ fun BingoTileView(
                         color = Color.White,
                         style = TextStyle(
                             shadow = Shadow(
-                                color = Color.Black.copy(alpha = 0.4f),
+                                color = Color.Black.copy(alpha = 0.6f),
                                 offset = Offset(0f, 2f),
                                 blurRadius = 4f
                             )
@@ -813,9 +813,9 @@ fun BingoTileView(
                     maxLines = 3,
                     style = TextStyle(
                         shadow = Shadow(
-                            color = Color.Black.copy(alpha = 0.45f),
-                            offset = Offset(0f, 1.5f),
-                            blurRadius = 3f
+                            color = Color.Black.copy(alpha = 0.85f),
+                            offset = Offset(0f, 2f),
+                            blurRadius = 4f
                         )
                     )
                 )

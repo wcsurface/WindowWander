@@ -326,7 +326,7 @@ body.deck-game-theme {
 .h-g { background: linear-gradient(180deg, #10B981 0%, #059669 50%, #064E3B 100%); }
 .h-o { background: linear-gradient(180deg, #F97316 0%, #D97706 50%, #78350F 100%); }
 
-/* 5x5 BINGO GRID & GLOSSY GEL TILES */
+/* 5x5 BINGO GRID & GLOSSY GEL TILES (DARKENED DEEP COBALT BLUE FOR HIGH CONTRAST) */
 .bingo-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -336,7 +336,7 @@ body.deck-game-theme {
 }
 
 .tile {
-  background: linear-gradient(180deg, #38BDF8 0%, #0284C7 50%, #0369A1 100%);
+  background: linear-gradient(180deg, #0284C7 0%, #0369A1 50%, #075985 100%);
   border: 2px solid rgba(255,255,255,0.85);
   border-radius: 18px;
   display: flex;
@@ -351,10 +351,10 @@ body.deck-game-theme {
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 8px 18px rgba(2, 132, 199, 0.45);
+  box-shadow: 0 8px 18px rgba(3, 105, 161, 0.5);
   position: relative;
   overflow: hidden;
-  text-shadow: 0 1.5px 3px rgba(0,0,0,0.45);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.85);
   transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
 }
 
@@ -364,9 +364,9 @@ body.deck-game-theme {
   top: 2px;
   left: 4px;
   right: 4px;
-  height: 22px;
+  height: 20px;
   border-radius: 14px 14px 6px 6px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.08) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.05) 100%);
   pointer-events: none;
 }
 
