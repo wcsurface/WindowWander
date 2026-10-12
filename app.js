@@ -345,16 +345,9 @@ class Router {
     if (this.currentScreen === 'home') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       main.innerHTML = `
-        <div class="user-header">
-          <div class="profile-badge">
-            <div class="avatar-circle">🐻</div>
-            <div>
-              <div style="font-weight:900;font-size:13px;color:white;">${this.userNickname}</div>
-              <div style="font-size:10px;color:#FBBF24;font-weight:800;">Lvl ${level} Explorer • ${this.stats.xp} XP</div>
-            </div>
-          </div>
-          <!-- COINS PILL ONLY (SETTINGS GEAR REMOVED FROM TOP RIGHT) -->
-          <div class="currency-pill">🪙 1,250</div>
+        <div class="user-header" style="justify-content:flex-end;">
+          <!-- XP TOTAL PILL ONLY (BEAR AVATAR & COINS REMOVED) -->
+          <div class="currency-pill" onclick="router.navigate('leaderboard')" style="cursor:pointer;border-color:#FBBF24;">⭐ ${this.stats.xp} XP</div>
         </div>
 
         <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
@@ -534,7 +527,7 @@ class Router {
           <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 UNDER CONSTRUCTION 🚧</h2>
           <p style="font-size:14px;font-weight:800;color:#FEF3C7;line-height:1.5;">
             The Road Trip Shop is opening soon!<br>
-            Keep earning coins on your road trips to unlock custom vehicle skins, tile stamps, and avatars!
+            Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and avatars!
           </p>
         </div>
       `;

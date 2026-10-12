@@ -81,12 +81,12 @@ fun GradientPillNavigationBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. HOME (CAR ICON 15% LARGER)
+            // 1. HOME
             PillNavItem(
                 iconRes = R.drawable.nav_home_icon,
                 label = "Home",
                 isSelected = currentScreenName == "home",
-                iconSize = 60, // 15% larger!
+                iconSize = 60,
                 onClick = onNavigateHome,
                 modifier = Modifier.weight(1f)
             )
@@ -168,7 +168,6 @@ fun PillNavItem(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(60.dp)
         ) {
-            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON
             if (isSelected) {
                 Box(
                     modifier = Modifier
@@ -195,7 +194,6 @@ fun PillNavItem(
 
         Spacer(modifier = Modifier.height(1.dp))
 
-        // GLOWING TEXT SHADOW MATCHING SAMPLE IMAGE
         Text(
             text = label,
             fontSize = 11.5.sp,
@@ -272,82 +270,38 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR
+// ARCADE HUD STATUS BAR (XP TOTAL PILL ONLY - BEAR AVATAR & COINS REMOVED)
 @Composable
 fun ArcadeHudBar(
-    nickname: String,
-    level: Int,
-    xp: Int = 0,
-    coins: Int = 1250,
-    onOpenStats: () -> Unit,
-    onOpenSettings: () -> Unit = {},
+    xp: Int = 250,
+    onOpenStats: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // AVATAR & LEVEL PILL
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .shadow(10.dp, RoundedCornerShape(22.dp))
-                .clip(RoundedCornerShape(22.dp))
-                .background(Color(0xFF0F172A))
-                .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
-                .clickable { onOpenStats() }
-                .padding(horizontal = 14.dp, vertical = 7.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(listOf(SunnyYellow, VividOrange))
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "🐻", fontSize = 20.sp)
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column {
-                Text(
-                    text = nickname,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White
-                )
-                Text(
-                    text = "Lvl $level Explorer",
-                    fontSize = 10.sp,
-                    color = SunnyYellowLight,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
-        }
-
-        // COINS PILL ONLY
+        // XP TOTAL PILL
         Box(
             modifier = Modifier
                 .shadow(8.dp, RoundedCornerShape(18.dp))
                 .clip(RoundedCornerShape(18.dp))
                 .background(Color(0xFF0F172A))
-                .border(2.dp, GoldWinner, RoundedCornerShape(18.dp))
-                .padding(horizontal = 14.dp, vertical = 7.dp)
+                .border(2.dp, SunnyYellow, RoundedCornerShape(18.dp))
+                .clickable { onOpenStats() }
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "🪙", fontSize = 16.sp)
+                Text(text = "⭐", fontSize = 16.sp)
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "$coins",
+                    text = "$xp XP",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Black,
-                    color = GoldWinnerLight
+                    color = SunnyYellowLight
                 )
             }
         }

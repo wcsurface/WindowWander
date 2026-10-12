@@ -122,12 +122,9 @@ fun HomeScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS)
+                // TOP ARCADE HUD BAR (XP TOTAL ONLY)
                 ArcadeHudBar(
-                    nickname = profile.nickname,
-                    level = profile.level,
                     xp = profile.xp,
-                    coins = 1250,
                     onOpenStats = onOpenStats
                 )
 
@@ -200,11 +197,11 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER (TOP CROWN REMOVED, ENLARGED CUP & TEXT)
+                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER
                 CartoonRoadSignCard(
                     title = "🏆 LEADERBOARD",
                     subtitle = "Points & Items Found Rankings",
-                    icon = "", // Top crown removed!
+                    icon = "",
                     badgeText = "RANKS",
                     titleFontSize = 22,
                     subtitleFontSize = 13,
