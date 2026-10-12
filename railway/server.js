@@ -21,6 +21,27 @@ const db = process.env.DATABASE_URL ? new Pool({
 const rooms = new Map();
 const usersDb = new Map();
 
+// VERIFY & INIT DB TABLES
+async function initDbTables() {
+  if (db) {
+    try {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS room_lobbies (
+          room_code VARCHAR(10) PRIMARY KEY,
+          host_nickname VARCHAR(100) NOT NULL,
+          deck_id VARCHAR(50) DEFAULT 'deck_a',
+          players_json TEXT NOT NULL,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log('Railway PostgreSQL room_lobbies table verified.');
+    } catch(e) {
+      console.error('Failed to init room_lobbies table:', e.message);
+    }
+  }
+}
+initDbTables();
+
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password + '_roadtrip_salt_2026').digest('hex');
 }
@@ -363,59 +384,136 @@ app.get('/api/auth/leaderboard', async (req, res) => {
 // -------------------------------------------------------------
 // MULTIPLAYER ROOMS REST API & WEBSOCKET ENDPOINTS FOR LIVE IN-CAR GAMEPLAY
 // -------------------------------------------------------------
-app.post('/api/rooms/create', (req, res) => {
+app.post('/api/rooms/create', async (req, res) => {
   const { code, hostNickname, deckId } = req.body;
   const roomCode = (code || generateRoomCode()).toUpperCase().trim();
+  const hostNick = hostNickname || 'Host Passenger';
+  const deck = deckId || 'deck_a';
+  const initialPlayers = [{ nickname: hostNick, isHost: true, completedTiles: [12] }];
 
+  if (db) {
+    try {
+      const existing = await db.query('SELECT players_json FROM room_lobbies WHERE room_code = $1', [roomCode]);
+      if (existing.rows.length > 0) {
+        let players = JSON.parse(existing.rows[0].players_json);
+        if (!players.some(p => p.nickname === hostNick)) {
+          players.push({ nickname: hostNick, isHost: true, completedTiles: [12] });
+        }
+        await db.query(
+          'UPDATE room_lobbies SET host_nickname = $1, deck_id = $2, players_json = $3, updated_at = CURRENT_TIMESTAMP WHERE room_code = $4',
+          [hostNick, deck, JSON.stringify(players), roomCode]
+        );
+        return res.json({ success: true, room: { code: roomCode, hostNickname: hostNick, deckId: deck, players } });
+      } else {
+        await db.query(
+          'INSERT INTO room_lobbies (room_code, host_nickname, deck_id, players_json) VALUES ($1, $2, $3, $4)',
+          [roomCode, hostNick, deck, JSON.stringify(initialPlayers)]
+        );
+        return res.json({ success: true, room: { code: roomCode, hostNickname: hostNick, deckId: deck, players: initialPlayers } });
+      }
+    } catch(err) {
+      console.error('DB Create Room Error:', err);
+    }
+  }
+
+  // IN-MEMORY FALLBACK
   let room = rooms.get(roomCode);
   if (!room) {
     room = {
       code: roomCode,
-      hostNickname: hostNickname || 'Host Passenger',
-      deckId: deckId || 'deck_a',
-      players: [{ nickname: hostNickname || 'Host Passenger', isHost: true, completedTiles: [12] }]
+      hostNickname: hostNick,
+      deckId: deck,
+      players: initialPlayers
     };
     rooms.set(roomCode, room);
   } else {
-    if (!room.players.some(p => p.nickname === hostNickname)) {
-      room.players.push({ nickname: hostNickname, isHost: true, completedTiles: [12] });
+    if (!room.players.some(p => p.nickname === hostNick)) {
+      room.players.push({ nickname: hostNick, isHost: true, completedTiles: [12] });
     }
   }
 
   res.json({ success: true, room });
 });
 
-app.post('/api/rooms/join', (req, res) => {
+app.post('/api/rooms/join', async (req, res) => {
   const { code, nickname } = req.body;
   if (!code || !nickname) {
     return res.status(400).json({ success: false, error: 'Code and nickname required' });
   }
 
   const upperCode = code.toUpperCase().trim();
-  let room = rooms.get(upperCode);
+  const playerNick = nickname.trim();
 
+  if (db) {
+    try {
+      const existing = await db.query('SELECT host_nickname, deck_id, players_json FROM room_lobbies WHERE room_code = $1', [upperCode]);
+      if (existing.rows.length > 0) {
+        let players = JSON.parse(existing.rows[0].players_json);
+        if (!players.some(p => p.nickname === playerNick)) {
+          players.push({ nickname: playerNick, isHost: false, completedTiles: [12] });
+          await db.query(
+            'UPDATE room_lobbies SET players_json = $1, updated_at = CURRENT_TIMESTAMP WHERE room_code = $2',
+            [JSON.stringify(players), upperCode]
+          );
+        }
+        return res.json({ success: true, room: { code: upperCode, hostNickname: existing.rows[0].host_nickname, deckId: existing.rows[0].deck_id, players } });
+      } else {
+        // Room created dynamically when joined
+        const initialPlayers = [{ nickname: playerNick, isHost: true, completedTiles: [12] }];
+        await db.query(
+          'INSERT INTO room_lobbies (room_code, host_nickname, deck_id, players_json) VALUES ($1, $2, $3, $4)',
+          [upperCode, playerNick, 'deck_a', JSON.stringify(initialPlayers)]
+        );
+        return res.json({ success: true, room: { code: upperCode, hostNickname: playerNick, deckId: 'deck_a', players: initialPlayers } });
+      }
+    } catch(err) {
+      console.error('DB Join Room Error:', err);
+    }
+  }
+
+  // IN-MEMORY FALLBACK
+  let room = rooms.get(upperCode);
   if (!room) {
-    // Create new room for this code with joining user as host
     room = {
       code: upperCode,
-      hostNickname: nickname,
+      hostNickname: playerNick,
       deckId: 'deck_a',
-      players: [{ nickname, isHost: true, completedTiles: [12] }]
+      players: [{ nickname: playerNick, isHost: true, completedTiles: [12] }]
     };
     rooms.set(upperCode, room);
   } else {
-    const existingPlayer = room.players.find(p => p.nickname === nickname);
-    if (!existingPlayer) {
-      room.players.push({ nickname, isHost: false, completedTiles: [12] });
+    if (!room.players.some(p => p.nickname === playerNick)) {
+      room.players.push({ nickname: playerNick, isHost: false, completedTiles: [12] });
     }
   }
 
   res.json({ success: true, room });
 });
 
-app.post('/api/rooms/get', (req, res) => {
+app.post('/api/rooms/get', async (req, res) => {
   const { code } = req.body;
   const upperCode = (code || '').toUpperCase().trim();
+
+  if (db) {
+    try {
+      const result = await db.query('SELECT host_nickname, deck_id, players_json FROM room_lobbies WHERE room_code = $1', [upperCode]);
+      if (result.rows.length > 0) {
+        const u = result.rows[0];
+        return res.json({
+          success: true,
+          room: {
+            code: upperCode,
+            hostNickname: u.host_nickname,
+            deckId: u.deck_id,
+            players: JSON.parse(u.players_json)
+          }
+        });
+      }
+    } catch(err) {
+      console.error('DB Get Room Error:', err);
+    }
+  }
+
   const room = rooms.get(upperCode);
   if (room) {
     res.json({ success: true, room });
@@ -424,9 +522,38 @@ app.post('/api/rooms/get', (req, res) => {
   }
 });
 
-app.post('/api/rooms/update-tiles', (req, res) => {
+app.post('/api/rooms/update-tiles', async (req, res) => {
   const { code, nickname, completedTiles } = req.body;
   const upperCode = (code || '').toUpperCase().trim();
+
+  if (db) {
+    try {
+      const result = await db.query('SELECT host_nickname, deck_id, players_json FROM room_lobbies WHERE room_code = $1', [upperCode]);
+      if (result.rows.length > 0) {
+        let players = JSON.parse(result.rows[0].players_json);
+        const player = players.find(p => p.nickname === nickname);
+        if (player) {
+          player.completedTiles = completedTiles || [12];
+          await db.query(
+            'UPDATE room_lobbies SET players_json = $1, updated_at = CURRENT_TIMESTAMP WHERE room_code = $2',
+            [JSON.stringify(players), upperCode]
+          );
+        }
+        return res.json({
+          success: true,
+          room: {
+            code: upperCode,
+            hostNickname: result.rows[0].host_nickname,
+            deckId: result.rows[0].deck_id,
+            players
+          }
+        });
+      }
+    } catch(err) {
+      console.error('DB Update Tiles Error:', err);
+    }
+  }
+
   const room = rooms.get(upperCode);
   if (room) {
     const player = room.players.find(p => p.nickname === nickname);

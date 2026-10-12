@@ -302,8 +302,10 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun startLiveRoomSync(roomCode: String) {
         viewModelScope.launch {
-            while (_uiState.value.multiplayerRoom?.roomCode == roomCode) {
-                delay(1500)
+            while (true) {
+                val currentRoomCode = _uiState.value.multiplayerRoom?.roomCode
+                if (currentRoomCode != roomCode) break
+
                 try {
                     val res = AccountService.getRoomFromRailway(roomCode)
                     if (res.success && res.players.isNotEmpty()) {
@@ -313,7 +315,11 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                             } ?: state
                         }
                     }
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    // Ignore sync network errors
+                }
+
+                delay(1500)
             }
         }
     }
