@@ -122,8 +122,10 @@ fun HomeScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP ARCADE HUD BAR (XP TOTAL ONLY)
+                // TOP ARCADE HUD BAR (NAME, LEVEL & XP PILLS)
                 ArcadeHudBar(
+                    nickname = profile.nickname,
+                    level = profile.level,
                     xp = profile.xp,
                     onOpenStats = onOpenStats
                 )

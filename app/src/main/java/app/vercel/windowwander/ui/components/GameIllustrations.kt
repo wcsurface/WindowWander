@@ -41,7 +41,6 @@ import app.vercel.windowwander.R
 import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.GoldWinner
-import app.vercel.windowwander.ui.theme.GoldWinnerLight
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
@@ -270,9 +269,11 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR (XP TOTAL PILL ONLY - BEAR AVATAR & COINS REMOVED)
+// ARCADE HUD STATUS BAR (NAME, LEVEL & XP PILLS - BEAR ICON REMOVED)
 @Composable
 fun ArcadeHudBar(
+    nickname: String = "Road Explorer",
+    level: Int = 3,
     xp: Int = 250,
     onOpenStats: () -> Unit = {},
     modifier: Modifier = Modifier
@@ -281,9 +282,35 @@ fun ArcadeHudBar(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // USER NICKNAME, LEVEL & TITLE PILL (BEAR EMOJI REMOVED)
+        Box(
+            modifier = Modifier
+                .shadow(10.dp, RoundedCornerShape(22.dp))
+                .clip(RoundedCornerShape(22.dp))
+                .background(Color(0xFF0F172A))
+                .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
+                .clickable { onOpenStats() }
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Column {
+                Text(
+                    text = nickname,
+                    fontSize = 13.5.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White
+                )
+                Text(
+                    text = "Lvl $level Explorer",
+                    fontSize = 10.5.sp,
+                    color = SunnyYellowLight,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+        }
+
         // XP TOTAL PILL
         Box(
             modifier = Modifier

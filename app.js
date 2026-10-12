@@ -345,8 +345,15 @@ class Router {
     if (this.currentScreen === 'home') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       main.innerHTML = `
-        <div class="user-header" style="justify-content:flex-end;">
-          <!-- XP TOTAL PILL ONLY (BEAR AVATAR & COINS REMOVED) -->
+        <div class="user-header">
+          <!-- USERNAME, LEVEL & TITLE PILL (BEAR EMOJI REMOVED) -->
+          <div class="profile-badge" onclick="router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
+            <div>
+              <div style="font-weight:900;font-size:13.5px;color:white;">${this.userNickname}</div>
+              <div style="font-size:10.5px;color:#FBBF24;font-weight:800;">Lvl ${level} Explorer</div>
+            </div>
+          </div>
+          <!-- XP TOTAL PILL -->
           <div class="currency-pill" onclick="router.navigate('leaderboard')" style="cursor:pointer;border-color:#FBBF24;">⭐ ${this.stats.xp} XP</div>
         </div>
 
