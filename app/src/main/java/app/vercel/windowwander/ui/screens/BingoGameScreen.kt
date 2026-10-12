@@ -1,5 +1,7 @@
 package app.vercel.windowwander.ui.screens
 
+import android.media.AudioManager
+import android.media.ToneGenerator
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -263,6 +265,7 @@ fun BingoGameScreen(
                         BingoTileView(
                             tile = tile,
                             isWinningLine = winResult.winningLineIndices.flatten().contains(tile.index),
+                            soundEnabled = soundEnabled,
                             hapticsEnabled = hapticsEnabled,
                             onTapWithCenter = { windowCenter ->
                                 val relativeCenter = Offset(
@@ -669,13 +672,18 @@ fun OpponentMiniBoardCard(
 fun BingoTileView(
     tile: BingoTile,
     isWinningLine: Boolean,
-    hapticsEnabled: Boolean,
+    soundEnabled: Boolean = true,
+    hapticsEnabled: Boolean = true,
     onTapWithCenter: (Offset) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
+
+    val toneGenerator = remember {
+        try { ToneGenerator(AudioManager.STREAM_MUSIC, 80) } catch (e: Exception) { null }
+    }
 
     // DYNAMIC 3-LINE PROMPT FORMATTING & LONGEST WORD FIT FONT CALCULATION
     val (formattedText, fontSizeSp) = remember(tile.prompt.name) {
@@ -790,6 +798,11 @@ fun BingoTileView(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = {
+                    if (soundEnabled && !tile.isCompleted) {
+                        try {
+                            toneGenerator?.startTone(ToneGenerator.TONE_PROP_ACK, 70)
+                        } catch (e: Exception) {}
+                    }
                     if (hapticsEnabled) {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
