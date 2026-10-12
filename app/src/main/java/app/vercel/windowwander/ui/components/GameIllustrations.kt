@@ -269,7 +269,7 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR (NAME, LEVEL & XP PILLS - BEAR ICON REMOVED)
+// ARCADE HUD STATUS BAR (NAME, LEVEL & TITLE ON ONE SINGLE LINE)
 @Composable
 fun ArcadeHudBar(
     nickname: String = "Road Explorer",
@@ -285,7 +285,7 @@ fun ArcadeHudBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // USER NICKNAME, LEVEL & TITLE PILL (BEAR EMOJI REMOVED)
+        // USER NICKNAME - LEVEL TITLE ON ONE SINGLE LINE
         Box(
             modifier = Modifier
                 .shadow(10.dp, RoundedCornerShape(22.dp))
@@ -293,22 +293,14 @@ fun ArcadeHudBar(
                 .background(Color(0xFF0F172A))
                 .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
                 .clickable { onOpenStats() }
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp, vertical = 9.dp)
         ) {
-            Column {
-                Text(
-                    text = nickname,
-                    fontSize = 13.5.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White
-                )
-                Text(
-                    text = "Lvl $level Explorer",
-                    fontSize = 10.5.sp,
-                    color = SunnyYellowLight,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
+            Text(
+                text = "$nickname - Lvl $level Explorer",
+                fontSize = 13.5.sp,
+                fontWeight = FontWeight.Black,
+                color = Color.White
+            )
         }
 
         // XP TOTAL PILL
