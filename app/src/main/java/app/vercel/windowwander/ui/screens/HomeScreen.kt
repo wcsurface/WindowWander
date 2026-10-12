@@ -200,22 +200,24 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER
+                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER (TOP CROWN REMOVED, ENLARGED CUP & TEXT)
                 CartoonRoadSignCard(
-                    title = "🏆 Leaderboard",
+                    title = "🏆 LEADERBOARD",
                     subtitle = "Points & Items Found Rankings",
-                    icon = "👑",
+                    icon = "", // Top crown removed!
                     badgeText = "RANKS",
+                    titleFontSize = 22,
+                    subtitleFontSize = 13,
                     onClick = onOpenLeaderboard,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
+                        .height(108.dp),
                     signColor = Color(0xFF1D4ED8)
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // PROMINENT LARGE ORANGE SAFETY BANNER (BIGGER TEXT TO FILL AREA)
+                // PROMINENT LARGE ORANGE SAFETY BANNER
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

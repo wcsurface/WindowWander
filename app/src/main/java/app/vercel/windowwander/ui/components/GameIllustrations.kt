@@ -163,7 +163,6 @@ fun PillNavItem(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(60.dp)
         ) {
-            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON (PROMINENT & TWICE AS BIG)
             if (isSelected) {
                 Box(
                     modifier = Modifier
@@ -184,13 +183,12 @@ fun PillNavItem(
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = label,
-                modifier = Modifier.size(52.dp) // TWICE AS BIG 3D ICON
+                modifier = Modifier.size(52.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(1.dp))
 
-        // GLOWING TEXT SHADOW MATCHING SAMPLE IMAGE
         Text(
             text = label,
             fontSize = 11.5.sp,
@@ -398,6 +396,8 @@ fun CartoonRoadSignCard(
     subtitle: String,
     icon: String,
     badgeText: String? = null,
+    titleFontSize: Int = 16,
+    subtitleFontSize: Int = 11,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     signColor: Color = Color(0xFF15803D)
@@ -428,7 +428,12 @@ fun CartoonRoadSignCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = icon, fontSize = 28.sp)
+                    if (icon.isNotEmpty()) {
+                        Text(text = icon, fontSize = 28.sp)
+                    } else {
+                        Spacer(modifier = Modifier.width(1.dp))
+                    }
+
                     if (!badgeText.isNullOrEmpty()) {
                         Box(
                             modifier = Modifier
@@ -449,13 +454,13 @@ fun CartoonRoadSignCard(
                 Column {
                     Text(
                         text = title,
-                        fontSize = 16.sp,
+                        fontSize = titleFontSize.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
                     )
                     Text(
                         text = subtitle,
-                        fontSize = 11.sp,
+                        fontSize = subtitleFontSize.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White.copy(alpha = 0.85f)
                     )

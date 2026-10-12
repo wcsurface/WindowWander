@@ -380,14 +380,13 @@ class Router {
           </div>
         </div>
 
-        <!-- LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER -->
-        <div class="road-sign-card" onclick="router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:26px;">👑</span>
+        <!-- LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER (TOP CROWN REMOVED, ENLARGED TROPHY & TEXT) -->
+        <div class="road-sign-card" onclick="router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;padding:22px 20px;">
+          <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:4px;">
             <span class="sign-badge" style="background:#FBBF24;color:#0F172A;">RANKS</span>
           </div>
-          <div style="font-weight:900;font-size:18px;margin-top:6px;">🏆 Leaderboard</div>
-          <div style="font-size:11px;color:#E2E8F0;">Points & Items Found Rankings</div>
+          <div style="font-weight:900;font-size:22px;color:white;">🏆 LEADERBOARD</div>
+          <div style="font-size:13px;color:#E2E8F0;font-weight:700;">Points & Items Found Rankings</div>
         </div>
 
         <!-- ORANGE PILL SAFETY BANNER -->
