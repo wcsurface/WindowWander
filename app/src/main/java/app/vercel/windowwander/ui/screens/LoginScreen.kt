@@ -1,6 +1,6 @@
 package app.vercel.windowwander.ui.screens
 
-import androidx.compose.foundation.Image
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +52,11 @@ import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.VividOrange
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 
 @Composable
 fun LoginScreen(
@@ -64,10 +69,23 @@ fun LoginScreen(
     onNavigateShop: () -> Unit,
     onNavigateSettings: () -> Unit
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     var usernameInput by remember { mutableStateOf(profile.nickname) }
     var passwordInput by remember { mutableStateOf("") }
     var isRegisterMode by remember { mutableStateOf(false) }
+
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
 
     MainHomeBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -75,7 +93,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 86.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // TOP BAR
@@ -109,16 +127,19 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED LOGO
+                // CENTERED ANIMATED GIF LOGO
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.road_trip_bingo_animated_logo),
-                        contentDescription = "Road Trip Bingo Logo",
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(R.drawable.road_trip_bingo_animated_logo)
+                            .build(),
+                        imageLoader = imageLoader,
+                        contentDescription = "Road Trip Bingo Animated Logo",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize()
                     )
