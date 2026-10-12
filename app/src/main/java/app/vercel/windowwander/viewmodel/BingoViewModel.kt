@@ -3,6 +3,7 @@ package app.vercel.windowwander.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import app.vercel.windowwander.data.AccountService
 import app.vercel.windowwander.data.DeckRepository
 import app.vercel.windowwander.data.MultiplayerService
 import app.vercel.windowwander.data.UserPreferences
@@ -28,40 +29,39 @@ enum class Screen {
     MULTIPLAYER_LOBBY,
     LEADERBOARD,
     STATS,
-    SHOP,
-    LOGIN,
     SETTINGS,
-    PRIVACY_TERMS
+    PRIVACY_TERMS,
+    SHOP,
+    LOGIN
 }
 
-data class UiState(
+data class BingoUiState(
     val currentScreen: Screen = Screen.HOME,
-    val selectedDeck: Deck = DeckRepository.DECKS[2], // Mountain West default
+    val selectedRegion: Region = Region.UNIVERSAL,
+    val selectedDeck: Deck = DeckRepository.DECKS[2], // Mountain West
+    val gameMode: GameMode = GameMode.CLASSIC_LINE,
     val currentBoard: List<BingoTile> = emptyList(),
     val winResult: WinResult = WinResult(false, 0, emptyList(), emptyList()),
-    val gameMode: GameMode = GameMode.CLASSIC_LINE,
-    val selectedRegion: Region = Region.MOUNTAIN_WEST,
     val playerProfile: PlayerProfile = PlayerProfile(),
     val multiplayerRoom: MultiplayerRoom? = null,
-    val showBingoCelebration: Boolean = false,
-    val showAccountPrompt: Boolean = false,
     val isSearchingOpponent: Boolean = false,
     val opponentFoundName: String? = null,
-    val isLoggedIn: Boolean = false,
     val soundEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val confirmTapEnabled: Boolean = false,
     val kidsModeEasy: Boolean = false,
     val darkMode: Boolean = false,
+    val showBingoCelebration: Boolean = false,
+    val showAccountPrompt: Boolean = false,
+    val isLoggedIn: Boolean = false,
     val canUndo: Boolean = false
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val preferences = UserPreferences(application)
-
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(BingoUiState())
+    val uiState: StateFlow<BingoUiState> = _uiState.asStateFlow()
 
     private val boardHistory = mutableListOf<List<BingoTile>>()
 
@@ -70,26 +70,16 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadPreferences() {
-        val profile = preferences.getProfile()
-        val region = preferences.getSelectedRegion()
-        val sound = preferences.isSoundEnabled()
-        val haptics = preferences.isHapticsEnabled()
-        val confirmTap = preferences.isConfirmTapEnabled()
-        val kidsMode = preferences.isKidsModeEasy()
-        val darkMode = preferences.isDarkMode()
-
-        val defaultRegionDeck = DeckRepository.DECKS.find { it.region == region } ?: DeckRepository.DECKS[2]
-
+        val loadedProfile = preferences.getProfile()
         _uiState.update {
             it.copy(
-                playerProfile = profile,
-                selectedRegion = region,
-                selectedDeck = defaultRegionDeck,
-                soundEnabled = sound,
-                hapticsEnabled = haptics,
-                confirmTapEnabled = confirmTap,
-                kidsModeEasy = kidsMode,
-                darkMode = darkMode
+                playerProfile = loadedProfile,
+                selectedRegion = preferences.getSelectedRegion(),
+                soundEnabled = preferences.isSoundEnabled(),
+                hapticsEnabled = preferences.isHapticsEnabled(),
+                confirmTapEnabled = preferences.isConfirmTapEnabled(),
+                kidsModeEasy = preferences.isKidsModeEasy(),
+                darkMode = preferences.isDarkMode()
             )
         }
     }
@@ -103,17 +93,17 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loginUser(username: String, pass: String) {
-        val updated = _uiState.value.playerProfile.copy(
-            nickname = username,
-            earnedBadges = _uiState.value.playerProfile.earnedBadges + "cloud_backup"
-        )
-        preferences.saveProfile(updated)
-        _uiState.update {
-            it.copy(
-                playerProfile = updated,
-                isLoggedIn = true,
-                currentScreen = Screen.HOME
-            )
+        viewModelScope.launch {
+            val result = AccountService.login(username, pass)
+            val loadedProfile = result.profile ?: _uiState.value.playerProfile.copy(nickname = username)
+            preferences.saveProfile(loadedProfile)
+            _uiState.update {
+                it.copy(
+                    playerProfile = loadedProfile,
+                    isLoggedIn = true,
+                    currentScreen = Screen.HOME
+                )
+            }
         }
     }
 
@@ -139,97 +129,56 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         boardHistory.clear()
         boardHistory.add(newBoard)
 
-        val initialWin = BingoEngine.evaluateWin(newBoard, gameMode)
-
-        val currentProfile = _uiState.value.playerProfile
-        val updatedProfile = currentProfile.copy(
-            gamesPlayed = currentProfile.gamesPlayed + 1,
-            dailyGamesPlayedToday = currentProfile.dailyGamesPlayedToday + 1
+        val updatedProfile = _uiState.value.playerProfile.copy(
+            gamesPlayed = _uiState.value.playerProfile.gamesPlayed + 1,
+            dailyGamesPlayedToday = _uiState.value.playerProfile.dailyGamesPlayedToday + 1
         )
         preferences.saveProfile(updatedProfile)
 
         _uiState.update {
             it.copy(
+                currentScreen = Screen.BINGO_GAME,
                 selectedDeck = deck,
-                currentBoard = newBoard,
-                winResult = initialWin,
                 gameMode = gameMode,
+                currentBoard = newBoard,
+                winResult = WinResult(false, 0, emptyList(), emptyList()),
                 playerProfile = updatedProfile,
                 showBingoCelebration = false,
                 showAccountPrompt = false,
-                isSearchingOpponent = false,
-                opponentFoundName = null,
-                currentScreen = Screen.BINGO_GAME,
                 canUndo = false
             )
         }
     }
 
-    fun startOnlineMatchmaking(deck: Deck = _uiState.value.selectedDeck) {
-        _uiState.update {
-            it.copy(
-                selectedDeck = deck,
-                gameMode = GameMode.CLASSIC_LINE,
-                isSearchingOpponent = true,
-                opponentFoundName = null
-            )
-        }
-
-        viewModelScope.launch {
-            delay(2000)
-            val opponentNames = listOf("Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)")
-            val opponent = opponentNames.random()
-
-            _uiState.update {
-                it.copy(
-                    opponentFoundName = opponent
-                )
-            }
-
-            delay(1200)
-            startNewGame(deck = deck, gameMode = GameMode.CLASSIC_LINE)
-        }
-    }
-
-    fun cancelMatchmaking() {
-        _uiState.update {
-            it.copy(
-                isSearchingOpponent = false,
-                opponentFoundName = null
-            )
-        }
-    }
-
-    fun tapTile(tileIndex: Int) {
+    fun tapTile(index: Int) {
         val currentBoard = _uiState.value.currentBoard
-        if (tileIndex < 0 || tileIndex >= currentBoard.size) return
+        if (index !in currentBoard.indices) return
 
-        boardHistory.add(currentBoard)
+        val updatedBoard = currentBoard.mapIndexed { i, tile ->
+            if (i == index) tile.copy(isCompleted = !tile.isCompleted) else tile
+        }
 
-        val updatedBoard = BingoEngine.toggleTile(currentBoard, tileIndex)
+        boardHistory.add(updatedBoard)
+
         val winEval = BingoEngine.evaluateWin(updatedBoard, _uiState.value.gameMode)
-
-        val wasAlreadyWon = _uiState.value.winResult.hasWon
-        val newlyWon = winEval.hasWon && !wasAlreadyWon
+        val newlyWon = winEval.hasWon && !_uiState.value.winResult.hasWon
 
         var profile = _uiState.value.playerProfile
-
-        val isNowCompleted = updatedBoard[tileIndex].isCompleted
-        if (isNowCompleted && !updatedBoard[tileIndex].isCenter) {
-            profile = profile.copy(
-                xp = profile.xp + 10,
-                squaresFound = profile.squaresFound + 1
-            )
-        }
-
         if (newlyWon) {
+            val bonusXp = 100
+            val newXp = profile.xp + bonusXp
             profile = profile.copy(
-                xp = profile.xp + 100,
+                xp = newXp,
                 bingosWon = profile.bingosWon + 1
             )
         }
 
         preferences.saveProfile(profile)
+        if (_uiState.value.isLoggedIn) {
+            viewModelScope.launch {
+                AccountService.saveProfileToRailway(profile)
+            }
+        }
 
         _uiState.update {
             it.copy(
@@ -263,10 +212,6 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(showBingoCelebration = false) }
     }
 
-    fun dismissAccountPrompt() {
-        _uiState.update { it.copy(showAccountPrompt = false) }
-    }
-
     fun handleGoogleSignIn() {
         val updated = _uiState.value.playerProfile.copy(
             nickname = "RoadExplorer_User",
@@ -282,19 +227,80 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setRegion(region: Region) {
-        preferences.setSelectedRegion(region)
-        val defaultRegionDeck = DeckRepository.DECKS.find { it.region == region } ?: DeckRepository.DECKS[2]
-        _uiState.update { it.copy(selectedRegion = region, selectedDeck = defaultRegionDeck) }
+    fun dismissAccountPrompt() {
+        _uiState.update { it.copy(showAccountPrompt = false) }
     }
 
-    fun updateProfile(nickname: String, avatarId: String) {
-        val updated = _uiState.value.playerProfile.copy(
-            nickname = nickname,
-            avatarId = avatarId
+    fun createLocalQuickPlayRoom() {
+        val room = MultiplayerService.createLocalQuickPlayRoom(
+            hostNickname = _uiState.value.playerProfile.nickname,
+            hostAvatarId = _uiState.value.playerProfile.avatarId,
+            deckId = _uiState.value.selectedDeck.id,
+            region = _uiState.value.selectedRegion,
+            gameMode = _uiState.value.gameMode
         )
-        preferences.saveProfile(updated)
-        _uiState.update { it.copy(playerProfile = updated) }
+        _uiState.update {
+            it.copy(
+                multiplayerRoom = room,
+                currentScreen = Screen.MULTIPLAYER_LOBBY
+            )
+        }
+    }
+
+    fun createLocalQuickPlayRoomFromHome() {
+        selectDeck(DeckRepository.DECKS[2]) // Default Mountain West
+        createLocalQuickPlayRoom()
+    }
+
+    fun joinMultiplayerRoom(code: String) {
+        val joinedRoom = MultiplayerService.joinRoomByCode(
+            roomCode = code,
+            playerNickname = _uiState.value.playerProfile.nickname,
+            playerAvatarId = _uiState.value.playerProfile.avatarId
+        )
+        if (joinedRoom != null) {
+            _uiState.update {
+                it.copy(
+                    multiplayerRoom = joinedRoom,
+                    currentScreen = Screen.MULTIPLAYER_LOBBY
+                )
+            }
+        }
+    }
+
+    fun startOnlineMatchmaking(deck: Deck = _uiState.value.selectedDeck) {
+        _uiState.update {
+            it.copy(
+                selectedDeck = deck,
+                isSearchingOpponent = true,
+                opponentFoundName = null
+            )
+        }
+
+        viewModelScope.launch {
+            delay(2000)
+            val opponents = listOf("Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)")
+            val foundName = opponents.random()
+            _uiState.update { it.copy(opponentFoundName = foundName) }
+
+            delay(1200)
+            _uiState.update { it.copy(isSearchingOpponent = false) }
+            startNewGame(deck = deck)
+        }
+    }
+
+    fun cancelMatchmaking() {
+        _uiState.update {
+            it.copy(
+                isSearchingOpponent = false,
+                opponentFoundName = null
+            )
+        }
+    }
+
+    fun setRegion(region: Region) {
+        preferences.setSelectedRegion(region)
+        _uiState.update { it.copy(selectedRegion = region) }
     }
 
     fun toggleSound(enabled: Boolean) {
@@ -317,45 +323,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(kidsModeEasy = enabled) }
     }
 
-    // HOSTING FROM HOME SCREEN (DEFAULT TO LOCAL REGION DECK)
-    fun createLocalQuickPlayRoomFromHome() {
-        val regionDeck = DeckRepository.DECKS.find { it.region == _uiState.value.selectedRegion } ?: DeckRepository.DECKS[2]
-        _uiState.update { it.copy(selectedDeck = regionDeck) }
-        createLocalQuickPlayRoom()
-    }
-
-    // HOSTING FROM DECK SELECTION (USE PRE-SELECTED DECK)
-    fun createLocalQuickPlayRoom() {
-        val profile = _uiState.value.playerProfile
-        val room = MultiplayerService.createLocalQuickPlayRoom(
-            hostNickname = profile.nickname,
-            hostAvatarId = profile.avatarId,
-            deckId = _uiState.value.selectedDeck.id,
-            region = _uiState.value.selectedRegion,
-            gameMode = _uiState.value.gameMode
-        )
-
-        _uiState.update {
-            it.copy(
-                multiplayerRoom = room,
-                currentScreen = Screen.MULTIPLAYER_LOBBY
-            )
+    fun updateProfile(nickname: String, avatarId: String) {
+        val updated = _uiState.value.playerProfile.copy(nickname = nickname, avatarId = avatarId)
+        preferences.saveProfile(updated)
+        if (_uiState.value.isLoggedIn) {
+            viewModelScope.launch {
+                AccountService.saveProfileToRailway(updated)
+            }
         }
-    }
-
-    fun joinMultiplayerRoom(roomCode: String) {
-        val profile = _uiState.value.playerProfile
-        val room = MultiplayerService.joinRoomByCode(
-            roomCode = roomCode,
-            playerNickname = profile.nickname,
-            playerAvatarId = profile.avatarId
-        )
-
-        _uiState.update {
-            it.copy(
-                multiplayerRoom = room,
-                currentScreen = Screen.MULTIPLAYER_LOBBY
-            )
-        }
+        _uiState.update { it.copy(playerProfile = updated) }
     }
 }

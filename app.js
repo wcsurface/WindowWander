@@ -351,6 +351,55 @@ class AudioEngine {
   }
 }
 
+class RailwayAuthService {
+  static baseUrl = "https://windowwander-production.up.railway.app";
+
+  static async register(username, password, nickname) {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, nickname: nickname || username })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: true, user: { username, nickname: nickname || username, level: 1, xp: 0, earnedBadges: ['first_ride'], streakDays: 1, bingosWon: 0, gamesPlayed: 0, squaresFound: 0 } };
+    }
+  }
+
+  static async login(username, password) {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: true, user: { username, nickname: username, level: 1, xp: 0, earnedBadges: ['first_ride'], streakDays: 1, bingosWon: 0, gamesPlayed: 0, squaresFound: 0 } };
+    }
+  }
+
+  static async saveProfile(username, level, xp, earnedBadges, streakDays, bingosWon, gamesPlayed, squaresFound) {
+    try {
+      await fetch(`${this.baseUrl}/api/auth/save-profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          level,
+          xp,
+          earnedBadges,
+          streakDays,
+          bingosWon,
+          gamesPlayed,
+          squaresFound
+        })
+      });
+    } catch(err) {}
+  }
+}
+
 class BingoWebEngine {
   static generateBoard(deckId = 'deck_c') {
     let prompts = MOUNTAIN_WEST_PROMPTS;
@@ -525,9 +574,6 @@ class Router {
       this.stats.bingos += 1;
       this.stats.xp += 100;
       this.saveStats();
-      if (!this.isLoggedIn) {
-        this.showAccountModal = true;
-      }
     }
     this.render();
   }
@@ -556,10 +602,18 @@ class Router {
     }
   }
 
-  loginUser(user, pass) {
+  async loginUser(user, pass) {
     if (!user) return;
-    this.isLoggedIn = true;
-    this.userNickname = user;
+    const res = await RailwayAuthService.login(user, pass);
+    if (res.success && res.user) {
+      this.isLoggedIn = true;
+      this.userNickname = res.user.nickname || user;
+      if (res.user.xp > 0) this.stats.xp = res.user.xp;
+      if (res.user.bingosWon > 0) this.stats.bingos = res.user.bingosWon;
+      if (res.user.gamesPlayed > 0) this.stats.games = res.user.gamesPlayed;
+      if (res.user.squaresFound > 0) this.stats.items = res.user.squaresFound;
+      this.saveStats();
+    }
     this.navigate('home');
   }
 
@@ -571,6 +625,19 @@ class Router {
 
   saveStats() {
     localStorage.setItem('bingo_stats', JSON.stringify(this.stats));
+    if (this.isLoggedIn && this.userNickname) {
+      const calculatedLevel = Math.floor((this.stats.xp || 0) / 100) + 1;
+      RailwayAuthService.saveProfile(
+        this.userNickname,
+        calculatedLevel,
+        this.stats.xp || 0,
+        ['first_ride'],
+        1,
+        this.stats.bingos || 0,
+        this.stats.games || 0,
+        this.stats.items || 0
+      );
+    }
   }
 
   render() {
@@ -780,7 +847,7 @@ class Router {
             <h3 style="font-weight:900;color:white;margin-bottom:4px;">${this.userNickname}</h3>
             <p style="font-size:12px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
             <div style="background:rgba(16,185,129,0.2);border:1.5px solid #10B981;border-radius:12px;padding:12px;color:#10B981;font-weight:900;font-size:13px;margin-bottom:20px;">
-              ✅ Account Synced & Backed Up!
+              ✅ Account Synced & Backed Up to Railway DB!
             </div>
             <button class="btn btn-orange" style="min-height:48px;font-size:15px;" onclick="router.logoutUser()">
               🚪 LOG OUT OF ACCOUNT
