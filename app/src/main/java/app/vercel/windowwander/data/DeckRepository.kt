@@ -351,6 +351,54 @@ object DeckRepository {
         p("cc42", "Tall Palm Tree", "Row of tall Washington fan palms lining a coastal boulevard", "nature", false, Region.PACIFIC_SOUTHWEST)
     )
 
+    // -------------------------------------------------------------
+    // DECK H: HEARTLAND & MIDWEST (42 EXACT UPDATED PROMPTS)
+    // -------------------------------------------------------------
+    val DECK_H_PROMPTS = listOf(
+        p("mw1", "Cornfield", "Cornfield", "landscape", false, Region.MIDWEST),
+        p("mw2", "Barn or Silo", "Traditional farm barn or tall silo", "structures", false, Region.MIDWEST),
+        p("mw3", "Massive Truck Stop", "Massive Truck Stop", "structures", false, Region.MIDWEST),
+        p("mw4", "Coffee Shop", "Coffee Shop", "structures", false, Region.MIDWEST),
+        p("mw5", "Wind Turbine", "Wind Turbine", "structures", false, Region.MIDWEST),
+        p("mw6", "Church", "Church", "structures", false, Region.MIDWEST),
+        p("mw7", "24 Hour Diner", "24 hour diner", "food", false, Region.MIDWEST),
+        p("mw8", "Dirt Road", "dirt road", "structure", false, Region.MIDWEST),
+        p("mw9", "Farm Equipment", "Farm equipment", "vehicles", false, Region.MIDWEST),
+        p("mw10", "Traffic Jam", "Traffic jam", "vehicles", false, Region.MIDWEST),
+        p("mw11", "Fire Truck", "Fire Truck", "vehicles", false, Region.MIDWEST),
+        p("mw12", "Giant Roadside Statue", "A giant roadside statue", "structures", false, Region.MIDWEST),
+        p("mw13", "Interstate Route Shield", "Numbered US or Interstate shield sign", "signs", false, Region.MIDWEST),
+        p("mw14", "Political Bumper Sticker", "Political bumper sticker", "signs", false, Region.MIDWEST),
+        p("mw15", "Antique Car", "Vintage car", "vehicles", false, Region.MIDWEST),
+        p("mw16", "Police Car", "Police car", "vehicles", false, Region.MIDWEST),
+        p("mw17", "Point of Interest Sign", "Sign pointing to interest", "signs", false, Region.MIDWEST),
+        p("mw18", "Construction Zone", "Construction Zone", "landscapes", false, Region.MIDWEST),
+        p("mw19", "Ice Cream Sign", "Sign showing ice cream", "signs", false, Region.MIDWEST),
+        p("mw20", "Campground", "A campground", "outdoor", false, Region.MIDWEST),
+        p("mw21", "Trucker Hat", "Trucker Hat", "people", false, Region.MIDWEST),
+        p("mw22", "Wildlife Crossing Sign", "Wildlife crossing road sign", "signs", false, Region.MIDWEST),
+        p("mw23", "Dump Truck", "Dump Truck", "equipment", false, Region.MIDWEST),
+        p("mw24", "Convertible Car", "Convertible Car", "vehicles", false, Region.MIDWEST),
+        p("mw25", "School Bus", "School bus", "vehicles", false, Region.MIDWEST),
+        p("mw26", "Lawn Mowing", "Lawn mowing", "vehicles", false, Region.MIDWEST),
+        p("mw27", "Billboard with Animal", "Billboard with an animal on it", "signs", false, Region.MIDWEST),
+        p("mw28", "Golf Course Sign", "Advert for a golf course", "signs", false, Region.MIDWEST),
+        p("mw29", "Giant American Flag", "Giant American flag", "decor", false, Region.MIDWEST),
+        p("mw30", "Attorney Sign", "Sign for attorney", "signs", false, Region.MIDWEST),
+        p("mw31", "Train", "A train", "vehicles", false, Region.MIDWEST),
+        p("mw32", "Water Tower", "A water tower", "structures", false, Region.MIDWEST),
+        p("mw33", "Bridge", "Bridge", "structures", false, Region.MIDWEST),
+        p("mw34", "Multi-Level Overpass", "Highway interchange overpass structure in flat terrain", "structures", false, Region.MIDWEST),
+        p("mw35", "Pickup Truck with Camper Shell", "Pickup truck equipped with a camper shell or topper", "vehicles", false, Region.MIDWEST),
+        p("mw36", "Rain", "Rain", "outdoor", false, Region.MIDWEST),
+        p("mw37", "Rainbow", "A rainbow", "nature", false, Region.MIDWEST),
+        p("mw38", "Band Sticker", "Band sticker on a car", "sign", false, Region.MIDWEST),
+        p("mw39", "Yellow Car", "Yellow Car", "vehicles", false, Region.MIDWEST),
+        p("mw40", "Motorcycle", "A motorcycle", "vehicles", false, Region.MIDWEST),
+        p("mw41", "Rest Area", "A rest area", "structures", false, Region.MIDWEST),
+        p("mw42", "Sports Team Sticker", "Sports team sticker on a car", "signs", false, Region.MIDWEST)
+    )
+
     val DECKS = listOf(
         Deck(
             id = "deck_a",
@@ -438,7 +486,7 @@ object DeckRepository {
             difficulty = "Medium",
             isFree = true,
             region = Region.MIDWEST,
-            prompts = DECK_A_PROMPTS.shuffled()
+            prompts = DECK_H_PROMPTS
         )
     )
 }

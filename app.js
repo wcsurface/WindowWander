@@ -287,6 +287,51 @@ const WEST_COAST_PROMPTS = [
   "Tall Palm Tree"
 ];
 
+const HEARTLAND_MIDWEST_PROMPTS = [
+  "Cornfield",
+  "Barn or Silo",
+  "Massive Truck Stop",
+  "Coffee Shop",
+  "Wind Turbine",
+  "Church",
+  "24 Hour Diner",
+  "Dirt Road",
+  "Farm Equipment",
+  "Traffic Jam",
+  "Fire Truck",
+  "Giant Roadside Statue",
+  "Interstate Route Shield",
+  "Political Bumper Sticker",
+  "Antique Car",
+  "Police Car",
+  "Point of Interest Sign",
+  "Construction Zone",
+  "Ice Cream Sign",
+  "Campground",
+  "Trucker Hat",
+  "Wildlife Crossing Sign",
+  "Dump Truck",
+  "Convertible Car",
+  "School Bus",
+  "Lawn Mowing",
+  "Billboard with Animal",
+  "Golf Course Sign",
+  "Giant American Flag",
+  "Attorney Sign",
+  "Train",
+  "Water Tower",
+  "Bridge",
+  "Multi-Level Overpass",
+  "Pickup Truck with Camper Shell",
+  "Rain",
+  "Rainbow",
+  "Band Sticker",
+  "Yellow Car",
+  "Motorcycle",
+  "Rest Area",
+  "Sports Team Sticker"
+];
+
 class AudioEngine {
   static playPop() {
     try {
@@ -314,6 +359,7 @@ class BingoWebEngine {
     if (deckId === 'deck_e') prompts = NORTHEAST_PROMPTS;
     if (deckId === 'deck_f') prompts = THE_SOUTH_PROMPTS;
     if (deckId === 'deck_g') prompts = WEST_COAST_PROMPTS;
+    if (deckId === 'deck_h') prompts = HEARTLAND_MIDWEST_PROMPTS;
 
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
