@@ -843,14 +843,14 @@ class Router {
           </div>
         ` : `
           <div class="card" style="text-align:center;padding:24px;">
-            <div style="font-size:38px;margin-bottom:10px;">🐻</div>
-            <h3 style="font-weight:900;color:white;margin-bottom:4px;">${this.userNickname}</h3>
-            <p style="font-size:12px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
+            <h3 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">👤 CURRENTLY LOGGED IN</h3>
+            <h2 style="font-weight:900;color:white;margin-bottom:4px;font-size:24px;">${this.userNickname}</h2>
+            <p style="font-size:13px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
             <div style="background:rgba(16,185,129,0.2);border:1.5px solid #10B981;border-radius:12px;padding:12px;color:#10B981;font-weight:900;font-size:13px;margin-bottom:20px;">
               ✅ Account Synced & Backed Up to Railway DB!
             </div>
-            <button class="btn btn-orange" style="min-height:48px;font-size:15px;" onclick="router.logoutUser()">
-              🚪 LOG OUT OF ACCOUNT
+            <button class="btn btn-orange btn-beveled" style="min-height:54px;font-size:18px;" onclick="router.logoutUser()">
+              🚪 LOG OUT
             </button>
           </div>
         `}

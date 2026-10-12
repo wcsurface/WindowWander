@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -33,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -242,7 +239,7 @@ fun LoginScreen(
                         }
                     }
                 } else {
-                    // LOGGED IN USER PROFILE CARD
+                    // LOGGED IN USER PROFILE CARD (WITH PROMINENT LOG OUT BUTTON)
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -254,21 +251,19 @@ fun LoginScreen(
                             modifier = Modifier.padding(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(72.dp)
-                                    .clip(CircleShape)
-                                    .background(Brush.radialGradient(listOf(SunnyYellow, VividOrange))),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(text = "🐻", fontSize = 38.sp)
-                            }
+                            Text(
+                                text = "👤 CURRENTLY LOGGED IN",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow,
+                                textAlign = TextAlign.Center
+                            )
 
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Text(
                                 text = profile.nickname,
-                                fontSize = 22.sp,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color.White
                             )
@@ -292,7 +287,7 @@ fun LoginScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "✅ Account Synced & Backed Up!",
+                                    text = "✅ Account Synced & Backed Up to Railway DB!",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
                                     color = CompletedGreen
@@ -301,22 +296,17 @@ fun LoginScreen(
 
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            // LOG OUT BUTTON
-                            Button(
+                            // PROMINENT LOG OUT BUTTON
+                            BeveledGameButton(
+                                text = "🚪 LOG OUT",
                                 onClick = onLogOut,
-                                colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
-                                shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(52.dp)
-                            ) {
-                                Text(
-                                    text = "🚪 LOG OUT OF ACCOUNT",
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = Color.White
-                                )
-                            }
+                                    .height(56.dp),
+                                buttonColor = VividOrange,
+                                textColor = Color.White,
+                                fontSize = 18
+                            )
                         }
                     }
                 }
