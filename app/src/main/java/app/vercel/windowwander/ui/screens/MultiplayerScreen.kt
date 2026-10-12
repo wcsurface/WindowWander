@@ -1,6 +1,8 @@
 package app.vercel.windowwander.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -36,6 +42,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.data.DeckRepository
@@ -43,12 +50,11 @@ import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.GameMode
 import app.vercel.windowwander.model.MultiplayerRoom
 import app.vercel.windowwander.ui.components.BeveledGameButton
+import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
-import app.vercel.windowwander.ui.theme.ElectricBlue
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
-import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +68,9 @@ fun MultiplayerScreen(
     onStartGame: () -> Unit,
     onBackToHome: () -> Unit
 ) {
-    var roomInputCode by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
+    var joinCodeInput by remember { mutableStateOf("") }
+    var selectedDeckChoice by remember { mutableStateOf(selectedDeck) }
     var selectedGameMode by remember { mutableStateOf(GameMode.CLASSIC_LINE) }
 
     var deckDropdownExpanded by remember { mutableStateOf(false) }
@@ -72,6 +80,7 @@ fun MultiplayerScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MidnightNavy)
+            .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
         // TOP HEADER
@@ -81,8 +90,8 @@ fun MultiplayerScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🌐 In-Car Multiplayer",
-                fontSize = 22.sp,
+                text = "🚗 In-Car Multiplayer",
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White
             )
@@ -105,312 +114,333 @@ fun MultiplayerScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (room == null) {
-            // START A GAME CARD (HOST)
+        if (room != null) {
+            // ACTIVE MULTIPLAYER LOBBY CARD
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(12.dp, RoundedCornerShape(20.dp)),
-                colors = CardDefaults.cardColors(containerColor = MediumNavy),
-                shape = RoundedCornerShape(20.dp)
+                    .shadow(12.dp, RoundedCornerShape(22.dp)),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy)
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Brush.verticalGradient(listOf(SunnyYellow.copy(alpha = 0.2f), MediumNavy)))
-                        .padding(20.dp)
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "🚗 START A GAME (HOST)",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Black,
-                        color = Color.White
-                    )
-                    Text(
-                        text = "Creates a room code & QR code for passengers in your car!",
-                        fontSize = 13.sp,
-                        color = Color.White.copy(alpha = 0.8f)
+                        text = "ROOM LOBBY CODE",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White.copy(alpha = 0.7f)
                     )
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    BeveledGameButton(
-                        text = "START NEW ROOM ▶",
-                        onClick = onCreateRoom,
+                    // 4-LETTER ROOM CODE BADGE
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(54.dp),
-                        buttonColor = SunnyYellow,
-                        bevelColor = Color(0xFFD97706),
-                        textColor = DeepNavy,
-                        fontSize = 16
-                    )
-                }
-            }
+                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(
+                                Brush.verticalGradient(listOf(SunnyYellow, VividOrange))
+                            )
+                            .padding(horizontal = 24.dp, vertical = 10.dp)
+                    ) {
+                        Text(
+                            text = room.roomCode,
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Black,
+                            color = DeepNavy,
+                            letterSpacing = 4.sp
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            // JOIN A GAME CARD (CODE)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(12.dp, RoundedCornerShape(20.dp)),
-                colors = CardDefaults.cardColors(containerColor = MediumNavy),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Brush.verticalGradient(listOf(ElectricBlue.copy(alpha = 0.2f), MediumNavy)))
-                        .padding(20.dp)
-                ) {
                     Text(
-                        text = "📱 JOIN A GAME (CODE)",
-                        fontSize = 18.sp,
+                        text = "Share this 4-letter code with other passengers in your vehicle!",
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    // PLAYERS IN ROOM LIST
+                    Text(
+                        text = "PASSENGERS IN ROOM (${room.players.size})",
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = SunnyYellow,
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    OutlinedTextField(
-                        value = roomInputCode,
-                        onValueChange = { roomInputCode = it.uppercase().take(4) },
-                        label = { Text("Enter 4-Letter Room Code", color = Color.White.copy(alpha = 0.7f)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedBorderColor = SunnyYellow,
-                            unfocusedBorderColor = Color.White.copy(alpha = 0.3f)
-                        )
-                    )
+                    room.players.forEach { player ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFF0F172A))
+                                .padding(horizontal = 14.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clip(CircleShape)
+                                        .background(VividOrange),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(text = "🐻", fontSize = 16.sp)
+                                }
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                Text(
+                                    text = player.nickname,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+
+                                if (player.isHost) {
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(6.dp))
+                                            .background(SunnyYellow)
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = "HOST",
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = DeepNavy
+                                        )
+                                    }
+                                }
+                            }
+
+                            Text(
+                                text = "READY ✓",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = CompletedGreen
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     BeveledGameButton(
-                        text = "JOIN CAR ROOM ▶",
-                        onClick = { if (roomInputCode.isNotBlank()) onJoinRoom(roomInputCode) },
+                        text = "🚀 LAUNCH GAME NOW ▶",
+                        onClick = onStartGame,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(54.dp),
-                        buttonColor = Color(0xFF2563EB),
-                        bevelColor = Color(0xFF1D4ED8),
-                        textColor = Color.White,
-                        fontSize = 16
+                            .height(58.dp),
+                        textColor = DeepNavy,
+                        fontSize = 18
                     )
                 }
             }
         } else {
-            // ACTIVE CAR ROOM LOBBY WITH QR CODE & ROOM CODE
+            // CREATE ROOM OR JOIN ROOM SETUP CARDS
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(16.dp, RoundedCornerShape(20.dp)),
-                colors = CardDefaults.cardColors(containerColor = MediumNavy),
-                shape = RoundedCornerShape(20.dp)
+                    .shadow(10.dp, RoundedCornerShape(20.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Brush.verticalGradient(listOf(SunnyYellow.copy(alpha = 0.3f), MediumNavy)))
-                        .padding(18.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "ROOM CODE", fontSize = 12.sp, fontWeight = FontWeight.Black, color = SunnyYellow)
+                Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = room.roomCode,
-                        fontSize = 42.sp,
+                        text = "1. Select Game Deck & Mode",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
-                        letterSpacing = 4.sp
+                        color = SunnyYellow
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // QR CODE DISPLAY BADGE FOR SCANNING
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White)
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                    // DECK SELECTOR DROPDOWN
+                    ExposedDropdownMenuBox(
+                        expanded = deckDropdownExpanded,
+                        onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                     ) {
-                        Text(text = "📷\n[ QR CODE ]\nScan to Join", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = DeepNavy)
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Scan QR Code or enter code '${room.roomCode}' to join!",
-                        fontSize = 11.sp,
-                        color = Color.White.copy(alpha = 0.85f)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "Passengers Connected (${room.players.size})",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            LazyColumn(
-                modifier = Modifier.weight(1f, fill = false),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                items(room.players) { player ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MediumNavy),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "${if (player.isHost) "👑 " else "🚗 "}${player.nickname}",
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                        OutlinedTextField(
+                            value = "🎴 Deck: ${selectedDeckChoice.title}",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Game Deck", color = SunnyYellow) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedBorderColor = SunnyYellow,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
                             )
-                            Text(
-                                text = "Ready",
-                                fontSize = 12.sp,
-                                color = TravelTeal,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 1. DECK SELECTION BUTTON (DEFAULTED TO SAVED OR LOCAL REGION DECK)
-            ExposedDropdownMenuBox(
-                expanded = deckDropdownExpanded,
-                onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
-            ) {
-                OutlinedTextField(
-                    value = "🎴 Deck: ${selectedDeck.title}",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Game Deck", color = SunnyYellow) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = SunnyYellow,
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
-                    )
-                )
-
-                ExposedDropdownMenu(
-                    expanded = deckDropdownExpanded,
-                    onDismissRequest = { deckDropdownExpanded = false }
-                ) {
-                    DeckRepository.DECKS.forEach { deck ->
-                        DropdownMenuItem(
-                            text = { Text("🎴 ${deck.title} (${deck.audience})") },
-                            onClick = {
-                                onSelectDeck(deck)
-                                deckDropdownExpanded = false
-                            }
                         )
+
+                        ExposedDropdownMenu(
+                            expanded = deckDropdownExpanded,
+                            onDismissRequest = { deckDropdownExpanded = false }
+                        ) {
+                            DeckRepository.DECKS.forEach { deck ->
+                                DropdownMenuItem(
+                                    text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                                    onClick = {
+                                        selectedDeckChoice = deck
+                                        onSelectDeck(deck)
+                                        deckDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
-                }
-            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-            // 2. GAME MODE SELECTION BUTTON (DEFAULTED TO CLASSIC BINGO)
-            ExposedDropdownMenuBox(
-                expanded = gameModeDropdownExpanded,
-                onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
-            ) {
-                OutlinedTextField(
-                    value = "🎯 Mode: ${selectedGameMode.displayName}",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Winning Condition", color = SunnyYellow) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = SunnyYellow,
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
-                    )
-                )
+                    // GAME MODE SELECTOR DROPDOWN
+                    ExposedDropdownMenuBox(
+                        expanded = gameModeDropdownExpanded,
+                        onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = "🎯 Rule: ${selectedGameMode.displayName}",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Victory Rules", color = SunnyYellow) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedBorderColor = SunnyYellow,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                            )
+                        )
 
-                ExposedDropdownMenu(
-                    expanded = gameModeDropdownExpanded,
-                    onDismissRequest = { gameModeDropdownExpanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Column {
-                                Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
-                                Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
-                            }
-                        },
-                        onClick = {
-                            selectedGameMode = GameMode.CLASSIC_LINE
-                            gameModeDropdownExpanded = false
+                        ExposedDropdownMenu(
+                            expanded = gameModeDropdownExpanded,
+                            onDismissRequest = { gameModeDropdownExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.CLASSIC_LINE
+                                    gameModeDropdownExpanded = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.TWO_LINES
+                                    gameModeDropdownExpanded = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Blackout Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.BLACKOUT
+                                    gameModeDropdownExpanded = false
+                                }
+                            )
                         }
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Column {
-                                Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
-                                Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
-                            }
-                        },
-                        onClick = {
-                            selectedGameMode = GameMode.TWO_LINES
-                            gameModeDropdownExpanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Column {
-                                Text("Blackout Bingo", fontWeight = FontWeight.Bold)
-                                Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
-                            }
-                        },
-                        onClick = {
-                            selectedGameMode = GameMode.BLACKOUT
-                            gameModeDropdownExpanded = false
-                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    BeveledGameButton(
+                        text = "START GAME ▶",
+                        onClick = onStartGame,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        buttonColor = VividOrange,
+                        bevelColor = Color(0xFFC2410C),
+                        textColor = Color.White,
+                        fontSize = 18
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            BeveledGameButton(
-                text = "START BINGO BOARD ▶",
-                onClick = onStartGame,
+            // JOIN ROOM CARD WITH 4-LETTER CODE
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                buttonColor = VividOrange,
-                bevelColor = Color(0xFFC2410C),
-                textColor = Color.White,
-                fontSize = 18
-            )
+                    .shadow(10.dp, RoundedCornerShape(20.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "2. Or Join Passenger's Room",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Black,
+                        color = SunnyYellow
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedTextField(
+                        value = joinCodeInput,
+                        onValueChange = { if (it.length <= 4) joinCodeInput = it.uppercase() },
+                        label = { Text("4-Letter Code", color = SunnyYellow) },
+                        placeholder = { Text("e.g. ROAD", color = Color.Gray) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = SunnyYellow,
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Button(
+                        onClick = { if (joinCodeInput.length >= 4) onJoinRoom(joinCodeInput) },
+                        colors = ButtonDefaults.buttonColors(containerColor = CompletedGreen),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                    ) {
+                        Text(
+                            text = "JOIN CAR ROOM ▶",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
         }
     }
 }

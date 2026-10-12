@@ -574,6 +574,9 @@ class Router {
       this.stats.bingos += 1;
       this.stats.xp += 100;
       this.saveStats();
+      if (!this.isLoggedIn) {
+        this.showAccountModal = true;
+      }
     }
     this.render();
   }
@@ -1028,8 +1031,8 @@ class Router {
           </div>
         </div>
 
-        <!-- ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY -->
-        ${this.showAccountModal ? `
+        <!-- ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY (ONLY FOR UNAUTHENTICATED GUESTS) -->
+        ${this.showAccountModal && !this.isLoggedIn ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;">
               <div style="font-size:36px;margin-bottom:8px;">💾</div>

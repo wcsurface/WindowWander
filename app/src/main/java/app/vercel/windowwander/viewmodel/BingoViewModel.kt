@@ -186,7 +186,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 winResult = winEval,
                 playerProfile = profile,
                 showBingoCelebration = newlyWon || (winEval.hasWon && it.showBingoCelebration),
-                showAccountPrompt = newlyWon,
+                showAccountPrompt = newlyWon && !it.isLoggedIn,
                 canUndo = boardHistory.size > 1
             )
         }
