@@ -1,6 +1,5 @@
 package app.vercel.windowwander.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -115,7 +114,7 @@ fun MultiplayerScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (room != null) {
-            // ACTIVE MULTIPLAYER LOBBY CARD
+            // ACTIVE MULTIPLAYER HOST LOBBY CARD
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +165,7 @@ fun MultiplayerScreen(
 
                     Spacer(modifier = Modifier.height(18.dp))
 
-                    // PLAYERS IN ROOM LIST
+                    // PASSENGERS IN ROOM LIST
                     Text(
                         text = "PASSENGERS IN ROOM (${room.players.size})",
                         fontSize = 12.sp,
@@ -231,6 +230,112 @@ fun MultiplayerScreen(
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = CompletedGreen
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    // DECK CHOICE DROPDOWN ON HOST GAME SCREEN
+                    ExposedDropdownMenuBox(
+                        expanded = deckDropdownExpanded,
+                        onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = "🎴 Deck: ${selectedDeckChoice.title}",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Game Deck Choice", color = SunnyYellow) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedBorderColor = SunnyYellow,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                            )
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = deckDropdownExpanded,
+                            onDismissRequest = { deckDropdownExpanded = false }
+                        ) {
+                            DeckRepository.DECKS.forEach { deck ->
+                                DropdownMenuItem(
+                                    text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                                    onClick = {
+                                        selectedDeckChoice = deck
+                                        onSelectDeck(deck)
+                                        deckDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // RULES CHOICE DROPDOWN ON HOST GAME SCREEN
+                    ExposedDropdownMenuBox(
+                        expanded = gameModeDropdownExpanded,
+                        onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = "🎯 Rule: ${selectedGameMode.displayName}",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Victory Rules Choice", color = SunnyYellow) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedBorderColor = SunnyYellow,
+                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                            )
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = gameModeDropdownExpanded,
+                            onDismissRequest = { gameModeDropdownExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.CLASSIC_LINE
+                                    gameModeDropdownExpanded = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.TWO_LINES
+                                    gameModeDropdownExpanded = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = {
+                                    Column {
+                                        Text("Blackout Bingo", fontWeight = FontWeight.Bold)
+                                        Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
+                                    }
+                                },
+                                onClick = {
+                                    selectedGameMode = GameMode.BLACKOUT
+                                    gameModeDropdownExpanded = false
+                                }
                             )
                         }
                     }
