@@ -17,6 +17,51 @@ const GAME_MODES = [
   { id: 'blackout', title: 'Blackout Bingo', desc: 'Find all 24 discoverable items and fill your card.' }
 ];
 
+const WEIRD_PROMPTS = [
+  "Funny Bumper Sticker",
+  "Over-Accessorized Vehicle",
+  "Funny Billboard Slogan",
+  "Cryptic Vanity Plate",
+  "Car Older Than Driver",
+  "Giant Roadside Statue",
+  "Hilarious Business Name",
+  "Mismatched Body Panels",
+  "Custom Decorated Truck",
+  "Inflatable Advert character",
+  "Bizarre Slogan Sign",
+  "Strange Attraction Sign",
+  "Dashboard Ducks",
+  "Hyper-Specific Shop",
+  "Unexpected Item Towed",
+  "Sign with Spelling Error",
+  "Farm Animals",
+  "Comically Large Accessory",
+  "Unusual Color Building",
+  "Double-Meaning Sign",
+  "Very Old Lady Driving",
+  "Anime Stickers",
+  "Lawnmowing",
+  "Dog in a Car",
+  "Warning Sign",
+  "Rest Area Sign",
+  "American Flag on Semi",
+  "Attorney Billboard",
+  "24 Hour Diner",
+  "Giant Statue",
+  "Police Car",
+  "Band Sticker",
+  "Duct Tape Repair Job",
+  "Green Car",
+  "Road Kill",
+  "Smoking Road Worker",
+  "Train",
+  "Casino Sign",
+  "Mexican Food Restaurant",
+  "Car Crash",
+  "Expired Car Plate",
+  "Cowboy Hat"
+];
+
 const MOUNTAIN_WEST_PROMPTS = [
   "Ski Rack on Car",
   "Snow-Capped Peak",
@@ -83,7 +128,7 @@ class AudioEngine {
 
 class BingoWebEngine {
   static generateBoard(deckId = 'deck_c') {
-    const prompts = MOUNTAIN_WEST_PROMPTS;
+    const prompts = deckId === 'deck_b' ? WEIRD_PROMPTS : MOUNTAIN_WEST_PROMPTS;
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
     let promptIdx = 0;
