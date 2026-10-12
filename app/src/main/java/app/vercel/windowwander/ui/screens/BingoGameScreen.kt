@@ -677,17 +677,38 @@ fun BingoTileView(
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
-    // DYNAMIC FONT SIZING CALCULATION FOR MAXIMUM TEXT SIZE & ZERO WORD CLIPPING
-    val promptLength = tile.prompt.name.length
-    val longestWordLength = tile.prompt.name.split(" ").maxOfOrNull { it.length } ?: promptLength
+    // DYNAMIC 3-LINE PROMPT FORMATTING & MAXIMUM FONT SIZING CALCULATION
+    val (formattedText, fontSizeSp) = remember(tile.prompt.name) {
+        val words = tile.prompt.name.split(" ").filter { it.isNotBlank() }
+        val linesText = when {
+            words.size <= 1 -> tile.prompt.name
+            words.size == 2 -> "${words[0]}\n${words[1]}"
+            words.size == 3 -> "${words[0]}\n${words[1]}\n${words[2]}"
+            words.size == 4 -> "${words[0]} ${words[1]}\n${words[2]}\n${words[3]}"
+            words.size == 5 -> "${words[0]} ${words[1]}\n${words[2]}\n${words[3]} ${words[4]}"
+            else -> {
+                val line1 = words.take(2).joinToString(" ")
+                val line2 = words.drop(2).dropLast(2).joinToString(" ")
+                val line3 = words.takeLast(2).joinToString(" ")
+                "$line1\n$line2\n$line3"
+            }
+        }
 
-    val dynamicFontSize = when {
-        longestWordLength >= 12 -> 9.sp
-        promptLength <= 7 -> 13.5.sp
-        promptLength <= 12 -> 12.sp
-        promptLength <= 18 -> 10.5.sp
-        promptLength <= 24 -> 9.5.sp
-        else -> 8.5.sp
+        val lines = linesText.split("\n")
+        val maxLineLen = lines.maxOfOrNull { it.length } ?: linesText.length
+
+        val calculatedSp = when {
+            maxLineLen <= 5 && lines.size <= 2 -> 14.5f
+            maxLineLen <= 7 && lines.size <= 2 -> 13.5f
+            maxLineLen <= 9 && lines.size <= 2 -> 12.5f
+            maxLineLen <= 9 && lines.size == 3 -> 12.0f
+            maxLineLen <= 12 && lines.size <= 2 -> 11.5f
+            maxLineLen <= 12 && lines.size == 3 -> 10.5f
+            maxLineLen <= 16 && lines.size == 3 -> 9.5f
+            else -> 8.5f
+        }
+
+        Pair(linesText, calculatedSp)
     }
 
     // FAST & SMOOTH PRESS ANIMATION (100-160ms)
@@ -788,7 +809,7 @@ fun BingoTileView(
                 )
         )
 
-        // TILE CONTENT (HIGH CONTRAST DYNAMICALLY SIZED BOLD WHITE TEXT WITH SHADOW)
+        // TILE CONTENT (MAXIMUM FONT SIZE SPLIT ACROSS MAX 3 LINES WITH SHADOW)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -817,12 +838,12 @@ fun BingoTileView(
                 }
             } else {
                 Text(
-                    text = tile.prompt.name,
-                    fontSize = dynamicFontSize,
+                    text = formattedText,
+                    fontSize = fontSizeSp.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    lineHeight = (dynamicFontSize.value * 1.15f).sp,
+                    lineHeight = (fontSizeSp * 1.15f).sp,
                     maxLines = 3,
                     softWrap = true,
                     style = TextStyle(

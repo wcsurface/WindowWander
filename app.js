@@ -981,17 +981,32 @@ class Router {
             if (t.isCenter) {
               return `<div class="tile center" onclick="router.toggleTile(${t.index}, event)">⭐<br>FREE</div>`;
             }
-            const pLen = t.name.length;
-            const maxWordLen = Math.max(...t.name.split(" ").map(w => w.length));
-            let fontSz = "12px";
-            if (maxWordLen >= 12) fontSz = "9px";
-            else if (pLen <= 7) fontSz = "13.5px";
-            else if (pLen <= 12) fontSz = "12px";
-            else if (pLen <= 18) fontSz = "10.5px";
-            else if (pLen <= 24) fontSz = "9.5px";
-            else fontSz = "8.5px";
+            const words = t.name.split(" ").filter(w => w.length > 0);
+            let linesText = t.name;
+            if (words.length === 2) linesText = `${words[0]}<br>${words[1]}`;
+            else if (words.length === 3) linesText = `${words[0]}<br>${words[1]}<br>${words[2]}`;
+            else if (words.length === 4) linesText = `${words[0]} ${words[1]}<br>${words[2]}<br>${words[3]}`;
+            else if (words.length === 5) linesText = `${words[0]} ${words[1]}<br>${words[2]}<br>${words[3]} ${words[4]}`;
+            else if (words.length > 5) {
+              const l1 = words.slice(0,2).join(" ");
+              const l2 = words.slice(2, words.length - 2).join(" ");
+              const l3 = words.slice(words.length - 2).join(" ");
+              linesText = `${l1}<br>${l2}<br>${l3}`;
+            }
 
-            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;word-break:keep-all;overflow-wrap:break-word;">${t.name}</span></div>`;
+            const lines = linesText.split("<br>");
+            const maxLineLen = Math.max(...lines.map(l => l.length));
+
+            let fontSz = "10.5px";
+            if (maxLineLen <= 5 && lines.length <= 2) fontSz = "14.5px";
+            else if (maxLineLen <= 7 && lines.length <= 2) fontSz = "13.5px";
+            else if (maxLineLen <= 9 && lines.length <= 2) fontSz = "12.5px";
+            else if (maxLineLen <= 9 && lines.length === 3) fontSz = "12px";
+            else if (maxLineLen <= 12 && lines.length <= 2) fontSz = "11.5px";
+            else if (maxLineLen <= 12 && lines.length === 3) fontSz = "10.5px";
+            else fontSz = "9.5px";
+
+            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;word-break:keep-all;overflow-wrap:break-word;">${linesText}</span></div>`;
           }).join('')}
         </div>
 
