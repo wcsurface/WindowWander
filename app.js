@@ -433,6 +433,19 @@ class RailwayAuthService {
       return { success: false };
     }
   }
+
+  static async getRoom(code) {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/rooms/get`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
 }
 
 class BingoWebEngine {
@@ -494,6 +507,7 @@ class Router {
     this.userNickname = 'Road Explorer';
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
     this.activeRoom = null;
+    this.syncTimer = null;
   }
 
   navigate(screen) {
@@ -570,6 +584,7 @@ class Router {
     }
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
+    this.startRoomSync(this.roomCode);
     this.navigate('multiplayer');
   }
 
@@ -584,12 +599,26 @@ class Router {
     } else {
       this.activeRoom = {
         code: upperCode,
-        players: [{ nickname: 'Host Passenger', isHost: true }, { nickname: this.userNickname, isHost: false }]
+        players: [{ nickname: this.userNickname, isHost: true }]
       };
     }
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
+    this.startRoomSync(upperCode);
     this.navigate('multiplayer');
+  }
+
+  startRoomSync(code) {
+    if (this.syncTimer) clearInterval(this.syncTimer);
+    this.syncTimer = setInterval(async () => {
+      if (['multiplayer', 'game'].includes(this.currentScreen)) {
+        const res = await RailwayAuthService.getRoom(code);
+        if (res.success && res.room) {
+          this.activeRoom = res.room;
+          this.render();
+        }
+      }
+    }, 2000);
   }
 
   toggleTile(index, event) {
@@ -866,6 +895,36 @@ class Router {
             </div>
           </div>
         ` : ''}
+      `;
+    } else if (this.currentScreen === 'multiplayer') {
+      const roomPlayers = this.activeRoom && this.activeRoom.players ? this.activeRoom.players : [{ nickname: this.userNickname, isHost: true }];
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">🚗 In-Car Room Lobby</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+        </div>
+
+        <div class="card" style="text-align:center;padding:24px;">
+          <p style="font-size:12px;font-weight:800;color:#CBD5E1;margin-bottom:4px;">ROOM LOBBY CODE</p>
+          <div style="display:inline-block;background:linear-gradient(180deg, #FBBF24, #F97316);color:#0F172A;font-weight:900;font-size:36px;padding:8px 24px;border-radius:16px;letter-spacing:4px;margin-bottom:10px;">
+            ${this.roomCode}
+          </div>
+          <p style="font-size:12px;color:#CBD5E1;margin-bottom:20px;">Share this code with other passengers in your vehicle!</p>
+
+          <div style="text-align:left;margin-bottom:16px;">
+            <p style="font-size:12px;font-weight:900;color:#FBBF24;margin-bottom:8px;">PASSENGERS IN ROOM (${roomPlayers.length})</p>
+            ${roomPlayers.map(p => `
+              <div style="background:#0F172A;padding:10px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-weight:800;color:white;font-size:14px;">🐻 ${p.nickname} ${p.isHost ? '<span style="background:#FBBF24;color:#0F172A;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px;margin-left:6px;">HOST</span>' : ''}</span>
+                <span style="color:#10B981;font-size:12px;font-weight:800;">READY ✓</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <button class="btn btn-mockup-play" style="min-height:56px;font-size:18px;" onclick="router.board=BingoWebEngine.generateBoard(router.selectedDeck.id);router.navigate('game');">
+            🚀 LAUNCH GAME NOW ▶
+          </button>
+        </div>
       `;
     } else if (this.currentScreen === 'login') {
       main.innerHTML = `

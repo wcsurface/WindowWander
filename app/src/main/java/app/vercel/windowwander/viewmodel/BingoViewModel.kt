@@ -232,18 +232,37 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createLocalQuickPlayRoom() {
-        val room = MultiplayerService.createLocalQuickPlayRoom(
-            hostNickname = _uiState.value.playerProfile.nickname,
-            hostAvatarId = _uiState.value.playerProfile.avatarId,
-            deckId = _uiState.value.selectedDeck.id,
+        val hostNickname = _uiState.value.playerProfile.nickname
+        val hostAvatarId = _uiState.value.playerProfile.avatarId
+        val deckId = _uiState.value.selectedDeck.id
+
+        val localRoom = MultiplayerService.createLocalQuickPlayRoom(
+            hostNickname = hostNickname,
+            hostAvatarId = hostAvatarId,
+            deckId = deckId,
             region = _uiState.value.selectedRegion,
             gameMode = _uiState.value.gameMode
         )
+
         _uiState.update {
             it.copy(
-                multiplayerRoom = room,
+                multiplayerRoom = localRoom,
                 currentScreen = Screen.MULTIPLAYER_LOBBY
             )
+        }
+
+        viewModelScope.launch {
+            val res = AccountService.createRoomOnRailway(hostNickname, deckId)
+            if (res.success && res.roomCode.isNotBlank()) {
+                val railwayRoom = localRoom.copy(
+                    roomCode = res.roomCode,
+                    players = res.players.ifEmpty { localRoom.players }
+                )
+                _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
+                startLiveRoomSync(res.roomCode)
+            } else {
+                startLiveRoomSync(localRoom.roomCode)
+            }
         }
     }
 
@@ -253,17 +272,52 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun joinMultiplayerRoom(code: String) {
-        val joinedRoom = MultiplayerService.joinRoomByCode(
-            roomCode = code,
-            playerNickname = _uiState.value.playerProfile.nickname,
-            playerAvatarId = _uiState.value.playerProfile.avatarId
+        val cleanCode = code.uppercase().trim()
+        val playerNickname = _uiState.value.playerProfile.nickname
+        val playerAvatarId = _uiState.value.playerProfile.avatarId
+
+        val localRoom = MultiplayerService.joinRoomByCode(
+            roomCode = cleanCode,
+            playerNickname = playerNickname,
+            playerAvatarId = playerAvatarId
         )
-        if (joinedRoom != null) {
-            _uiState.update {
-                it.copy(
-                    multiplayerRoom = joinedRoom,
-                    currentScreen = Screen.MULTIPLAYER_LOBBY
+
+        _uiState.update {
+            it.copy(
+                multiplayerRoom = localRoom,
+                currentScreen = Screen.MULTIPLAYER_LOBBY
+            )
+        }
+
+        viewModelScope.launch {
+            val res = AccountService.joinRoomOnRailway(cleanCode, playerNickname)
+            if (res.success) {
+                val railwayRoom = localRoom.copy(
+                    roomCode = res.roomCode.ifBlank { cleanCode },
+                    players = res.players.ifEmpty { localRoom.players }
                 )
+                _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
+                startLiveRoomSync(cleanCode)
+            } else {
+                startLiveRoomSync(cleanCode)
+            }
+        }
+    }
+
+    private fun startLiveRoomSync(roomCode: String) {
+        viewModelScope.launch {
+            while (_uiState.value.multiplayerRoom?.roomCode == roomCode) {
+                delay(2500)
+                try {
+                    val res = AccountService.getRoomFromRailway(roomCode)
+                    if (res.success && res.players.isNotEmpty()) {
+                        _uiState.update { state ->
+                            state.multiplayerRoom?.let { room ->
+                                state.copy(multiplayerRoom = room.copy(players = res.players))
+                            } ?: state
+                        }
+                    }
+                } catch (e: Exception) {}
             }
         }
     }
