@@ -135,12 +135,17 @@ class MainActivity : ComponentActivity() {
                             confirmTapEnabled = uiState.confirmTapEnabled,
                             kidsModeEasy = uiState.kidsModeEasy,
                             darkMode = uiState.darkMode,
+                            isLoggedIn = uiState.isLoggedIn,
                             onUpdateNickname = { name -> viewModel.updateProfile(nickname = name, avatarId = uiState.playerProfile.avatarId) },
                             onSelectRegion = { region -> viewModel.setRegion(region) },
                             onToggleSound = { enabled -> viewModel.toggleSound(enabled) },
                             onToggleHaptics = { enabled -> viewModel.toggleHaptics(enabled) },
                             onToggleConfirmTap = { enabled -> viewModel.toggleConfirmTap(enabled) },
                             onToggleKidsMode = { enabled -> viewModel.toggleKidsMode(enabled) },
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 

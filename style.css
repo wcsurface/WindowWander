@@ -38,6 +38,11 @@ body.main-home-theme {
   background: url('bg_main_home.jpg') center center / cover no-repeat fixed !important;
 }
 
+/* SETTINGS PAGE DEDICATED DOODLE BACKGROUND THEME */
+body.settings-theme {
+  background: url('bg_settings.jpg') center center / cover no-repeat fixed !important;
+}
+
 /* DECK GAMEPLAY BACKGROUND THEMES */
 body.deck-game-theme {
   background-size: cover !important;
@@ -439,6 +444,11 @@ body.deck-game-theme {
   position: relative;
   z-index: 2;
   filter: drop-shadow(0 3px 6px rgba(0,0,0,0.45));
+}
+
+.nav-icon-img.nav-car-icon {
+  width: 60px;
+  height: 60px;
 }
 
 .app-footer button {

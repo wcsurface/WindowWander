@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
 import app.vercel.windowwander.model.Region
+import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.VividOrange
@@ -58,13 +59,18 @@ fun SettingsScreen(
     confirmTapEnabled: Boolean,
     kidsModeEasy: Boolean,
     darkMode: Boolean,
+    isLoggedIn: Boolean = false,
     onUpdateNickname: (String) -> Unit,
     onSelectRegion: (Region) -> Unit,
     onToggleSound: (Boolean) -> Unit,
     onToggleHaptics: (Boolean) -> Unit,
     onToggleConfirmTap: (Boolean) -> Unit,
     onToggleKidsMode: (Boolean) -> Unit,
-    onBackToHome: () -> Unit
+    onNavigateHome: () -> Unit = {},
+    onNavigateLogin: () -> Unit = {},
+    onNavigateShop: () -> Unit = {},
+    onNavigateSettings: () -> Unit = {},
+    onBackToHome: () -> Unit = {}
 ) {
     var nicknameInput by remember { mutableStateOf(currentNickname) }
     var regionExpanded by remember { mutableStateOf(false) }
@@ -89,7 +95,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp)
         ) {
             // TOP HEADER
             Row(
@@ -272,5 +278,16 @@ fun SettingsScreen(
                 }
             }
         }
+
+        // FLOATING GRADIENT PILL 3D NAVIGATION BAR
+        GradientPillNavigationBar(
+            currentScreenName = "settings",
+            isLoggedIn = isLoggedIn,
+            onNavigateHome = onNavigateHome,
+            onNavigateLogin = onNavigateLogin,
+            onNavigateShop = onNavigateShop,
+            onNavigateSettings = onNavigateSettings,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }

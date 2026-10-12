@@ -81,11 +81,12 @@ fun GradientPillNavigationBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. HOME
+            // 1. HOME (CAR ICON 15% LARGER)
             PillNavItem(
                 iconRes = R.drawable.nav_home_icon,
                 label = "Home",
                 isSelected = currentScreenName == "home",
+                iconSize = 60, // 15% larger!
                 onClick = onNavigateHome,
                 modifier = Modifier.weight(1f)
             )
@@ -103,6 +104,7 @@ fun GradientPillNavigationBar(
                 iconRes = R.drawable.nav_login_icon,
                 label = if (isLoggedIn) "Log Out" else "Log In",
                 isSelected = currentScreenName == "login" || currentScreenName == "logout",
+                iconSize = 52,
                 onClick = onNavigateLogin,
                 modifier = Modifier.weight(1f)
             )
@@ -120,6 +122,7 @@ fun GradientPillNavigationBar(
                 iconRes = R.drawable.nav_shop_icon,
                 label = "Shop",
                 isSelected = currentScreenName == "shop",
+                iconSize = 52,
                 onClick = onNavigateShop,
                 modifier = Modifier.weight(1f)
             )
@@ -137,6 +140,7 @@ fun GradientPillNavigationBar(
                 iconRes = R.drawable.nav_settings_icon,
                 label = "Settings",
                 isSelected = currentScreenName == "settings",
+                iconSize = 52,
                 onClick = onNavigateSettings,
                 modifier = Modifier.weight(1f)
             )
@@ -149,6 +153,7 @@ fun PillNavItem(
     iconRes: Int,
     label: String,
     isSelected: Boolean,
+    iconSize: Int = 52,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -163,6 +168,7 @@ fun PillNavItem(
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(60.dp)
         ) {
+            // RADIANT CYAN AURA GLOW BEHIND SELECTED ICON
             if (isSelected) {
                 Box(
                     modifier = Modifier
@@ -183,12 +189,13 @@ fun PillNavItem(
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = label,
-                modifier = Modifier.size(52.dp)
+                modifier = Modifier.size(iconSize.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(1.dp))
 
+        // GLOWING TEXT SHADOW MATCHING SAMPLE IMAGE
         Text(
             text = label,
             fontSize = 11.5.sp,

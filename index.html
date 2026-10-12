@@ -7,7 +7,7 @@
   <meta name="description" content="A modern, addictive, social road trip game for passengers. Play local or online multiplayer bingo across America!">
   <meta name="theme-color" content="#0284C7">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=48">
+  <link rel="stylesheet" href="style.css?v=50">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
@@ -20,7 +20,7 @@
     <!-- FLOATING 3D GRADIENT PILL NAVIGATION BAR (SET 6) -->
     <footer class="app-footer">
       <button id="nav-home" class="active" onclick="router.navigate('home')">
-        <span class="nav-icon-wrapper active"><img src="nav_home_icon.png" alt="Home" class="nav-icon-img" /></span>
+        <span class="nav-icon-wrapper active"><img src="nav_home_icon.png" alt="Home" class="nav-icon-img nav-car-icon" /></span>
         <span>Home</span>
       </button>
       <button id="nav-login" onclick="router.navigate('login')">
@@ -38,11 +38,11 @@
     </footer>
   </div>
 
-  <script src="app.js?v=48"></script>
+  <script src="app.js?v=50"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=48').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=50').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
