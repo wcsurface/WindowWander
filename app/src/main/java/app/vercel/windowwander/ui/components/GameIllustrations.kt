@@ -449,40 +449,66 @@ fun CartoonRoadSignCard(
     }
 }
 
-// B I N G O 3D COLORED HEADERS
+// B I N G O GLOSSY 3D GEL BUTTON HEADERS
 @Composable
 fun BingoColumnHeaders(
     modifier: Modifier = Modifier
 ) {
     val headers = listOf(
-        Pair("B", Color(0xFF2563EB)),
-        Pair("I", Color(0xFFDC2626)),
-        Pair("N", Color(0xFF7C3AED)),
-        Pair("G", Color(0xFF059669)),
-        Pair("O", Color(0xFFD97706))
+        Pair("B", listOf(Color(0xFF3B82F6), Color(0xFF1D4ED8), Color(0xFF1E3A8A))), // Blue Gel
+        Pair("I", listOf(Color(0xFFEF4444), Color(0xFFDC2626), Color(0xFF991B1B))), // Red Gel
+        Pair("N", listOf(Color(0xFFA855F7), Color(0xFF7C3AED), Color(0xFF581C87))), // Purple Gel
+        Pair("G", listOf(Color(0xFF10B981), Color(0xFF059669), Color(0xFF064E3B))), // Green Gel
+        Pair("O", listOf(Color(0xFFF97316), Color(0xFFD97706), Color(0xFF78350F)))  // Orange Gel
     )
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        headers.forEach { (char, color) ->
+        headers.forEach { (char, gradientColors) ->
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp)
-                    .shadow(10.dp, RoundedCornerShape(12.dp))
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(color)
-                    .border(2.dp, Color.White.copy(alpha = 0.8f), RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
+                    .height(44.dp)
+                    .shadow(8.dp, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Brush.verticalGradient(gradientColors))
+                    .border(2.dp, Color.White.copy(alpha = 0.65f), RoundedCornerShape(16.dp))
             ) {
-                Text(
-                    text = char,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White
+                // TOP CRESCENT GLOSS REFLECTION HIGHLIGHT
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(18.dp)
+                        .padding(horizontal = 3.dp, vertical = 2.dp)
+                        .clip(RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp, bottomStart = 4.dp, bottomEnd = 4.dp))
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.White.copy(alpha = 0.68f), Color.White.copy(alpha = 0.05f))
+                            )
+                        )
                 )
+
+                // BINGO LETTER
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = char,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        style = TextStyle(
+                            shadow = Shadow(
+                                color = Color.Black.copy(alpha = 0.4f),
+                                offset = Offset(0f, 2f),
+                                blurRadius = 4f
+                            )
+                        )
+                    )
+                }
             }
         }
     }

@@ -56,11 +56,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -242,7 +244,7 @@ fun BingoGameScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // B I N G O 3D COLORED HEADERS
+                // B I N G O GLOSSY 3D GEL BUTTON HEADERS
                 BingoColumnHeaders()
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -445,7 +447,7 @@ fun BingoGameScreen(
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
                             ) {
                                 Text(
-                                    text = "+100 BONUS XP • +50 COINS ⭐️",
+                                    text = "+100 BONUS XP ⭐️",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
                                     color = CompletedGreen
@@ -662,6 +664,7 @@ fun OpponentMiniBoardCard(
     }
 }
 
+// GLOSSY 3D GEL BUTTON BINGO TILE COMPOSABLE
 @Composable
 fun BingoTileView(
     tile: BingoTile,
@@ -674,26 +677,50 @@ fun BingoTileView(
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
-    // SATISFYING SPRING POP ANIMATION ON TAPPING
+    // FAST & SMOOTH PRESS ANIMATION (100-160ms)
     val scale by animateFloatAsState(
         targetValue = when {
-            isPressed -> 0.80f
-            tile.isCompleted -> 1.08f
+            isPressed -> 0.94f
+            tile.isCompleted -> 1.02f
             else -> 1.0f
         },
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioHighBouncy,
-            stiffness = Spring.StiffnessMedium
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessHigh
         ),
-        label = "tileSpringScale"
+        label = "tilePressScale"
     )
 
-    // GLOSSY 3D GEM & GOLDEN EMBOSSED BRUSH FOR COMPLETED TILES
-    val bgBrush = when {
-        tile.isCenter -> Brush.verticalGradient(listOf(SunnyYellowLight, SunnyYellow))
-        tile.isCompleted && isWinningLine -> Brush.verticalGradient(listOf(SunnyYellowLight, GoldWinner, VividOrange))
-        tile.isCompleted -> Brush.verticalGradient(listOf(Color(0xFF34D399), Color(0xFF10B981), Color(0xFF047857)))
-        else -> Brush.verticalGradient(listOf(Color(0xFF2A364F), MediumNavy))
+    // BASE GEL GRADIENT COLORS
+    val baseGradient = when {
+        tile.isCenter -> listOf(
+            Color(0xFFFFF066), // Bright Luminous Yellow Top
+            Color(0xFFF59E0B), // Vibrant Gold
+            Color(0xFFD97706)  // Deeper Gold Bottom
+        )
+        tile.isCompleted -> listOf(
+            Color(0xFF4ADE80), // Bright Mint Green Top
+            Color(0xFF10B981), // Luminous Emerald Green
+            Color(0xFF047857)  // Deeper Forest Green Bottom
+        )
+        else -> listOf(
+            Color(0xFF38BDF8), // Radiant Cyan-Blue Top
+            Color(0xFF0284C7), // Saturated Luminous Royal Blue
+            Color(0xFF0369A1)  // Deep Oceanic Blue Bottom
+        )
+    }
+
+    // BORDER GEL RIM BRUSH
+    val rimBorderBrush = when {
+        tile.isCenter -> Brush.verticalGradient(
+            listOf(Color.White, Color(0xFFFDE047), Color(0xFFB45309))
+        )
+        tile.isCompleted -> Brush.verticalGradient(
+            listOf(Color.White, Color(0xFF86EFAC), Color(0xFF065F46))
+        )
+        else -> Brush.verticalGradient(
+            listOf(Color.White.copy(alpha = 0.9f), Color(0xFF38BDF8), Color(0xFF0284C7).copy(alpha = 0.5f))
+        )
     }
 
     Box(
@@ -705,20 +732,20 @@ fun BingoTileView(
                 tileCenterOffset = Offset(bounds.left + bounds.width / 2f, bounds.top + bounds.height / 2f)
             }
             .shadow(
-                elevation = if (tile.isCompleted) 14.dp else 3.dp,
-                shape = RoundedCornerShape(14.dp),
-                spotColor = if (tile.isCompleted) SunnyYellow else Color.Black
+                elevation = if (isPressed) 2.dp else if (tile.isCenter || tile.isCompleted) 10.dp else 6.dp,
+                shape = RoundedCornerShape(18.dp),
+                spotColor = when {
+                    tile.isCenter -> SunnyYellow
+                    tile.isCompleted -> CompletedGreen
+                    else -> Color(0xFF0284C7)
+                }
             )
-            .clip(RoundedCornerShape(14.dp))
-            .background(bgBrush)
+            .clip(RoundedCornerShape(18.dp))
+            .background(Brush.verticalGradient(baseGradient))
             .border(
-                width = if (tile.isCompleted || isWinningLine) 3.dp else 1.dp,
-                brush = when {
-                    isWinningLine -> Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner, VividOrange))
-                    tile.isCompleted -> Brush.horizontalGradient(listOf(SunnyYellowLight, GoldWinner, Color.White))
-                    else -> Brush.linearGradient(listOf(Color.White.copy(alpha = 0.25f), Color.Transparent))
-                },
-                shape = RoundedCornerShape(14.dp)
+                width = if (tile.isCompleted || tile.isCenter) 2.5.dp else 2.dp,
+                brush = rimBorderBrush,
+                shape = RoundedCornerShape(18.dp)
             )
             .clickable(
                 interactionSource = interactionSource,
@@ -730,21 +757,51 @@ fun BingoTileView(
                     onTapWithCenter(tileCenterOffset)
                 }
             )
-            .padding(3.dp),
-        contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        // TOP CRESCENT GLOSS REFLECTION HIGHLIGHT OVERLAY (INFLATED 3D GEL LOOK)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+                .padding(horizontal = 4.dp, vertical = 2.dp)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 8.dp, bottomEnd = 8.dp))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.70f),
+                            Color.White.copy(alpha = 0.10f)
+                        )
+                    )
+                )
+        )
+
+        // TILE CONTENT (NO GOLDEN FOUND BADGE!)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 4.dp, vertical = 3.dp),
+            contentAlignment = Alignment.Center
         ) {
             if (tile.isCenter) {
-                Text(text = "⭐", fontSize = 16.sp)
-                Text(
-                    text = "FREE",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "⭐", fontSize = 22.sp)
+                    Text(
+                        text = "FREE",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        style = TextStyle(
+                            shadow = Shadow(
+                                color = Color.Black.copy(alpha = 0.4f),
+                                offset = Offset(0f, 2f),
+                                blurRadius = 4f
+                            )
+                        )
+                    )
+                }
             } else {
                 Text(
                     text = tile.prompt.name,
@@ -753,25 +810,15 @@ fun BingoTileView(
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     lineHeight = 12.5.sp,
-                    maxLines = 3
-                )
-
-                if (tile.isCompleted) {
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner)))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = "⭐ FOUND!",
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Black,
-                            color = DeepNavy
+                    maxLines = 3,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = Color.Black.copy(alpha = 0.45f),
+                            offset = Offset(0f, 1.5f),
+                            blurRadius = 3f
                         )
-                    }
-                }
+                    )
+                )
             }
         }
     }
