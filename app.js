@@ -308,11 +308,19 @@ class Router {
       navLoginBtn.innerText = this.isLoggedIn ? 'Log Out' : 'Log In';
     }
 
-    // MAIN LOBBY BACKGROUND THEME USED ON HOME, LOGIN, AND SHOP
-    if (['home', 'login', 'shop'].includes(this.currentScreen)) {
+    // SETTINGS PAGE HAS DEDICATED DOODLE BACKGROUND THEME
+    if (this.currentScreen === 'settings') {
+      document.body.classList.add('settings-theme');
+      document.body.classList.remove('main-home-theme');
+      document.body.classList.remove('deck-game-theme');
+      document.body.style.backgroundImage = '';
+    } else if (['home', 'login', 'shop'].includes(this.currentScreen)) {
+      document.body.classList.remove('settings-theme');
       document.body.classList.add('main-home-theme');
       document.body.classList.remove('deck-game-theme');
+      document.body.style.backgroundImage = '';
     } else if (this.currentScreen === 'game') {
+      document.body.classList.remove('settings-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.add('deck-game-theme');
       const deckMap = {
@@ -328,6 +336,7 @@ class Router {
       const bgImg = deckMap[this.selectedDeck.id] || 'bg_classic_roadtrip.jpg';
       document.body.style.backgroundImage = `url('${bgImg}')`;
     } else {
+      document.body.classList.remove('settings-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';

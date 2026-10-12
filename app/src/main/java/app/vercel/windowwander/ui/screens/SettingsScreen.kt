@@ -1,5 +1,6 @@
 package app.vercel.windowwander.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,14 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.vercel.windowwander.R
 import app.vercel.windowwander.model.Region
 import app.vercel.windowwander.ui.theme.MediumNavy
-import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
-import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,190 +69,206 @@ fun SettingsScreen(
     var nicknameInput by remember { mutableStateOf(currentNickname) }
     var regionExpanded by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MidnightNavy)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-        // TOP HEADER
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "⚙️ Settings",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // SETTINGS FULL SCREEN DOODLE ROAD TRIP BACKGROUND
+        Image(
+            painter = painterResource(id = R.drawable.bg_settings),
+            contentDescription = "Settings Background Artwork",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
 
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MediumNavy)
-                    .clickable { onBackToHome() }
-                    .padding(horizontal = 14.dp, vertical = 8.dp)
+        // DARK OVERLAY SCRIM FOR READABILITY OF SETTINGS CARDS
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.35f))
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+        ) {
+            // TOP HEADER
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Back",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "⚙️ Settings",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
                     color = Color.White
                 )
-            }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // NICKNAME CARD
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MediumNavy),
-            shape = RoundedCornerShape(18.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Player Nickname", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = nicknameInput,
-                    onValueChange = { nicknameInput = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = SunnyYellow,
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.3f)
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Button(
-                    onClick = { onUpdateNickname(nicknameInput) },
-                    colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
-                    shape = RoundedCornerShape(10.dp)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MediumNavy)
+                        .clickable { onBackToHome() }
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Text(text = "Save Nickname", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Back",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // REGION SELECTOR CARD
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MediumNavy),
-            shape = RoundedCornerShape(18.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Manual Region Selection", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
-                Text(
-                    text = "Generates regional sights even without active GPS",
-                    fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.6f)
-                )
+            // NICKNAME CARD
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy),
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Player Nickname", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ExposedDropdownMenuBox(
-                    expanded = regionExpanded,
-                    onExpandedChange = { regionExpanded = !regionExpanded }
-                ) {
                     OutlinedTextField(
-                        value = selectedRegion.displayName,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = regionExpanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        value = nicknameInput,
+                        onValueChange = { nicknameInput = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = SunnyYellow,
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.3f)
                         )
                     )
 
-                    ExposedDropdownMenu(
-                        expanded = regionExpanded,
-                        onDismissRequest = { regionExpanded = false }
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Button(
+                        onClick = { onUpdateNickname(nicknameInput) },
+                        colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
-                        Region.values().forEach { region ->
-                            DropdownMenuItem(
-                                text = { Text(region.displayName) },
-                                onClick = {
-                                    onSelectRegion(region)
-                                    regionExpanded = false
-                                }
+                        Text(text = "Save Nickname", fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // REGION SELECTOR CARD
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy),
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Manual Region Selection", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
+                    Text(
+                        text = "Generates regional sights even without active GPS",
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.6f)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ExposedDropdownMenuBox(
+                        expanded = regionExpanded,
+                        onExpandedChange = { regionExpanded = !regionExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedRegion.displayName,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = regionExpanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
                             )
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = regionExpanded,
+                            onDismissRequest = { regionExpanded = false }
+                        ) {
+                            Region.values().forEach { region ->
+                                DropdownMenuItem(
+                                    text = { Text(region.displayName) },
+                                    onClick = {
+                                        onSelectRegion(region)
+                                        regionExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // TOGGLES CARD
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MediumNavy),
-            shape = RoundedCornerShape(18.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Sound Effects", fontWeight = FontWeight.Medium, color = Color.White)
-                    Switch(
-                        checked = soundEnabled,
-                        onCheckedChange = onToggleSound,
-                        colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                    )
-                }
+            // TOGGLES CARD
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MediumNavy),
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Sound Effects", fontWeight = FontWeight.Medium, color = Color.White)
+                        Switch(
+                            checked = soundEnabled,
+                            onCheckedChange = onToggleSound,
+                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
+                        )
+                    }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Haptic Vibrations", fontWeight = FontWeight.Medium, color = Color.White)
-                    Switch(
-                        checked = hapticsEnabled,
-                        onCheckedChange = onToggleHaptics,
-                        colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                    )
-                }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Haptic Vibrations", fontWeight = FontWeight.Medium, color = Color.White)
+                        Switch(
+                            checked = hapticsEnabled,
+                            onCheckedChange = onToggleHaptics,
+                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
+                        )
+                    }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Confirm Tap Selections", fontWeight = FontWeight.Medium, color = Color.White)
-                    Switch(
-                        checked = confirmTapEnabled,
-                        onCheckedChange = onToggleConfirmTap,
-                        colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                    )
-                }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Confirm Tap Selections", fontWeight = FontWeight.Medium, color = Color.White)
+                        Switch(
+                            checked = confirmTapEnabled,
+                            onCheckedChange = onToggleConfirmTap,
+                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
+                        )
+                    }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Easier Kids Mode", fontWeight = FontWeight.Medium, color = Color.White)
-                    Switch(
-                        checked = kidsModeEasy,
-                        onCheckedChange = onToggleKidsMode,
-                        colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Easier Kids Mode", fontWeight = FontWeight.Medium, color = Color.White)
+                        Switch(
+                            checked = kidsModeEasy,
+                            onCheckedChange = onToggleKidsMode,
+                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
+                        )
+                    }
                 }
             }
         }
