@@ -73,6 +73,7 @@ import app.vercel.windowwander.engine.WinResult
 import app.vercel.windowwander.model.BingoTile
 import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.model.GameMode
+import app.vercel.windowwander.model.MultiplayerRoom
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.BingoColumnHeaders
 import app.vercel.windowwander.ui.components.ConfettiCelebrationGraphic
@@ -85,7 +86,6 @@ import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
-import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -101,6 +101,8 @@ fun BingoGameScreen(
     showAccountPrompt: Boolean,
     soundEnabled: Boolean = true,
     hapticsEnabled: Boolean = true,
+    multiplayerRoom: MultiplayerRoom? = null,
+    currentUserNickname: String = "You",
     onTapTile: (Int) -> Unit,
     onUndo: () -> Unit,
     onNewGame: () -> Unit,
@@ -114,24 +116,7 @@ fun BingoGameScreen(
     var globalExplosionCenter by remember { mutableStateOf<Offset?>(null) }
     var rootBoxWindowOffset by remember { mutableStateOf(Offset.Zero) }
 
-    // REAL-TIME OPPONENT LIVE BOARD SIMULATION
-    var opponent1Tiles by remember { mutableStateOf(listOf(0, 4, 12, 18, 22)) }
-    var opponent2Tiles by remember { mutableStateOf(listOf(2, 7, 12, 14, 20, 24)) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(4000)
-            if (opponent1Tiles.size < 20) {
-                val next = (0..24).filter { !opponent1Tiles.contains(it) }.randomOrNull()
-                if (next != null) opponent1Tiles = opponent1Tiles + next
-            }
-            delay(3500)
-            if (opponent2Tiles.size < 20) {
-                val next = (0..24).filter { !opponent2Tiles.contains(it) }.randomOrNull()
-                if (next != null) opponent2Tiles = opponent2Tiles + next
-            }
-        }
-    }
+    val otherRealPlayers = multiplayerRoom?.players?.filter { it.nickname != currentUserNickname } ?: emptyList()
 
     ScenicHighwayBackground(deckId = deck.id, region = deck.region) {
         Box(
@@ -320,50 +305,47 @@ fun BingoGameScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                // LIVE REAL CONNECTED PASSENGER BOARDS SECTION (DISPLAYED ONLY IF REAL PLAYERS ARE CONNECTED)
+                if (otherRealPlayers.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(18.dp))
 
-                // LIVE OPPONENT BOARDS SECTION AT THE BOTTOM
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "LIVE OPPONENT BOARDS (2)",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Black,
-                            color = SunnyYellow
-                        )
-                        Text(
-                            text = "⚡ Live Sync",
-                            fontSize = 11.sp,
-                            color = CompletedGreen,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "CONNECTED PASSENGERS (${otherRealPlayers.size})",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow
+                            )
+                            Text(
+                                text = "⚡ Live Room Sync",
+                                fontSize = 11.sp,
+                                color = CompletedGreen,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        OpponentMiniBoardCard(
-                            nickname = "Alex (Passenger)",
-                            avatarEmoji = "🦊",
-                            completedIndices = opponent1Tiles,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        OpponentMiniBoardCard(
-                            nickname = "Jordan (RV Traveler)",
-                            avatarEmoji = "🦅",
-                            completedIndices = opponent2Tiles,
-                            modifier = Modifier.weight(1f)
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            otherRealPlayers.forEach { realPlayer ->
+                                OpponentMiniBoardCard(
+                                    nickname = realPlayer.nickname,
+                                    avatarEmoji = "🐻",
+                                    completedIndices = listOf(12),
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
                     }
                 }
 

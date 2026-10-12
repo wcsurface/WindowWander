@@ -17,7 +17,7 @@ const db = process.env.DATABASE_URL ? new Pool({
   ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false }
 }) : null;
 
-// IN-MEMORY FALLBACK STORAGE FOR ROOMS & USERS (IF PG DB IS NOT YET PROVISIONED)
+// IN-MEMORY FALLBACK STORAGE FOR ROOMS & USERS
 const rooms = new Map();
 const usersDb = new Map();
 
@@ -65,7 +65,7 @@ app.get('/health', async (req, res) => {
 });
 
 // -------------------------------------------------------------
-// USER ACCOUNTS AUTHENTICATION & SYNC REST API ENDPOINTS
+// USER ACCOUNTS AUTHENTICATION & LEADERBOARD ENDPOINTS
 // -------------------------------------------------------------
 
 // 1. REGISTER USER ACCOUNT ON RAILWAY POSTGRESQL
@@ -307,8 +307,61 @@ app.post('/api/auth/save-profile', async (req, res) => {
   }
 });
 
+// 4. REAL USERS LEADERBOARD FROM RAILWAY POSTGRESQL DB (ZERO FAKE BOTS!)
+app.get('/api/auth/leaderboard', async (req, res) => {
+  if (db) {
+    try {
+      const pointsResult = await db.query(
+        'SELECT nickname, level, xp, squares_found FROM users ORDER BY xp DESC LIMIT 20'
+      );
+      const itemsResult = await db.query(
+        'SELECT nickname, level, xp, squares_found FROM users ORDER BY squares_found DESC LIMIT 20'
+      );
+
+      return res.json({
+        success: true,
+        pointsList: pointsResult.rows.map((u, i) => ({
+          rank: i + 1,
+          name: u.nickname,
+          emoji: '🐻',
+          level: u.level || 1,
+          val: u.xp || 0
+        })),
+        itemsList: itemsResult.rows.map((u, i) => ({
+          rank: i + 1,
+          name: u.nickname,
+          emoji: '🐻',
+          level: u.level || 1,
+          val: u.squares_found || 0
+        }))
+      });
+    } catch (err) {
+      console.error('DB Leaderboard Query Error:', err);
+    }
+  }
+
+  // IN-MEMORY REAL LEADERBOARD
+  const allUsers = Array.from(usersDb.values());
+  const pointsList = allUsers.sort((a,b) => b.xp - a.xp).map((u, i) => ({
+    rank: i + 1,
+    name: u.nickname,
+    emoji: '🐻',
+    level: u.level || 1,
+    val: u.xp || 0
+  }));
+  const itemsList = allUsers.sort((a,b) => b.squaresFound - a.squaresFound).map((u, i) => ({
+    rank: i + 1,
+    name: u.nickname,
+    emoji: '🐻',
+    level: u.level || 1,
+    val: u.squaresFound || 0
+  }));
+
+  res.json({ success: true, pointsList, itemsList });
+});
+
 // -------------------------------------------------------------
-// MULTIPLAYER ROOMS REST & WEBSOCKET ENDPOINTS
+// MULTIPLAYER ROOMS REST API & WEBSOCKET ENDPOINTS FOR LIVE IN-CAR GAMEPLAY
 // -------------------------------------------------------------
 app.post('/api/rooms/create', (req, res) => {
   const { hostNickname, deckId } = req.body;
@@ -317,11 +370,64 @@ app.post('/api/rooms/create', (req, res) => {
     code,
     hostNickname,
     deckId: deckId || 'deck_a',
-    players: [{ nickname: hostNickname, isHost: true, score: 0 }],
-    discoveries: []
+    players: [{ nickname: hostNickname, isHost: true, completedTiles: [12] }]
   };
   rooms.set(code, room);
   res.json({ success: true, room });
+});
+
+app.post('/api/rooms/join', (req, res) => {
+  const { code, nickname } = req.body;
+  if (!code || !nickname) {
+    return res.status(400).json({ success: false, error: 'Code and nickname required' });
+  }
+
+  const upperCode = code.toUpperCase().trim();
+  let room = rooms.get(upperCode);
+
+  if (!room) {
+    // Create new room dynamically for testing code join
+    room = {
+      code: upperCode,
+      hostNickname: 'Host Passenger',
+      deckId: 'deck_a',
+      players: [{ nickname: 'Host Passenger', isHost: true, completedTiles: [12] }]
+    };
+    rooms.set(upperCode, room);
+  }
+
+  const existingPlayer = room.players.find(p => p.nickname === nickname);
+  if (!existingPlayer) {
+    room.players.push({ nickname, isHost: false, completedTiles: [12] });
+  }
+
+  res.json({ success: true, room });
+});
+
+app.post('/api/rooms/get', (req, res) => {
+  const { code } = req.body;
+  const upperCode = (code || '').toUpperCase().trim();
+  const room = rooms.get(upperCode);
+  if (room) {
+    res.json({ success: true, room });
+  } else {
+    res.status(404).json({ success: false, error: 'Room not found' });
+  }
+});
+
+app.post('/api/rooms/update-tiles', (req, res) => {
+  const { code, nickname, completedTiles } = req.body;
+  const upperCode = (code || '').toUpperCase().trim();
+  const room = rooms.get(upperCode);
+  if (room) {
+    const player = room.players.find(p => p.nickname === nickname);
+    if (player) {
+      player.completedTiles = completedTiles || [12];
+    }
+    res.json({ success: true, room });
+  } else {
+    res.status(404).json({ success: false, error: 'Room not found' });
+  }
 });
 
 wss.on('connection', (ws) => {
@@ -329,30 +435,32 @@ wss.on('connection', (ws) => {
     try {
       const data = JSON.parse(message);
       if (data.type === 'JOIN_ROOM') {
-        const room = rooms.get(data.code);
+        const upperCode = (data.code || '').toUpperCase().trim();
+        const room = rooms.get(upperCode);
         if (room) {
-          room.players.push({ nickname: data.nickname, isHost: false, score: 0 });
-          ws.roomCode = data.code;
+          if (!room.players.some(p => p.nickname === data.nickname)) {
+            room.players.push({ nickname: data.nickname, isHost: false, completedTiles: [12] });
+          }
+          ws.roomCode = upperCode;
           ws.send(JSON.stringify({ type: 'ROOM_JOINED', room }));
         }
-      } else if (data.type === 'CLAIM_TILE') {
+      } else if (data.type === 'UPDATE_TILES') {
         const room = rooms.get(ws.roomCode);
         if (room) {
-          room.discoveries.push({
-            promptId: data.promptId,
-            claimedBy: data.nickname,
-            timestamp: Date.now()
-          });
-          // Broadcast to all room clients
+          const player = room.players.find(p => p.nickname === data.nickname);
+          if (player) {
+            player.completedTiles = data.completedTiles || [12];
+          }
+          // Broadcast updated room state to all connected passengers
           wss.clients.forEach(client => {
             if (client.roomCode === ws.roomCode && client.readyState === 1) {
-              client.send(JSON.stringify({ type: 'TILE_CLAIMED', room }));
+              client.send(JSON.stringify({ type: 'ROOM_UPDATED', room }));
             }
           });
         }
       }
     } catch(err) {
-      console.error(err);
+      console.error('WS Error:', err);
     }
   });
 });

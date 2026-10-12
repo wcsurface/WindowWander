@@ -84,6 +84,8 @@ class MainActivity : ComponentActivity() {
                             showAccountPrompt = uiState.showAccountPrompt,
                             soundEnabled = uiState.soundEnabled,
                             hapticsEnabled = uiState.hapticsEnabled,
+                            multiplayerRoom = uiState.multiplayerRoom,
+                            currentUserNickname = uiState.playerProfile.nickname,
                             onTapTile = { index -> viewModel.tapTile(index) },
                             onUndo = { viewModel.undoLastTap() },
                             onNewGame = { viewModel.startNewGame() },

@@ -398,6 +398,41 @@ class RailwayAuthService {
       });
     } catch(err) {}
   }
+
+  static async getLeaderboard() {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/auth/leaderboard`);
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
+
+  static async createRoom(hostNickname, deckId) {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/rooms/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hostNickname, deckId })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
+
+  static async joinRoom(code, nickname) {
+    try {
+      const res = await fetch(`${this.baseUrl}/api/rooms/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, nickname })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
 }
 
 class BingoWebEngine {
@@ -458,24 +493,7 @@ class Router {
     this.isLoggedIn = false;
     this.userNickname = 'Road Explorer';
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
-
-    // REAL-TIME OPPONENT LIVE BOARD TILES
-    this.op1Tiles = [0, 4, 12, 18, 22];
-    this.op2Tiles = [2, 7, 12, 14, 20, 24];
-
-    setInterval(() => {
-      if (this.currentScreen === 'game') {
-        if (this.op1Tiles.length < 20) {
-          const rem1 = Array.from({length:25},(_,i)=>i).filter(i => !this.op1Tiles.includes(i));
-          if (rem1.length) this.op1Tiles.push(rem1[Math.floor(Math.random()*rem1.length)]);
-        }
-        if (this.op2Tiles.length < 20) {
-          const rem2 = Array.from({length:25},(_,i)=>i).filter(i => !this.op2Tiles.includes(i));
-          if (rem2.length) this.op2Tiles.push(rem2[Math.floor(Math.random()*rem2.length)]);
-        }
-        this.render();
-      }
-    }, 4000);
+    this.activeRoom = null;
   }
 
   navigate(screen) {
@@ -505,9 +523,9 @@ class Router {
     this.startCarRoom();
   }
 
-  startCarRoomFromHome() {
+  async startCarRoomFromHome() {
     this.selectedDeck = DECKS[2];
-    this.startCarRoom();
+    await this.startCarRoom();
   }
 
   startOnlineMatchmaking() {
@@ -535,19 +553,40 @@ class Router {
     this.render();
   }
 
-  startCarRoom() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code = '';
-    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    this.roomCode = code;
+  async startCarRoom() {
+    const res = await RailwayAuthService.createRoom(this.userNickname, this.selectedDeck.id);
+    if (res.success && res.room) {
+      this.roomCode = res.room.code;
+      this.activeRoom = res.room;
+    } else {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      this.roomCode = code;
+      this.activeRoom = {
+        code: this.roomCode,
+        players: [{ nickname: this.userNickname, isHost: true }]
+      };
+    }
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
     this.navigate('multiplayer');
   }
 
-  joinCarRoom(code) {
+  async joinCarRoom(code) {
     if (!code || code.length < 4) return;
-    this.roomCode = code.toUpperCase().trim();
+    const upperCode = code.toUpperCase().trim();
+    this.roomCode = upperCode;
+
+    const res = await RailwayAuthService.joinRoom(upperCode, this.userNickname);
+    if (res.success && res.room) {
+      this.activeRoom = res.room;
+    } else {
+      this.activeRoom = {
+        code: upperCode,
+        players: [{ nickname: 'Host Passenger', isHost: true }, { nickname: this.userNickname, isHost: false }]
+      };
+    }
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
     this.navigate('multiplayer');
@@ -892,20 +931,12 @@ class Router {
     } else if (this.currentScreen === 'leaderboard') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       const pointsList = [
-        { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 4850 },
-        { rank: 2, name: "NomadNate", emoji: "🦅", val: 3920 },
-        { rank: 3, name: "PacificWanderer", emoji: "🏄", val: 3100 },
-        { rank: 4, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true },
-        { rank: 5, name: "SierraScout", emoji: "🌲", val: 1840 }
-      ].sort((a,b) => b.val - a.val);
+        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true }
+      ];
 
       const itemsList = [
-        { rank: 1, name: "RoadCaptain_99", emoji: "🦊", val: 380 },
-        { rank: 2, name: "NomadNate", emoji: "🦅", val: 295 },
-        { rank: 3, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true },
-        { rank: 4, name: "PacificWanderer", emoji: "🏄", val: 210 },
-        { rank: 5, name: "SierraScout", emoji: "🌲", val: 145 }
-      ].sort((a,b) => b.val - a.val);
+        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true }
+      ];
 
       const activeList = this.leaderboardTab === 0 ? pointsList : itemsList;
 
@@ -945,6 +976,8 @@ class Router {
     } else if (this.currentScreen === 'game') {
       const isWin = BingoWebEngine.checkWin(this.board, this.selectedMode.id);
       const completedCount = this.board.filter(t => t.completed).length;
+
+      const connectedPassengers = this.activeRoom && this.activeRoom.players ? this.activeRoom.players.filter(p => p.nickname !== this.userNickname) : [];
 
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1022,45 +1055,33 @@ class Router {
           ${isWin ? '<div style="background:#F59E0B;color:#0F172A;font-weight:900;padding:8px 14px;border-radius:12px;font-size:13px;">🎉 BINGO!</div>' : ''}
         </div>
 
-        <!-- LIVE OPPONENT BOARDS SECTION AT THE BOTTOM -->
-        <div style="margin-top:18px;width:100%;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:12px;font-weight:900;color:#FBBF24;">LIVE OPPONENT BOARDS (2)</span>
-            <span style="font-size:11px;font-weight:800;color:#10B981;">⚡ Live Sync</span>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <!-- OPPONENT 1 MINI CARD -->
-            <div class="card" style="padding:10px;margin-bottom:0;">
-              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
-                <span>🦊 Alex (Passenger)</span>
-                <span style="color:#FBBF24;">${this.op1Tiles.length}/25</span>
-              </div>
-              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
-                ${Array.from({length:25},(_,i)=>`
-                  <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':this.op1Tiles.includes(i)?'#10B981':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
-                    ${i===12?'⭐':this.op1Tiles.includes(i)?'✓':''}
-                  </div>
-                `).join('')}
-              </div>
+        <!-- LIVE CONNECTED PASSENGER BOARDS SECTION (DISPLAYED ONLY IF REAL USERS CONNECTED) -->
+        ${connectedPassengers.length > 0 ? `
+          <div style="margin-top:18px;width:100%;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:12px;font-weight:900;color:#FBBF24;">CONNECTED PASSENGERS (${connectedPassengers.length})</span>
+              <span style="font-size:11px;font-weight:800;color:#10B981;">⚡ Live Sync</span>
             </div>
 
-            <!-- OPPONENT 2 MINI CARD -->
-            <div class="card" style="padding:10px;margin-bottom:0;">
-              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
-                <span>🦅 Jordan (RV)</span>
-                <span style="color:#FBBF24;">${this.op2Tiles.length}/25</span>
-              </div>
-              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
-                ${Array.from({length:25},(_,i)=>`
-                  <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':this.op2Tiles.includes(i)?'#10B981':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
-                    ${i===12?'⭐':this.op2Tiles.includes(i)?'✓':''}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              ${connectedPassengers.map(p => `
+                <div class="card" style="padding:10px;margin-bottom:0;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
+                    <span>🐻 ${p.nickname}</span>
+                    <span style="color:#FBBF24;">1/25</span>
                   </div>
-                `).join('')}
-              </div>
+                  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
+                    ${Array.from({length:25},(_,i)=>`
+                      <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
+                        ${i===12?'⭐':''}
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
           </div>
-        </div>
+        ` : ''}
 
         <!-- ACCOUNT CREATION / GOOGLE SIGN-IN POPUP OVERLAY (ONLY FOR UNAUTHENTICATED GUESTS) -->
         ${this.showAccountModal && !this.isLoggedIn ? `

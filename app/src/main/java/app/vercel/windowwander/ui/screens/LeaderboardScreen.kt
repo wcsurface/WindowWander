@@ -68,23 +68,13 @@ fun LeaderboardScreen(
 ) {
     var selectedCategory by remember { mutableStateOf(0) } // 0 = Total Points (XP), 1 = Items Found
 
-    // MOCK LEADERBOARD DATA INTEGRATED WITH PLAYER PROFILE
+    // REAL USER LEADERBOARD DATA (ZERO FAKE BOTS!)
     val pointsLeaderboard = listOf(
-        LeaderboardEntry(1, "RoadCaptain_99", "🦊", 18, 4850),
-        LeaderboardEntry(2, "NomadNate", "🦅", 15, 3920),
-        LeaderboardEntry(3, "PacificWanderer", "🏄", 12, 3100),
-        LeaderboardEntry(4, "${profile.nickname} (You)", "🐻", profile.level, profile.xp, isCurrentUser = true),
-        LeaderboardEntry(5, "SierraScout", "🌲", 8, 1840),
-        LeaderboardEntry(6, "DesertFox", "🌵", 6, 1250)
+        LeaderboardEntry(1, "${profile.nickname} (You)", "🐻", profile.level, profile.xp, isCurrentUser = true)
     ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
 
     val itemsLeaderboard = listOf(
-        LeaderboardEntry(1, "RoadCaptain_99", "🦊", 18, 380),
-        LeaderboardEntry(2, "NomadNate", "🦅", 15, 295),
-        LeaderboardEntry(3, "${profile.nickname} (You)", "🐻", profile.level, profile.squaresFound, isCurrentUser = true),
-        LeaderboardEntry(4, "PacificWanderer", "🏄", 12, 210),
-        LeaderboardEntry(5, "SierraScout", "🌲", 8, 145),
-        LeaderboardEntry(6, "DesertFox", "🌵", 6, 98)
+        LeaderboardEntry(1, "${profile.nickname} (You)", "🐻", profile.level, profile.squaresFound, isCurrentUser = true)
     ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
 
     val currentList = if (selectedCategory == 0) pointsLeaderboard else itemsLeaderboard
