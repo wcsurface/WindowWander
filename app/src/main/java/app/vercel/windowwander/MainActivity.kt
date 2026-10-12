@@ -99,6 +99,11 @@ class MainActivity : ComponentActivity() {
 
                         Screen.LEADERBOARD -> LeaderboardScreen(
                             profile = uiState.playerProfile,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 

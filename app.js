@@ -658,7 +658,7 @@ class Router {
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
-    } else if (['home', 'login', 'shop'].includes(this.currentScreen)) {
+    } else if (['home', 'login', 'shop', 'leaderboard'].includes(this.currentScreen)) {
       document.body.classList.remove('settings-theme');
       document.body.classList.add('main-home-theme');
       document.body.classList.remove('deck-game-theme');
@@ -901,7 +901,7 @@ class Router {
 
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;">🏆 Leaderboard</h2>
+          <h2 style="font-weight:900;color:white;">🏆 Leaderboard</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
 
@@ -914,21 +914,23 @@ class Router {
           </button>
         </div>
 
-        ${activeList.map((item, idx) => `
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border:${item.isUser ? '2px solid #FBBF24' : '1px solid rgba(255,255,255,0.1)'};">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div style="width:32px;height:32px;border-radius:50%;background:${idx===0?'#EAB308':idx===1?'#94A3B8':idx===2?'#B45309':'#0F172A'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">#${idx+1}</div>
-              <span style="font-size:22px;">${item.emoji}</span>
-              <div>
-                <strong style="font-size:14px;color:white;display:block;">${item.name}</strong>
-                <span style="font-size:11px;color:#FBBF24;">Lvl ${level} Explorer</span>
+        <div style="margin-bottom:104px;">
+          ${activeList.map((item, idx) => `
+            <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border:${item.isUser ? '2px solid #FBBF24' : '1px solid rgba(255,255,255,0.1)'};">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:${idx===0?'#EAB308':idx===1?'#94A3B8':idx===2?'#B45309':'#0F172A'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;">#${idx+1}</div>
+                <span style="font-size:22px;">${item.emoji}</span>
+                <div>
+                  <strong style="font-size:14px;color:white;display:block;">${item.name}</strong>
+                  <span style="font-size:11px;color:#FBBF24;">Lvl ${level} Explorer</span>
+                </div>
+              </div>
+              <div style="background:#0F172A;padding:6px 12px;border-radius:10px;font-weight:900;color:#10B981;font-size:13px;">
+                ${item.val} ${this.leaderboardTab===0 ? 'XP' : 'Sights'}
               </div>
             </div>
-            <div style="background:#0F172A;padding:6px 12px;border-radius:10px;font-weight:900;color:#10B981;font-size:13px;">
-              ${item.val} ${this.leaderboardTab===0 ? 'XP' : 'Sights'}
-            </div>
-          </div>
-        `).join('')}
+          `).join('')}
+        </div>
       `;
     } else if (this.currentScreen === 'game') {
       const isWin = BingoWebEngine.checkWin(this.board, this.selectedMode.id);
