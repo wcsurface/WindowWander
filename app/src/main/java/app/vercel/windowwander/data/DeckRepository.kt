@@ -303,6 +303,54 @@ object DeckRepository {
         p("ds42", "Pond or Lake", "Pond or lake", "nature", false, Region.SOUTHEAST)
     )
 
+    // -------------------------------------------------------------
+    // DECK G: WEST COAST (42 EXACT UPDATED PROMPTS)
+    // -------------------------------------------------------------
+    val DECK_G_PROMPTS = listOf(
+        p("cc1", "Ocean Overlook", "Dramatic coastal cliff overlooking the Pacific Ocean", "landscape", false, Region.PACIFIC_SOUTHWEST),
+        p("cc2", "Lighthouse", "White historic lighthouse perched on a rocky headland", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc3", "Burger Restaurant", "Burger restaurant", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc4", "Flowers", "Flowers", "nature", false, Region.PACIFIC_SOUTHWEST),
+        p("cc5", "Boat", "A boat", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc6", "Mission-Style Architecture", "Spanish mission building with tile roof and arched entryways", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc7", "Fish Restaurant Sign", "Sign advertising fish", "food", false, Region.PACIFIC_SOUTHWEST),
+        p("cc8", "Fruit Farm Stand", "Roadside farm stand selling fresh avocados or citrus", "food", false, Region.PACIFIC_SOUTHWEST),
+        p("cc9", "Rolling Golden Hills", "Sun-bleached golden hills rolling down to the coast", "landscape", false, Region.PACIFIC_SOUTHWEST),
+        p("cc10", "Redwood Tree", "Massive redwood tree", "nature", false, Region.PACIFIC_SOUTHWEST),
+        p("cc11", "Electric Vehicle", "Electric Vehicle", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc12", "Giant Roadside Statue", "A giant roadside statue", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc13", "Interstate Route Shield", "Numbered US or Interstate shield sign", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc14", "Car Crash", "A car crash", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc15", "Surf Shop Sign", "Storefront advertising surfboards and wetsuits", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc16", "Police Car", "Police car", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc17", "Point of Interest Sign", "Sign pointing to interest", "sign", false, Region.PACIFIC_SOUTHWEST),
+        p("cc18", "Construction Zone", "Construction Zone", "landscape", false, Region.PACIFIC_SOUTHWEST),
+        p("cc19", "Vanity Plate", "Specialty license plate", "decor", false, Region.PACIFIC_SOUTHWEST),
+        p("cc20", "Campground", "A campground", "outdoor", false, Region.PACIFIC_SOUTHWEST),
+        p("cc21", "RV Motorhome", "Large recreational vehicle cruising the coastal highway", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc22", "Wildlife Crossing Sign", "Wildlife crossing warning sign", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc23", "Dump Truck", "Dump Truck", "equipment", false, Region.PACIFIC_SOUTHWEST),
+        p("cc24", "Convertible Car", "Convertible Car with top down", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc25", "Spanish Tile Roofed Building", "Stucco building with distinctive red clay tile roof", "structure", false, Region.PACIFIC_SOUTHWEST),
+        p("cc26", "Surfboard", "Surfboard", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc27", "Coffee Shop", "Coffee Shop", "food", false, Region.PACIFIC_SOUTHWEST),
+        p("cc28", "Golf Course Sign", "Advert for a golf course", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc29", "Giant American Flag", "Giant American flag", "decor", false, Region.PACIFIC_SOUTHWEST),
+        p("cc30", "Attorney Sign", "Sign for attorney", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc31", "Train", "Train", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc32", "Water Tower", "A water tower", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc33", "Solar Panel Array", "Residential or commercial solar panel installation on hillside", "signs", false, Region.PACIFIC_SOUTHWEST),
+        p("cc34", "Dirt Road", "Dirt road", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc35", "Bike Rack with Bicycles", "Vehicle rear rack hauling multiple road or mountain bikes", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc36", "Rain", "Rain", "outdoor", false, Region.PACIFIC_SOUTHWEST),
+        p("cc37", "Fog", "Dense layer of marine fog rolling over sea cliffs", "nature", false, Region.PACIFIC_SOUTHWEST),
+        p("cc38", "Band Sticker", "Band sticker on a car", "sign", false, Region.PACIFIC_SOUTHWEST),
+        p("cc39", "Yellow Car", "Yellow Car", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc40", "Motorcycle", "A motorcycle", "vehicles", false, Region.PACIFIC_SOUTHWEST),
+        p("cc41", "Rest Area", "A rest area", "structures", false, Region.PACIFIC_SOUTHWEST),
+        p("cc42", "Tall Palm Tree", "Row of tall Washington fan palms lining a coastal boulevard", "nature", false, Region.PACIFIC_SOUTHWEST)
+    )
+
     val DECKS = listOf(
         Deck(
             id = "deck_a",
@@ -379,7 +427,7 @@ object DeckRepository {
             difficulty = "Medium",
             isFree = true,
             region = Region.PACIFIC_SOUTHWEST,
-            prompts = DECK_A_PROMPTS.shuffled()
+            prompts = DECK_G_PROMPTS
         ),
         Deck(
             id = "deck_h",

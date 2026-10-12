@@ -242,6 +242,51 @@ const THE_SOUTH_PROMPTS = [
   "Pond or Lake"
 ];
 
+const WEST_COAST_PROMPTS = [
+  "Ocean Overlook",
+  "Lighthouse",
+  "Burger Restaurant",
+  "Flowers",
+  "Boat",
+  "Mission-Style Architecture",
+  "Fish Restaurant Sign",
+  "Fruit Farm Stand",
+  "Rolling Golden Hills",
+  "Redwood Tree",
+  "Electric Vehicle",
+  "Giant Roadside Statue",
+  "Interstate Route Shield",
+  "Car Crash",
+  "Surf Shop Sign",
+  "Police Car",
+  "Point of Interest Sign",
+  "Construction Zone",
+  "Vanity Plate",
+  "Campground",
+  "RV Motorhome",
+  "Wildlife Crossing Sign",
+  "Dump Truck",
+  "Convertible Car",
+  "Spanish Tile Roofed Building",
+  "Surfboard",
+  "Coffee Shop",
+  "Golf Course Sign",
+  "Giant American Flag",
+  "Attorney Sign",
+  "Train",
+  "Water Tower",
+  "Solar Panel Array",
+  "Dirt Road",
+  "Bike Rack with Bicycles",
+  "Rain",
+  "Fog",
+  "Band Sticker",
+  "Yellow Car",
+  "Motorcycle",
+  "Rest Area",
+  "Tall Palm Tree"
+];
+
 class AudioEngine {
   static playPop() {
     try {
@@ -268,6 +313,7 @@ class BingoWebEngine {
     if (deckId === 'deck_d') prompts = DESERT_SOUTHWEST_PROMPTS;
     if (deckId === 'deck_e') prompts = NORTHEAST_PROMPTS;
     if (deckId === 'deck_f') prompts = THE_SOUTH_PROMPTS;
+    if (deckId === 'deck_g') prompts = WEST_COAST_PROMPTS;
 
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
