@@ -504,7 +504,10 @@ class Router {
     this.leaderboardTab = 0;
     this.showAccountModal = false;
     this.isLoggedIn = false;
-    this.userNickname = 'Road Explorer';
+    this.userNickname = localStorage.getItem('bingo_nickname') || ('Road Explorer ' + Math.floor(100 + Math.random() * 900));
+    if (!localStorage.getItem('bingo_nickname')) {
+      localStorage.setItem('bingo_nickname', this.userNickname);
+    }
     this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
     this.activeRoom = null;
     this.syncTimer = null;
@@ -690,7 +693,8 @@ class Router {
 
   logoutUser() {
     this.isLoggedIn = false;
-    this.userNickname = 'Road Explorer';
+    this.userNickname = 'Road Explorer ' + Math.floor(100 + Math.random() * 900);
+    localStorage.removeItem('bingo_nickname');
     this.navigate('home');
   }
 

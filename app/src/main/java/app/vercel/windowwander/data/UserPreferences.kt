@@ -7,6 +7,7 @@ import app.vercel.windowwander.model.Region
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 class UserPreferences(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("road_trip_bingo_prefs", Context.MODE_PRIVATE)
@@ -24,9 +25,15 @@ class UserPreferences(context: Context) {
         val badgeString = prefs.getString("earned_badges", "first_ride") ?: "first_ride"
         val badgeList = badgeString.split(",").filter { it.isNotBlank() }
 
+        val defaultGuestNick = "Road Explorer " + Random.nextInt(100, 999)
+        val savedNickname = prefs.getString("nickname", null) ?: defaultGuestNick
+        if (prefs.getString("nickname", null) == null) {
+            prefs.edit().putString("nickname", defaultGuestNick).apply()
+        }
+
         return PlayerProfile(
             id = prefs.getString("player_id", "guest_" + System.currentTimeMillis()) ?: "guest_player",
-            nickname = prefs.getString("nickname", "Road Explorer") ?: "Road Explorer",
+            nickname = savedNickname,
             avatarId = prefs.getString("avatar_id", "car_red") ?: "car_red",
             xp = prefs.getInt("xp", 0),
             gamesPlayed = prefs.getInt("games_played", 0),
