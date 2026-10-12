@@ -119,10 +119,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 86.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS - SETTINGS REMOVED FROM TOP RIGHT)
+                // TOP ARCADE HUD BAR (AVATAR, LEVEL, COINS)
                 ArcadeHudBar(
                     nickname = profile.nickname,
                     level = profile.level,
@@ -133,7 +133,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CENTERED TRANSPARENT ANIMATED GIF LOGO FLOATING DIRECTLY ON SKY BLUE GRADIENT
+                // CENTERED TRANSPARENT ANIMATED GIF LOGO
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,7 +171,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // MULTIPLAYER ARENA ROAD SIGN (KEEPS LIVE BADGE)
+                    // MULTIPLAYER ARENA ROAD SIGN
                     CartoonRoadSignCard(
                         title = "Multiplayer Arena",
                         subtitle = "Online Now!",
@@ -184,7 +184,7 @@ fun HomeScreen(
                         signColor = Color(0xFF0D9488)
                     )
 
-                    // DECK LIBRARY ROAD SIGN (NO ORANGE HIGHLIGHTED BADGE AT ALL)
+                    // DECK LIBRARY ROAD SIGN
                     CartoonRoadSignCard(
                         title = "Deck Library",
                         subtitle = "8 Decks!",
@@ -215,23 +215,24 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // ORANGE PILL SAFETY BANNER
+                // PROMINENT LARGE ORANGE SAFETY BANNER (BIGGER TEXT TO FILL AREA)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(12.dp, RoundedCornerShape(20.dp))
-                        .clip(RoundedCornerShape(20.dp))
+                        .shadow(14.dp, RoundedCornerShape(24.dp))
+                        .clip(RoundedCornerShape(24.dp))
                         .background(VividOrange)
-                        .border(2.dp, Color(0xFFC2410C), RoundedCornerShape(20.dp))
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
+                        .border(2.5.dp, Color(0xFFC2410C), RoundedCornerShape(24.dp))
+                        .padding(vertical = 18.dp, horizontal = 20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Passengers Play. Drivers Drive.",
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp
                     )
                 }
 
