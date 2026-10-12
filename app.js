@@ -107,6 +107,51 @@ const MOUNTAIN_WEST_PROMPTS = [
   "Police Car"
 ];
 
+const DESERT_SOUTHWEST_PROMPTS = [
+  "Cactus",
+  "Red Rock Mesa",
+  "Solar Energy Farm",
+  "Desert Wildlife Sign",
+  "Roadside Trading Post",
+  "Western Saloon Sign",
+  "Mexican Restaurant",
+  "Fresh Chile Stand",
+  "Adobe Architecture",
+  "Dry Riverbed",
+  "Tumbleweed",
+  "Giant Roadside Statue",
+  "Route 66 Sign",
+  "Turquoise Building",
+  "Alien Sign",
+  "Police Car",
+  "Point of Interest Sign",
+  "Construction Zone",
+  "Cattle Skull Decoration",
+  "Campground",
+  "Truck with 2 Trailers",
+  "Animal Crossing Sign",
+  "Dump Truck",
+  "Convertable Car",
+  "Hotel Over 5 Floors",
+  "Horse Trailer",
+  "Roadside Jerky Stand",
+  "Golf Course Sign",
+  "Giant American Flag",
+  "Attorney Sign",
+  "Railroad Train",
+  "Water Tower",
+  "Thermometer Over 100",
+  "Overpass",
+  "ATV on Trailer",
+  "Rain",
+  "Dust Devil Whirlwind",
+  "Band Sticker",
+  "Yellow Car",
+  "Motorcycle",
+  "Rest Area",
+  "Desert Joshua Tree"
+];
+
 class AudioEngine {
   static playPop() {
     try {
@@ -128,7 +173,10 @@ class AudioEngine {
 
 class BingoWebEngine {
   static generateBoard(deckId = 'deck_c') {
-    const prompts = deckId === 'deck_b' ? WEIRD_PROMPTS : MOUNTAIN_WEST_PROMPTS;
+    let prompts = MOUNTAIN_WEST_PROMPTS;
+    if (deckId === 'deck_b') prompts = WEIRD_PROMPTS;
+    if (deckId === 'deck_d') prompts = DESERT_SOUTHWEST_PROMPTS;
+
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
     let promptIdx = 0;
