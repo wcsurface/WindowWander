@@ -255,6 +255,54 @@ object DeckRepository {
         p("ne42", "Weeping Willow Tree", "Large weeping willow tree by road or pond", "nature", false, Region.NORTHEAST)
     )
 
+    // -------------------------------------------------------------
+    // DECK F: THE SOUTH (42 EXACT UPDATED PROMPTS)
+    // -------------------------------------------------------------
+    val DECK_F_PROMPTS = listOf(
+        p("ds1", "Tow Truck", "A tow truck", "vehicles", false, Region.SOUTHEAST),
+        p("ds2", "Fire Truck", "A fire truck", "vehicles", false, Region.SOUTHEAST),
+        p("ds3", "24 Hour Diner", "24 Hour Diner", "structures", false, Region.SOUTHEAST),
+        p("ds4", "Massive Truckstop", "Massive gas station", "structures", false, Region.SOUTHEAST),
+        p("ds5", "Swamp or Marsh", "Misty wetland or cypress swamp with knee roots", "landscape", false, Region.SOUTHEAST),
+        p("ds6", "Historic Courthouse Square", "Southern town square featuring a courthouse and monument", "structures", false, Region.SOUTHEAST),
+        p("ds7", "BBQ Smokehouse", "Roadside barbecue smokehouse with a smoker outside", "food", false, Region.SOUTHEAST),
+        p("ds8", "Farm Equipment", "Farm Equipment", "vehicles", false, Region.SOUTHEAST),
+        p("ds9", "Dirt Road", "Dirt road", "landscape", false, Region.SOUTHEAST),
+        p("ds10", "Political Bumper Sticker", "Political Bumpersticker", "sign", false, Region.SOUTHEAST),
+        p("ds11", "Funny Bumper Sticker", "Funny bumpersticker", "sign", false, Region.SOUTHEAST),
+        p("ds12", "Giant Roadside Statue", "A giant roadside statue", "structures", false, Region.SOUTHEAST),
+        p("ds13", "Interstate Route Shield", "Numbered US or Interstate shield sign", "signs", false, Region.SOUTHEAST),
+        p("ds14", "Flowers", "Flowers", "nature", false, Region.SOUTHEAST),
+        p("ds15", "Fruit Stand Sign", "Roadside sign selling pecans or pralines", "signs", false, Region.SOUTHEAST),
+        p("ds16", "Police Car", "Police car", "vehicles", false, Region.SOUTHEAST),
+        p("ds17", "Point of Interest Sign", "Sign pointing to interest", "sign", false, Region.SOUTHEAST),
+        p("ds18", "Construction Zone", "Construction Zone", "landscape", false, Region.SOUTHEAST),
+        p("ds19", "College Football Flag", "SEC or ACC college team flag outside a house or truck", "decor", false, Region.SOUTHEAST),
+        p("ds20", "Campground", "A campground", "outdoor", false, Region.SOUTHEAST),
+        p("ds21", "Modified Pickup Truck", "Heavily modified lifted pickup truck with oversized tires", "vehicles", false, Region.SOUTHEAST),
+        p("ds22", "Wildlife Crossing Sign", "Wildlife crossing warning sign", "signs", false, Region.SOUTHEAST),
+        p("ds23", "Dump Truck", "Dump Truck", "equipment", false, Region.SOUTHEAST),
+        p("ds24", "Convertible Car", "Convertible Car", "vehicles", false, Region.SOUTHEAST),
+        p("ds25", "Church", "Church with a steeple", "structure", false, Region.SOUTHEAST),
+        p("ds26", "Boat on Trailer", "Bass fishing boat hauled on a trailer", "vehicles", false, Region.SOUTHEAST),
+        p("ds27", "Sweet Tea Billboard", "Billboard advertising sweet tea", "food", false, Region.SOUTHEAST),
+        p("ds28", "Golf Course Sign", "Advert for a golf course", "signs", false, Region.SOUTHEAST),
+        p("ds29", "Giant American Flag", "Giant American flag", "decor", false, Region.SOUTHEAST),
+        p("ds30", "Attorney Sign", "Sign for attorney", "signs", false, Region.SOUTHEAST),
+        p("ds31", "Freight Train", "Long freight train crossing the flat southern landscape", "vehicles", false, Region.SOUTHEAST),
+        p("ds32", "Water Tower", "A water tower", "structures", false, Region.SOUTHEAST),
+        p("ds33", "Fireworks Superstore", "Large roadside warehouse storefront selling fireworks", "signs", false, Region.SOUTHEAST),
+        p("ds34", "Elevated Highway", "Long highway causeway", "structures", false, Region.SOUTHEAST),
+        p("ds35", "ATV on Trailer", "Four-wheeler or hunting buggy hauled on a trailer", "vehicles", false, Region.SOUTHEAST),
+        p("ds36", "Rain", "Rain", "outdoor", false, Region.SOUTHEAST),
+        p("ds37", "Cowboy Hat", "Cowboy hat", "people", false, Region.SOUTHEAST),
+        p("ds38", "Band Sticker", "Band sticker on a car", "sign", false, Region.SOUTHEAST),
+        p("ds39", "Yellow Car", "Yellow Car", "vehicles", false, Region.SOUTHEAST),
+        p("ds40", "Motorcycle", "A motorcycle", "vehicles", false, Region.SOUTHEAST),
+        p("ds41", "Rest Area", "A rest area", "structures", false, Region.SOUTHEAST),
+        p("ds42", "Pond or Lake", "Pond or lake", "nature", false, Region.SOUTHEAST)
+    )
+
     val DECKS = listOf(
         Deck(
             id = "deck_a",
@@ -320,7 +368,7 @@ object DeckRepository {
             difficulty = "Medium",
             isFree = true,
             region = Region.SOUTHEAST,
-            prompts = DECK_A_PROMPTS.shuffled()
+            prompts = DECK_F_PROMPTS
         ),
         Deck(
             id = "deck_g",

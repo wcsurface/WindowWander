@@ -197,6 +197,51 @@ const NORTHEAST_PROMPTS = [
   "Weeping Willow Tree"
 ];
 
+const THE_SOUTH_PROMPTS = [
+  "Tow Truck",
+  "Fire Truck",
+  "24 Hour Diner",
+  "Massive Truckstop",
+  "Swamp or Marsh",
+  "Historic Courthouse Square",
+  "BBQ Smokehouse",
+  "Farm Equipment",
+  "Dirt Road",
+  "Political Bumper Sticker",
+  "Funny Bumper Sticker",
+  "Giant Roadside Statue",
+  "Interstate Route Shield",
+  "Flowers",
+  "Fruit Stand Sign",
+  "Police Car",
+  "Point of Interest Sign",
+  "Construction Zone",
+  "College Football Flag",
+  "Campground",
+  "Modified Pickup Truck",
+  "Wildlife Crossing Sign",
+  "Dump Truck",
+  "Convertible Car",
+  "Church",
+  "Boat on Trailer",
+  "Sweet Tea Billboard",
+  "Golf Course Sign",
+  "Giant American Flag",
+  "Attorney Sign",
+  "Freight Train",
+  "Water Tower",
+  "Fireworks Superstore",
+  "Elevated Highway",
+  "ATV on Trailer",
+  "Rain",
+  "Cowboy Hat",
+  "Band Sticker",
+  "Yellow Car",
+  "Motorcycle",
+  "Rest Area",
+  "Pond or Lake"
+];
+
 class AudioEngine {
   static playPop() {
     try {
@@ -222,6 +267,7 @@ class BingoWebEngine {
     if (deckId === 'deck_b') prompts = WEIRD_PROMPTS;
     if (deckId === 'deck_d') prompts = DESERT_SOUTHWEST_PROMPTS;
     if (deckId === 'deck_e') prompts = NORTHEAST_PROMPTS;
+    if (deckId === 'deck_f') prompts = THE_SOUTH_PROMPTS;
 
     const shuffled = [...prompts].sort(() => 0.5 - Math.random());
     const tiles = [];
