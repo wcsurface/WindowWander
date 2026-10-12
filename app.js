@@ -517,27 +517,17 @@ class Router {
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- ROAD SIGN STYLE UNDER CONSTRUCTION CARD -->
-        <div class="road-sign-card" style="background:linear-gradient(180deg, #D97706, #B45309);margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:26px;">🏪</span>
-            <span class="sign-badge" style="background:#0F172A;color:#FBBF24;">COMING SOON</span>
+        <!-- LARGE PROMINENT ROAD SIGN STYLE UNDER CONSTRUCTION CARD -->
+        <div class="road-sign-card" style="background:linear-gradient(180deg, #D97706, #B45309, #78350F);padding:28px;margin-bottom:16px;text-align:center;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="font-size:38px;">🏪</span>
+            <span class="sign-badge" style="background:#F97316;color:white;font-size:12px;padding:4px 10px;">COMING SOON</span>
           </div>
-          <div style="font-weight:900;font-size:18px;margin-top:8px;color:white;">🚧 UNDER CONSTRUCTION 🚧</div>
-          <div style="font-size:12px;color:#FEF3C7;margin-top:2px;">The Road Trip Shop is opening soon!</div>
-        </div>
-
-        <div class="card" style="padding:20px;">
-          <h3 style="font-weight:900;color:#FBBF24;margin-bottom:10px;text-align:center;">🎁 What's Coming to the Shop?</h3>
-          <p style="font-size:13px;color:white;line-height:1.6;margin-bottom:16px;">
-            • Custom Vehicle Avatars & Car Color Skins<br>
-            • Unique Tile Stamps & Confetti Effects<br>
-            • Exclusive Roadside Badges & Titles<br>
-            • Premium Regional Deck Unlocks
+          <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 UNDER CONSTRUCTION 🚧</h2>
+          <p style="font-size:14px;font-weight:800;color:#FEF3C7;line-height:1.5;">
+            The Road Trip Shop is opening soon!<br>
+            Keep earning coins on your road trips to unlock custom vehicle skins, tile stamps, and avatars!
           </p>
-          <div style="background:#0F172A;border:1.5px solid #FBBF24;border-radius:12px;padding:12px;text-align:center;color:#FBBF24;font-weight:800;font-size:12px;">
-            Keep playing games to earn coins!
-          </div>
         </div>
       `;
     } else if (this.currentScreen === 'leaderboard') {

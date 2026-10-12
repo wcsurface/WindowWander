@@ -3,6 +3,7 @@ package app.vercel.windowwander.ui.screens
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -32,12 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
-import app.vercel.windowwander.ui.components.CartoonRoadSignCard
 import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.components.MainHomeBackground
 import app.vercel.windowwander.ui.theme.GoldWinner
-import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
+import app.vercel.windowwander.ui.theme.VividOrange
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -114,7 +114,7 @@ fun ShopScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(180.dp),
+                        .height(190.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
@@ -128,73 +128,81 @@ fun ShopScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                // ROAD SIGN STYLE UNDER CONSTRUCTION CARD
-                CartoonRoadSignCard(
-                    title = "🚧 UNDER CONSTRUCTION 🚧",
-                    subtitle = "The Road Trip Shop is opening soon!",
-                    icon = "🏪",
-                    badgeText = "COMING SOON",
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth(),
-                    signColor = Color(0xFFD97706)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // SHOP PREVIEW CARD
-                Card(
+                // PROMINENT LARGE ROAD SIGN UNDER CONSTRUCTION CARD
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(12.dp, RoundedCornerShape(20.dp)),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                        .shadow(16.dp, RoundedCornerShape(26.dp))
+                        .clip(RoundedCornerShape(26.dp))
+                        .background(Color(0xFF0F172A))
                 ) {
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .clip(RoundedCornerShape(26.dp))
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(Color(0xFFD97706), Color(0xFFB45309), Color(0xFF78350F))
+                                )
+                            )
+                            .border(3.dp, Color.White.copy(alpha = 0.9f), RoundedCornerShape(26.dp))
+                            .padding(28.dp)
                     ) {
-                        Text(
-                            text = "🎁 What's Coming to the Shop?",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Black,
-                            color = SunnyYellow
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Text(
-                            text = "• Custom Vehicle Avatars & Car Color Skins\n• Unique Tile Stamps & Confetti Effects\n• Exclusive Roadside Badges & Titles\n• Premium Regional Deck Unlocks",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.9f),
-                            lineHeight = 22.sp,
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(Color(0xFF0F172A))
-                                .border(1.5.dp, SunnyYellow, RoundedCornerShape(12.dp))
-                                .padding(12.dp),
-                            contentAlignment = Alignment.Center
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = "🏪", fontSize = 42.sp)
+
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(VividOrange)
+                                        .border(1.5.dp, Color.White, RoundedCornerShape(10.dp))
+                                        .padding(horizontal = 12.dp, vertical = 5.dp)
+                                ) {
+                                    Text(
+                                        text = "COMING SOON",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(18.dp))
+
                             Text(
-                                text = "Keep playing games to earn coins!",
-                                fontSize = 13.sp,
+                                text = "🚧 UNDER CONSTRUCTION 🚧",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Text(
+                                text = "The Road Trip Shop is opening soon!\nKeep earning coins on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = SunnyYellow
+                                color = Color(0xFFFEF3C7),
+                                textAlign = TextAlign.Center,
+                                lineHeight = 20.sp
                             )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
             // FLOATING GRADIENT PILL 3D NAVIGATION BAR AT THE BOTTOM LIKE MAIN LOBBY
