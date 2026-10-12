@@ -152,7 +152,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // LARGE CAPSULE PLAY NOW BUTTON
+                // LARGE CAPSULE PLAY NOW BUTTON (HEIGHT 68DP)
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
                     onClick = { showInCarPlayModal = true },
@@ -199,18 +199,18 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER
+                // LEADERBOARD BUTTON (EXACT SAME 68DP HEIGHT AS PLAY NOW BUTTON, TOP-LEFT CUP & TEXT)
                 CartoonRoadSignCard(
                     title = "🏆 LEADERBOARD",
                     subtitle = "Points & Items Found Rankings",
                     icon = "",
                     badgeText = "RANKS",
-                    titleFontSize = 22,
-                    subtitleFontSize = 13,
+                    titleFontSize = 18,
+                    subtitleFontSize = 12,
                     onClick = onOpenLeaderboard,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(108.dp),
+                        .height(68.dp),
                     signColor = Color(0xFF1D4ED8)
                 )
 

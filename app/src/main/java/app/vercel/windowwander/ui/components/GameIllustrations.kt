@@ -397,41 +397,23 @@ fun CartoonRoadSignCard(
                     Brush.verticalGradient(listOf(signColor, signColor.copy(alpha = 0.75f)))
                 )
                 .border(2.5.dp, Color.White.copy(alpha = 0.85f), RoundedCornerShape(22.dp))
-                .padding(14.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
-            Column(
+            Row(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                // TOP LEFT: TITLE & SUBTITLE
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Top
                 ) {
                     if (icon.isNotEmpty()) {
                         Text(text = icon, fontSize = 28.sp)
-                    } else {
-                        Spacer(modifier = Modifier.width(1.dp))
+                        Spacer(modifier = Modifier.height(2.dp))
                     }
 
-                    if (!badgeText.isNullOrEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(VividOrange)
-                                .padding(horizontal = 8.dp, vertical = 3.dp)
-                        ) {
-                            Text(
-                                text = badgeText,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-
-                Column {
                     Text(
                         text = title,
                         fontSize = titleFontSize.sp,
@@ -444,6 +426,23 @@ fun CartoonRoadSignCard(
                         fontWeight = FontWeight.Bold,
                         color = Color.White.copy(alpha = 0.85f)
                     )
+                }
+
+                // TOP RIGHT BADGE
+                if (!badgeText.isNullOrEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(VividOrange)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = badgeText,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
