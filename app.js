@@ -768,9 +768,6 @@ class Router {
                 <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;font-size:16px;" onclick="router.showJoinCodeInput=true;router.render();">
                   📱 JOIN A GAME (CODE)
                 </button>
-                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showInCarModal=false;router.navigate('game');">
-                  Play Solo Single-Player ▶
-                </button>
               ` : `
                 <p style="font-size:13px;font-weight:800;color:white;margin-bottom:8px;">Enter 4-Letter Code from Host:</p>
                 <input id="in-car-code-input" type="text" maxlength="4" placeholder="e.g. ROAD" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;margin-bottom:14px;" />

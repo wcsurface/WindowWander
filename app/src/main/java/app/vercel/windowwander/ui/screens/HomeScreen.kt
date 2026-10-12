@@ -320,19 +320,6 @@ fun HomeScreen(
                                     textColor = DeepNavy,
                                     fontSize = 16
                                 )
-
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                // SOLO PLAY OPTION
-                                Button(
-                                    onClick = {
-                                        showInCarPlayModal = false
-                                        onQuickPlay()
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                                ) {
-                                    Text(text = "Play Solo Single-Player ▶", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
-                                }
                             } else {
                                 // CODE INPUT FOR JOINING HOST'S GAME LOBBY
                                 Text(
