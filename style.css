@@ -43,6 +43,11 @@ body.settings-theme {
   background: url('bg_settings.jpg') center center / cover no-repeat fixed !important;
 }
 
+/* LEADERBOARD PAGE DEDICATED DOODLE BACKGROUND THEME */
+body.leaderboard-theme {
+  background: url('bg_leaderboard.jpg') center center / cover no-repeat fixed !important;
+}
+
 /* DECK GAMEPLAY BACKGROUND THEMES */
 body.deck-game-theme {
   background-size: cover !important;

@@ -655,16 +655,25 @@ class Router {
     // SETTINGS PAGE HAS DEDICATED DOODLE BACKGROUND THEME
     if (this.currentScreen === 'settings') {
       document.body.classList.add('settings-theme');
+      document.body.classList.remove('leaderboard-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
-    } else if (['home', 'login', 'shop', 'leaderboard'].includes(this.currentScreen)) {
+    } else if (this.currentScreen === 'leaderboard') {
+      document.body.classList.add('leaderboard-theme');
       document.body.classList.remove('settings-theme');
+      document.body.classList.remove('main-home-theme');
+      document.body.classList.remove('deck-game-theme');
+      document.body.style.backgroundImage = '';
+    } else if (['home', 'login', 'shop'].includes(this.currentScreen)) {
+      document.body.classList.remove('settings-theme');
+      document.body.classList.remove('leaderboard-theme');
       document.body.classList.add('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
     } else if (this.currentScreen === 'game') {
       document.body.classList.remove('settings-theme');
+      document.body.classList.remove('leaderboard-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.add('deck-game-theme');
       const deckMap = {
@@ -681,6 +690,7 @@ class Router {
       document.body.style.backgroundImage = `url('${bgImg}')`;
     } else {
       document.body.classList.remove('settings-theme');
+      document.body.classList.remove('leaderboard-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
