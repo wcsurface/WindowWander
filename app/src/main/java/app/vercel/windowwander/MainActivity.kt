@@ -103,6 +103,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Screen.SHOP -> ShopScreen(
+                            xp = uiState.playerProfile.xp,
                             isLoggedIn = uiState.isLoggedIn,
                             onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
                             onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },

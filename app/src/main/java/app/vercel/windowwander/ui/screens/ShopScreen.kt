@@ -3,7 +3,6 @@ package app.vercel.windowwander.ui.screens
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,8 +33,8 @@ import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
 import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.components.MainHomeBackground
-import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.SunnyYellow
+import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
 import coil.ImageLoader
 import coil.compose.AsyncImage
@@ -46,7 +44,7 @@ import coil.request.ImageRequest
 
 @Composable
 fun ShopScreen(
-    coins: Int = 1250,
+    xp: Int = 250,
     isLoggedIn: Boolean = false,
     onNavigateHome: () -> Unit,
     onNavigateLogin: () -> Unit,
@@ -78,7 +76,7 @@ fun ShopScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP BAR WITH COINS & TITLE
+                // TOP BAR WITH XP & TITLE
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -96,14 +94,14 @@ fun ShopScreen(
                             .shadow(8.dp, RoundedCornerShape(18.dp))
                             .clip(RoundedCornerShape(18.dp))
                             .background(Color(0xFF0F172A))
-                            .border(2.dp, GoldWinner, RoundedCornerShape(18.dp))
+                            .border(2.dp, SunnyYellow, RoundedCornerShape(18.dp))
                             .padding(horizontal = 14.dp, vertical = 8.dp)
                     ) {
                         Text(
-                            text = "🪙 $coins Coins",
+                            text = "⭐ $xp XP",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
-                            color = SunnyYellow
+                            color = SunnyYellowLight
                         )
                     }
                 }
@@ -191,7 +189,7 @@ fun ShopScreen(
                             Spacer(modifier = Modifier.height(10.dp))
 
                             Text(
-                                text = "The Road Trip Shop is opening soon!\nKeep earning coins on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
+                                text = "The Road Trip Shop is opening soon!\nKeep earning XP on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFEF3C7),
