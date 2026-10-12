@@ -982,6 +982,8 @@ class Router {
               return `<div class="tile center" onclick="router.toggleTile(${t.index}, event)">⭐<br>FREE</div>`;
             }
             const words = t.name.split(" ").filter(w => w.length > 0);
+            const longestWordLen = Math.max(...words.map(w => w.length));
+
             let linesText = t.name;
             if (words.length === 2) linesText = `${words[0]}<br>${words[1]}`;
             else if (words.length === 3) linesText = `${words[0]}<br>${words[1]}<br>${words[2]}`;
@@ -998,15 +1000,18 @@ class Router {
             const maxLineLen = Math.max(...lines.map(l => l.length));
 
             let fontSz = "10.5px";
-            if (maxLineLen <= 5 && lines.length <= 2) fontSz = "14.5px";
+            if (longestWordLen >= 13) fontSz = "8px";
+            else if (longestWordLen >= 11) fontSz = "8.8px";
+            else if (longestWordLen >= 10) fontSz = "9.5px";
+            else if (maxLineLen <= 5 && lines.length <= 2) fontSz = "14.5px";
             else if (maxLineLen <= 7 && lines.length <= 2) fontSz = "13.5px";
             else if (maxLineLen <= 9 && lines.length <= 2) fontSz = "12.5px";
             else if (maxLineLen <= 9 && lines.length === 3) fontSz = "12px";
-            else if (maxLineLen <= 12 && lines.length <= 2) fontSz = "11.5px";
-            else if (maxLineLen <= 12 && lines.length === 3) fontSz = "10.5px";
-            else fontSz = "9.5px";
+            else if (maxLineLen <= 12 && lines.length <= 2) fontSz = "11px";
+            else if (maxLineLen <= 12 && lines.length === 3) fontSz = "10px";
+            else fontSz = "8.5px";
 
-            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;word-break:keep-all;overflow-wrap:break-word;">${linesText}</span></div>`;
+            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;white-space:pre-line;word-break:normal;overflow-wrap:normal;">${linesText}</span></div>`;
           }).join('')}
         </div>
 

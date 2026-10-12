@@ -677,9 +677,11 @@ fun BingoTileView(
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
-    // DYNAMIC 3-LINE PROMPT FORMATTING & MAXIMUM FONT SIZING CALCULATION
+    // DYNAMIC 3-LINE PROMPT FORMATTING & LONGEST WORD FIT FONT CALCULATION
     val (formattedText, fontSizeSp) = remember(tile.prompt.name) {
         val words = tile.prompt.name.split(" ").filter { it.isNotBlank() }
+        val longestWordLen = words.maxOfOrNull { it.length } ?: 0
+
         val linesText = when {
             words.size <= 1 -> tile.prompt.name
             words.size == 2 -> "${words[0]}\n${words[1]}"
@@ -698,14 +700,17 @@ fun BingoTileView(
         val maxLineLen = lines.maxOfOrNull { it.length } ?: linesText.length
 
         val calculatedSp = when {
+            longestWordLen >= 13 -> 8.0f
+            longestWordLen >= 11 -> 8.8f  // e.g. "Construction" (12 chars) -> 8.8sp fits on 1 line without wrapping!
+            longestWordLen >= 10 -> 9.5f
             maxLineLen <= 5 && lines.size <= 2 -> 14.5f
             maxLineLen <= 7 && lines.size <= 2 -> 13.5f
             maxLineLen <= 9 && lines.size <= 2 -> 12.5f
             maxLineLen <= 9 && lines.size == 3 -> 12.0f
-            maxLineLen <= 12 && lines.size <= 2 -> 11.5f
-            maxLineLen <= 12 && lines.size == 3 -> 10.5f
-            maxLineLen <= 16 && lines.size == 3 -> 9.5f
-            else -> 8.5f
+            maxLineLen <= 12 && lines.size <= 2 -> 11.0f
+            maxLineLen <= 12 && lines.size == 3 -> 10.0f
+            maxLineLen <= 16 && lines.size == 3 -> 9.0f
+            else -> 8.0f
         }
 
         Pair(linesText, calculatedSp)
@@ -813,7 +818,7 @@ fun BingoTileView(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 3.dp, vertical = 2.dp),
+                .padding(horizontal = 2.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
         ) {
             if (tile.isCenter) {
@@ -845,7 +850,7 @@ fun BingoTileView(
                     textAlign = TextAlign.Center,
                     lineHeight = (fontSizeSp * 1.15f).sp,
                     maxLines = 3,
-                    softWrap = true,
+                    softWrap = false,
                     style = TextStyle(
                         shadow = Shadow(
                             color = Color.Black.copy(alpha = 0.85f),
