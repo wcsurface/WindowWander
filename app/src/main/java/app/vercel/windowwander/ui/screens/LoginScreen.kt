@@ -111,7 +111,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 104.dp)
         ) {
             // TOP HEADER
             Row(
@@ -120,7 +120,7 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (effectiveLoggedIn) "👤 Account Profile" else "🔑 Log In / Join",
+                    text = if (effectiveLoggedIn) "👤 Account" else "🔑 Log In / Join",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White

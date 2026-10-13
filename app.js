@@ -1114,8 +1114,8 @@ class Router {
       `;
     } else if (this.currentScreen === 'login') {
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;color:white;">${this.isLoggedIn ? '👤 Account Profile' : '🔑 Log In / Join'}</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">${this.isLoggedIn ? '👤 Account' : '🔑 Log In / Join'}</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
 
