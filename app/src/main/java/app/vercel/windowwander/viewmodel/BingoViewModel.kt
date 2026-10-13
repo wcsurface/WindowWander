@@ -384,7 +384,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     val res = AccountService.getRoomFromRailway(roomCode)
                     if (res.success && res.players.isNotEmpty()) {
                         val syncedDeck = DeckRepository.DECKS.find { it.id == res.deckId } ?: _uiState.value.selectedDeck
-                        val syncedGameMode = GameMode.values().firstOrNull { it.name == res.gameMode } ?: _uiState.value.gameMode
+                        val syncedGameMode = GameMode.values().firstOrNull { it.name == res.gameMode || it.displayName == res.gameMode } ?: _uiState.value.gameMode
 
                         _uiState.update { state ->
                             val updatedRoom = state.multiplayerRoom?.copy(
@@ -416,7 +416,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 } catch (e: Exception) {}
 
-                delay(1000)
+                delay(600) // FAST 600MS POLL DELAY FOR INSTANT PRE-GAME LOBBY SETTINGS SYNC
             }
         }
     }
