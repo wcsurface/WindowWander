@@ -202,6 +202,8 @@ module.exports = async (req, res) => {
     let room = await getRoomByCode(code);
     if (room) {
       room.isStarted = true;
+      room.hasWinner = false;
+      room.winnerNickname = null;
       if (deckId) room.deckId = deckId;
       if (gameMode) room.gameMode = gameMode;
       await saveRoomByCode(code, room);
@@ -241,7 +243,26 @@ module.exports = async (req, res) => {
     return res.status(404).json({ success: false, error: 'Room not found' });
   }
 
-  // 6. GET ROOM
+  // 6. RESET ROOM FOR NEXT ROUND (RETURNS ALL PASSENGERS TO PRE-GAME LOBBY)
+  if (action === 'reset_room') {
+    let room = await getRoomByCode(code);
+    if (room) {
+      room.isStarted = false;
+      room.hasWinner = false;
+      room.winnerNickname = null;
+      if (Array.isArray(room.players)) {
+        room.players.forEach(p => {
+          p.completedTiles = [12];
+          p.hasBingo = false;
+        });
+      }
+      await saveRoomByCode(code, room);
+      return res.status(200).json({ success: true, room });
+    }
+    return res.status(404).json({ success: false, error: 'Room not found' });
+  }
+
+  // 7. GET ROOM
   if (action === 'get') {
     let room = await getRoomByCode(code);
     if (room) {

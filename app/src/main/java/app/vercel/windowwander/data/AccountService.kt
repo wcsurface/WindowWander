@@ -370,6 +370,40 @@ object AccountService {
         }
     }
 
+    suspend fun resetRoomOnRailway(code: String): RoomResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$vercelBaseUrl/api/rooms")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.connectTimeout = 3000
+            conn.readTimeout = 3000
+            conn.doOutput = true
+
+            val body = JSONObject().apply {
+                put("action", "reset_room")
+                put("code", code)
+            }
+
+            conn.outputStream.use { os ->
+                os.write(body.toString().toByteArray())
+            }
+
+            val statusCode = conn.responseCode
+            val stream = if (statusCode in 200..299) conn.inputStream else conn.errorStream
+            val responseStr = stream.bufferedReader().use { it.readText() }
+            val json = JSONObject(responseStr)
+
+            if (json.optBoolean("success", false)) {
+                parseRoomJson(json.getJSONObject("room"))
+            } else {
+                RoomResult(success = false, error = "Reset room failed")
+            }
+        } catch (e: Exception) {
+            RoomResult(success = false, error = e.message)
+        }
+    }
+
     suspend fun updateTilesOnRailway(code: String, nickname: String, completedTiles: List<Int>, hasBingo: Boolean = false): RoomResult = withContext(Dispatchers.IO) {
         try {
             val url = URL("$vercelBaseUrl/api/rooms")

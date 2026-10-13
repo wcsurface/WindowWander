@@ -199,6 +199,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
         val roomCode = _uiState.value.multiplayerRoom?.roomCode
         if (!roomCode.isNullOrBlank()) {
+            viewModelScope.launch {
+                AccountService.resetRoomOnRailway(roomCode)
+            }
             _uiState.update {
                 it.copy(
                     multiplayerRoom = it.multiplayerRoom?.copy(isStarted = false, isFinished = false, winnerNickname = null),
