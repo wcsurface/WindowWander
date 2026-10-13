@@ -1225,11 +1225,7 @@ class Router {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:12px;">
           <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
           <div style="text-align:center;display:flex;align-items:center;gap:6px;">
-            <span style="font-size:20px;">🚗</span>
-            <div>
-              <div style="font-weight:900;font-size:16px;">${this.selectedDeck.title}</div>
-              <div style="font-size:11px;color:#FBBF24;font-weight:700;">${this.selectedMode.title}</div>
-            </div>
+            <div style="font-size:13.5px;color:#FBBF24;font-weight:900;">${this.selectedMode.title}</div>
           </div>
           <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="router.undoLastTap()">↩ Undo</button>
         </div>

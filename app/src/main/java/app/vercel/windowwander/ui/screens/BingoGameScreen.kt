@@ -291,18 +291,12 @@ fun BingoGameScreen(
                         )
                     }
 
-                    // DECK TITLE & GAME MODE
+                    // GAME MODE BADGE (DECK TITLE REMOVED TO CLEAR CAMERA CUTOUT)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = deck.title,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
-                        )
-                        Text(
                             text = gameMode.displayName,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.5.sp,
+                            fontWeight = FontWeight.Black,
                             color = SunnyYellowLight
                         )
                     }
