@@ -98,6 +98,7 @@ class MainActivity : ComponentActivity() {
                         Screen.MULTIPLAYER_LOBBY -> MultiplayerScreen(
                             room = uiState.multiplayerRoom,
                             selectedDeck = uiState.selectedDeck,
+                            currentUserNickname = uiState.playerProfile.nickname,
                             onSelectDeck = { deck -> viewModel.selectDeck(deck) },
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
                             onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },

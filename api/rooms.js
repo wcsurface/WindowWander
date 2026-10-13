@@ -1,9 +1,9 @@
-// VERCEL PERSISTENT LIVE ROOMS API ENDPOINT
+// VERCEL PERSISTENT LIVE ROOMS API ENDPOINT WITH MASTER INDEX
 const https = require('https');
 
 const API_STORE_URL = 'https://api.restful-api.dev/objects';
+const MASTER_INDEX_ID = 'ff808181a09d98f701a1329f61b04e3f';
 
-// Helper to make HTTPS JSON requests
 function httpRequest(urlStr, method, data) {
   return new Promise((resolve, reject) => {
     try {
@@ -50,29 +50,76 @@ function httpRequest(urlStr, method, data) {
   });
 }
 
-// In-memory cache map for fast lookups within warm instances
+// In-memory cache map
 const memoryRooms = new Map();
 
-async function getStoredRoom(code) {
+async function getMasterIndex() {
+  try {
+    const res = await httpRequest(`${API_STORE_URL}/${MASTER_INDEX_ID}`, 'GET');
+    if (res && res.data) {
+      return res.data;
+    }
+  } catch(e) {}
+  return {};
+}
+
+async function updateMasterIndex(indexData) {
+  try {
+    const payload = {
+      name: "BINGO_MASTER_INDEX",
+      data: indexData
+    };
+    await httpRequest(`${API_STORE_URL}/${MASTER_INDEX_ID}`, 'PUT', payload);
+  } catch(e) {}
+}
+
+async function getRoomByCode(code) {
   const cleanCode = code.toUpperCase().trim();
-  // 1. Check in-memory cache
   if (memoryRooms.has(cleanCode)) {
     return memoryRooms.get(cleanCode);
   }
+
+  try {
+    const masterIndex = await getMasterIndex();
+    const roomId = masterIndex[cleanCode];
+    if (roomId) {
+      const roomRes = await httpRequest(`${API_STORE_URL}/${roomId}`, 'GET');
+      if (roomRes && roomRes.data) {
+        memoryRooms.set(cleanCode, roomRes.data);
+        return roomRes.data;
+      }
+    }
+  } catch(e) {}
+
   return null;
 }
 
-async function saveStoredRoom(code, room) {
+async function saveRoomByCode(code, room) {
   const cleanCode = code.toUpperCase().trim();
   memoryRooms.set(cleanCode, room);
 
-  // Async backup to persistent REST API
   try {
-    const payload = {
-      name: `bingo_room_${cleanCode}`,
-      data: room
-    };
-    await httpRequest(API_STORE_URL, 'POST', payload);
+    const masterIndex = await getMasterIndex();
+    let roomId = masterIndex[cleanCode];
+
+    if (!roomId) {
+      const payload = {
+        name: `BINGO_ROOM_${cleanCode}`,
+        data: room
+      };
+      const createRes = await httpRequest(API_STORE_URL, 'POST', payload);
+      if (createRes && createRes.id) {
+        roomId = createRes.id;
+        masterIndex[cleanCode] = roomId;
+        await updateMasterIndex(masterIndex);
+      }
+    } else {
+      const payload = {
+        name: `BINGO_ROOM_${cleanCode}`,
+        data: room
+      };
+      await httpRequest(`${API_STORE_URL}/${roomId}`, 'PUT', payload);
+    }
   } catch(e) {
     console.error('Save room error:', e);
   }
@@ -93,6 +140,7 @@ module.exports = async (req, res) => {
   const hostNickname = (body.hostNickname || 'Host Passenger').trim();
   const nickname = (body.nickname || 'Passenger').trim();
   const deckId = body.deckId || 'deck_a';
+  const gameMode = body.gameMode || 'CLASSIC_LINE';
 
   if (!code && action !== 'health') {
     return res.status(400).json({ success: false, error: 'Room code required' });
@@ -100,12 +148,13 @@ module.exports = async (req, res) => {
 
   // 1. CREATE ROOM
   if (action === 'create') {
-    let room = await getStoredRoom(code);
+    let room = await getRoomByCode(code);
     if (!room) {
       room = {
         code,
         hostNickname,
         deckId,
+        gameMode,
         players: [{ nickname: hostNickname, isHost: true, completedTiles: [12] }]
       };
     } else {
@@ -113,18 +162,19 @@ module.exports = async (req, res) => {
         room.players.push({ nickname: hostNickname, isHost: true, completedTiles: [12] });
       }
     }
-    await saveStoredRoom(code, room);
+    await saveRoomByCode(code, room);
     return res.status(200).json({ success: true, room });
   }
 
   // 2. JOIN ROOM
   if (action === 'join') {
-    let room = await getStoredRoom(code);
+    let room = await getRoomByCode(code);
     if (!room) {
       room = {
         code,
         hostNickname: nickname,
         deckId,
+        gameMode,
         players: [{ nickname, isHost: true, completedTiles: [12] }]
       };
     } else {
@@ -132,13 +182,13 @@ module.exports = async (req, res) => {
         room.players.push({ nickname, isHost: false, completedTiles: [12] });
       }
     }
-    await saveStoredRoom(code, room);
+    await saveRoomByCode(code, room);
     return res.status(200).json({ success: true, room });
   }
 
   // 3. GET ROOM
   if (action === 'get') {
-    let room = await getStoredRoom(code);
+    let room = await getRoomByCode(code);
     if (room) {
       return res.status(200).json({ success: true, room });
     }
@@ -148,6 +198,7 @@ module.exports = async (req, res) => {
         code,
         hostNickname,
         deckId,
+        gameMode,
         players: [{ nickname, isHost: true, completedTiles: [12] }]
       }
     });

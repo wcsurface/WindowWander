@@ -61,6 +61,7 @@ import app.vercel.windowwander.ui.theme.VividOrange
 fun MultiplayerScreen(
     room: MultiplayerRoom?,
     selectedDeck: Deck,
+    currentUserNickname: String = "You",
     onSelectDeck: (Deck) -> Unit,
     onCreateRoom: () -> Unit,
     onJoinRoom: (String) -> Unit,
@@ -74,6 +75,9 @@ fun MultiplayerScreen(
 
     var deckDropdownExpanded by remember { mutableStateOf(false) }
     var gameModeDropdownExpanded by remember { mutableStateOf(false) }
+
+    val isHost = room?.players?.find { it.nickname == currentUserNickname }?.isHost
+        ?: (room?.players?.firstOrNull()?.nickname == currentUserNickname || room?.players?.isEmpty() == true)
 
     Column(
         modifier = Modifier
@@ -236,114 +240,142 @@ fun MultiplayerScreen(
 
                     Spacer(modifier = Modifier.height(18.dp))
 
-                    // DECK CHOICE DROPDOWN ON HOST GAME SCREEN
-                    ExposedDropdownMenuBox(
-                        expanded = deckDropdownExpanded,
-                        onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
-                    ) {
-                        OutlinedTextField(
-                            value = "🎴 Deck: ${selectedDeckChoice.title}",
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("Game Deck Choice", color = SunnyYellow) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = SunnyYellow,
-                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
-                            )
-                        )
-
-                        ExposedDropdownMenu(
+                    if (isHost) {
+                        // DECK CHOICE DROPDOWN (ONLY HOST CAN CHANGE)
+                        ExposedDropdownMenuBox(
                             expanded = deckDropdownExpanded,
-                            onDismissRequest = { deckDropdownExpanded = false }
+                            onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                         ) {
-                            DeckRepository.DECKS.forEach { deck ->
+                            OutlinedTextField(
+                                value = "🎴 Deck: ${selectedDeckChoice.title}",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Game Deck Choice (Host Only)", color = SunnyYellow) },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White,
+                                    focusedBorderColor = SunnyYellow,
+                                    unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                                )
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = deckDropdownExpanded,
+                                onDismissRequest = { deckDropdownExpanded = false }
+                            ) {
+                                DeckRepository.DECKS.forEach { deck ->
+                                    DropdownMenuItem(
+                                        text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                                        onClick = {
+                                            selectedDeckChoice = deck
+                                            onSelectDeck(deck)
+                                            deckDropdownExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // RULES CHOICE DROPDOWN (ONLY HOST CAN CHANGE)
+                        ExposedDropdownMenuBox(
+                            expanded = gameModeDropdownExpanded,
+                            onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
+                        ) {
+                            OutlinedTextField(
+                                value = "🎯 Rule: ${selectedGameMode.displayName}",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Victory Rules Choice (Host Only)", color = SunnyYellow) },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White,
+                                    focusedBorderColor = SunnyYellow,
+                                    unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
+                                )
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = gameModeDropdownExpanded,
+                                onDismissRequest = { gameModeDropdownExpanded = false }
+                            ) {
                                 DropdownMenuItem(
-                                    text = { Text("🎴 ${deck.title} (${deck.audience})") },
+                                    text = {
+                                        Column {
+                                            Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
+                                            Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
+                                        }
+                                    },
                                     onClick = {
-                                        selectedDeckChoice = deck
-                                        onSelectDeck(deck)
-                                        deckDropdownExpanded = false
+                                        selectedGameMode = GameMode.CLASSIC_LINE
+                                        gameModeDropdownExpanded = false
+                                    }
+                                )
+
+                                DropdownMenuItem(
+                                    text = {
+                                        Column {
+                                            Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
+                                            Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedGameMode = GameMode.TWO_LINES
+                                        gameModeDropdownExpanded = false
+                                    }
+                                )
+
+                                DropdownMenuItem(
+                                    text = {
+                                        Column {
+                                            Text("Blackout Bingo", fontWeight = FontWeight.Bold)
+                                            Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedGameMode = GameMode.BLACKOUT
+                                        gameModeDropdownExpanded = false
                                     }
                                 )
                             }
                         }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // RULES CHOICE DROPDOWN ON HOST GAME SCREEN
-                    ExposedDropdownMenuBox(
-                        expanded = gameModeDropdownExpanded,
-                        onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
-                    ) {
-                        OutlinedTextField(
-                            value = "🎯 Rule: ${selectedGameMode.displayName}",
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("Victory Rules Choice", color = SunnyYellow) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = gameModeDropdownExpanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = SunnyYellow,
-                                unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
-                            )
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = gameModeDropdownExpanded,
-                            onDismissRequest = { gameModeDropdownExpanded = false }
+                    } else {
+                        // READ-ONLY DECK AND RULES CARDS FOR JOINED PASSENGERS
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color(0xFF0F172A))
+                                .border(1.dp, SunnyYellow.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+                                .padding(14.dp)
                         ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Column {
-                                        Text("Classic Line Bingo", fontWeight = FontWeight.Bold)
-                                        Text("Complete a horizontal, vertical, or diagonal line.", fontSize = 11.sp, color = Color.Gray)
-                                    }
-                                },
-                                onClick = {
-                                    selectedGameMode = GameMode.CLASSIC_LINE
-                                    gameModeDropdownExpanded = false
-                                }
-                            )
-
-                            DropdownMenuItem(
-                                text = {
-                                    Column {
-                                        Text("Two Lines Bingo", fontWeight = FontWeight.Bold)
-                                        Text("Complete two winning lines.", fontSize = 11.sp, color = Color.Gray)
-                                    }
-                                },
-                                onClick = {
-                                    selectedGameMode = GameMode.TWO_LINES
-                                    gameModeDropdownExpanded = false
-                                }
-                            )
-
-                            DropdownMenuItem(
-                                text = {
-                                    Column {
-                                        Text("Blackout Bingo", fontWeight = FontWeight.Bold)
-                                        Text("Find all 24 discoverable items and fill your card.", fontSize = 11.sp, color = Color.Gray)
-                                    }
-                                },
-                                onClick = {
-                                    selectedGameMode = GameMode.BLACKOUT
-                                    gameModeDropdownExpanded = false
-                                }
-                            )
+                            Column {
+                                Text(
+                                    text = "🎴 Deck (Set by Host): ${selectedDeckChoice.title}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "🎯 Victory Rules (Set by Host): ${selectedGameMode.displayName}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = SunnyYellow
+                                )
+                            }
                         }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     BeveledGameButton(
-                        text = "🚀 LAUNCH GAME NOW ▶",
+                        text = if (isHost) "🚀 LAUNCH GAME NOW ▶" else "⏳ WAITING FOR HOST TO START ▶",
                         onClick = onStartGame,
                         modifier = Modifier
                             .fillMaxWidth()
