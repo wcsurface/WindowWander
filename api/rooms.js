@@ -163,11 +163,13 @@ module.exports = async (req, res) => {
         deckId,
         gameMode,
         isStarted: false,
-        players: [{ nickname: hostNickname, isHost: true, completedTiles: [12] }]
+        hasWinner: false,
+        winnerNickname: null,
+        players: [{ nickname: hostNickname, isHost: true, completedTiles: [12], hasBingo: false }]
       };
     } else {
       if (!room.players.some(p => p.nickname === hostNickname)) {
-        room.players.push({ nickname: hostNickname, isHost: true, completedTiles: [12] });
+        room.players.push({ nickname: hostNickname, isHost: true, completedTiles: [12], hasBingo: false });
       }
     }
     await saveRoomByCode(code, room);
@@ -186,7 +188,7 @@ module.exports = async (req, res) => {
     if (room) {
       const existingPlayer = room.players.find(p => p.nickname === nickname);
       if (!existingPlayer) {
-        room.players.push({ nickname, isHost: false, completedTiles: [12] });
+        room.players.push({ nickname, isHost: false, completedTiles: [12], hasBingo: false });
         await saveRoomByCode(code, room);
       }
       return res.status(200).json({ success: true, room });
@@ -208,13 +210,18 @@ module.exports = async (req, res) => {
     return res.status(404).json({ success: false, error: 'Room not found' });
   }
 
-  // 4. UPDATE COMPLETED TILES FOR REAL-TIME OPPONENT BOARD PREVIEW
+  // 4. UPDATE COMPLETED TILES & WINNER STATUS FOR LIVE MULTIPLAYER
   if (action === 'update_tiles') {
     let room = await getRoomByCode(code);
     if (room) {
       const player = room.players.find(p => p.nickname === nickname);
       if (player) {
         player.completedTiles = Array.isArray(body.completedTiles) ? body.completedTiles : [12];
+        if (body.hasBingo) {
+          player.hasBingo = true;
+          room.hasWinner = true;
+          room.winnerNickname = nickname;
+        }
         await saveRoomByCode(code, room);
       }
       return res.status(200).json({ success: true, room });

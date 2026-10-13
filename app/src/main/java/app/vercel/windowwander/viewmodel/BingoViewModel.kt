@@ -172,6 +172,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
         boardHistory.add(updatedBoard)
 
+        val winEval = BingoEngine.evaluateWin(updatedBoard, _uiState.value.gameMode)
+        val newlyWon = winEval.hasWon && !_uiState.value.winResult.hasWon
+
         val roomCode = _uiState.value.multiplayerRoom?.roomCode
         if (!roomCode.isNullOrBlank()) {
             val completedIndices = updatedBoard.filter { it.isCompleted }.map { it.index }
@@ -179,13 +182,11 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 AccountService.updateTilesOnRailway(
                     code = roomCode,
                     nickname = _uiState.value.playerProfile.nickname,
-                    completedTiles = completedIndices
+                    completedTiles = completedIndices,
+                    hasBingo = newlyWon
                 )
             }
         }
-
-        val winEval = BingoEngine.evaluateWin(updatedBoard, _uiState.value.gameMode)
-        val newlyWon = winEval.hasWon && !_uiState.value.winResult.hasWon
 
         var profile = _uiState.value.playerProfile
         if (newlyWon) {
@@ -334,9 +335,19 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     val res = AccountService.getRoomFromRailway(roomCode)
                     if (res.success && res.players.isNotEmpty()) {
                         _uiState.update { state ->
-                            state.multiplayerRoom?.let { room ->
-                                state.copy(multiplayerRoom = room.copy(players = res.players, isStarted = res.isStarted))
-                            } ?: state
+                            val updatedRoom = state.multiplayerRoom?.copy(
+                                players = res.players,
+                                isStarted = res.isStarted,
+                                isFinished = res.hasWinner,
+                                winnerNickname = res.winnerNickname
+                            ) ?: state.multiplayerRoom
+
+                            val someoneWon = res.hasWinner && !res.winnerNickname.isNullOrBlank()
+
+                            state.copy(
+                                multiplayerRoom = updatedRoom,
+                                showBingoCelebration = state.showBingoCelebration || someoneWon
+                            )
                         }
 
                         // AUTO-LAUNCH PASSENGERS INTO GAME WHEN HOST LAUNCHES!

@@ -26,6 +26,8 @@ object AccountService {
         val deckId: String = "deck_a",
         val gameMode: String = "CLASSIC_LINE",
         val isStarted: Boolean = false,
+        val hasWinner: Boolean = false,
+        val winnerNickname: String? = null,
         val players: List<RoomPlayer> = emptyList(),
         val error: String? = null
     )
@@ -58,6 +60,8 @@ object AccountService {
         val deckId = roomObj.optString("deckId", "deck_a")
         val gameMode = roomObj.optString("gameMode", "CLASSIC_LINE")
         val isStarted = roomObj.optBoolean("isStarted", false)
+        val hasWinner = roomObj.optBoolean("hasWinner", false)
+        val winnerNickname = if (roomObj.has("winnerNickname") && !roomObj.isNull("winnerNickname")) roomObj.optString("winnerNickname") else null
         val playersArr = roomObj.optJSONArray("players")
         val playersList = mutableListOf<RoomPlayer>()
 
@@ -79,7 +83,8 @@ object AccountService {
                         nickname = pObj.optString("nickname", "Passenger"),
                         avatarId = "car_red",
                         isHost = pObj.optBoolean("isHost", false),
-                        completedTiles = tilesList
+                        completedTiles = tilesList,
+                        hasBingo = pObj.optBoolean("hasBingo", false)
                     )
                 )
             }
@@ -91,6 +96,8 @@ object AccountService {
             deckId = deckId,
             gameMode = gameMode,
             isStarted = isStarted,
+            hasWinner = hasWinner,
+            winnerNickname = winnerNickname,
             players = playersList
         )
     }
@@ -327,7 +334,7 @@ object AccountService {
         }
     }
 
-    suspend fun updateTilesOnRailway(code: String, nickname: String, completedTiles: List<Int>): RoomResult = withContext(Dispatchers.IO) {
+    suspend fun updateTilesOnRailway(code: String, nickname: String, completedTiles: List<Int>, hasBingo: Boolean = false): RoomResult = withContext(Dispatchers.IO) {
         try {
             val url = URL("$vercelBaseUrl/api/rooms")
             val conn = url.openConnection() as HttpURLConnection
@@ -342,6 +349,7 @@ object AccountService {
                 put("code", code)
                 put("nickname", nickname)
                 put("completedTiles", JSONArray(completedTiles))
+                put("hasBingo", hasBingo)
             }
 
             conn.outputStream.use { os ->
