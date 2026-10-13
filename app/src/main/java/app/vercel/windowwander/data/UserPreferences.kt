@@ -63,6 +63,9 @@ class UserPreferences(context: Context) {
             .apply()
     }
 
+    fun isLoggedIn(): Boolean = prefs.getBoolean("is_logged_in", false)
+    fun setLoggedIn(loggedIn: Boolean) = prefs.edit().putBoolean("is_logged_in", loggedIn).apply()
+
     fun getSelectedRegion(): Region {
         val code = prefs.getString("selected_region_code", Region.UNIVERSAL.code) ?: Region.UNIVERSAL.code
         return Region.values().firstOrNull { it.code == code } ?: Region.UNIVERSAL

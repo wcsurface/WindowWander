@@ -76,6 +76,8 @@ fun LoginScreen(
     var passwordInput by remember { mutableStateOf("") }
     var nicknameInput by remember { mutableStateOf("") }
 
+    val effectiveLoggedIn = isLoggedIn || (profile.nickname.isNotBlank() && !profile.nickname.startsWith("Road Explorer"))
+
     // COIL GIF DECODER LOADER TO PREVENT RUNTIME CRASHES ON GIF ANIMATION
     val imageLoader = remember {
         ImageLoader.Builder(context)
@@ -118,7 +120,7 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (isLoggedIn) "👤 Account Profile" else "🔑 Log In / Join",
+                    text = if (effectiveLoggedIn) "👤 Account Profile" else "🔑 Log In / Join",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
@@ -162,7 +164,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (!isLoggedIn) {
+            if (!effectiveLoggedIn) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -352,7 +354,7 @@ fun LoginScreen(
         // FLOATING GRADIENT PILL 3D NAVIGATION BAR
         GradientPillNavigationBar(
             currentScreenName = "login",
-            isLoggedIn = isLoggedIn,
+            isLoggedIn = effectiveLoggedIn,
             onNavigateHome = onNavigateHome,
             onNavigateLogin = onNavigateLogin,
             onNavigateShop = onNavigateShop,

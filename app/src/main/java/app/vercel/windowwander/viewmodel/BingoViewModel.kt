@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 enum class Screen {
     HOME,
@@ -71,9 +72,12 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadPreferences() {
         val loadedProfile = preferences.getProfile()
+        val loggedIn = preferences.isLoggedIn() || (loadedProfile.nickname.isNotBlank() && !loadedProfile.nickname.startsWith("Road Explorer"))
+
         _uiState.update {
             it.copy(
                 playerProfile = loadedProfile,
+                isLoggedIn = loggedIn,
                 selectedRegion = preferences.getSelectedRegion(),
                 soundEnabled = preferences.isSoundEnabled(),
                 hapticsEnabled = preferences.isHapticsEnabled(),
@@ -97,6 +101,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
             val result = AccountService.login(username, pass)
             val loadedProfile = result.profile ?: _uiState.value.playerProfile.copy(nickname = username)
             preferences.saveProfile(loadedProfile)
+            preferences.setLoggedIn(true)
             _uiState.update {
                 it.copy(
                     playerProfile = loadedProfile,
@@ -108,8 +113,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun logoutUser() {
+        preferences.setLoggedIn(false)
+        val guestNick = "Road Explorer " + Random.nextInt(100, 999)
+        val guestProfile = PlayerProfile(nickname = guestNick)
+        preferences.saveProfile(guestProfile)
+
         _uiState.update {
             it.copy(
+                playerProfile = guestProfile,
                 isLoggedIn = false,
                 currentScreen = Screen.HOME
             )
@@ -243,6 +254,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
             earnedBadges = _uiState.value.playerProfile.earnedBadges + "cloud_backup"
         )
         preferences.saveProfile(updated)
+        preferences.setLoggedIn(true)
         _uiState.update {
             it.copy(
                 playerProfile = updated,
