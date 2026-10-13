@@ -5,7 +5,7 @@ const API_STORE_URL = 'https://api.restful-api.dev/objects';
 const MASTER_INDEX_ID = 'ff808181a09d98f701a1329f61b04e3f';
 
 function httpRequest(urlStr, method, data) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       const url = new URL(urlStr);
       const payload = data ? JSON.stringify(data) : null;
@@ -50,7 +50,7 @@ function httpRequest(urlStr, method, data) {
   });
 }
 
-// In-memory cache map
+// In-memory cache map for fast warm-instance lookups
 const memoryRooms = new Map();
 
 async function getMasterIndex() {
@@ -125,6 +125,10 @@ async function saveRoomByCode(code, room) {
   }
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -146,7 +150,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Room code required' });
   }
 
-  // 1. CREATE ROOM
+  // 1. CREATE ROOM (HOST)
   if (action === 'create') {
     let room = await getRoomByCode(code);
     if (!room) {
@@ -166,24 +170,25 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, room });
   }
 
-  // 2. JOIN ROOM
+  // 2. JOIN ROOM (PASSENGER) - RETRIES UP TO 5 TIMES, NEVER CREATES HOST ROOM
   if (action === 'join') {
-    let room = await getRoomByCode(code);
-    if (!room) {
-      room = {
-        code,
-        hostNickname: nickname,
-        deckId,
-        gameMode,
-        players: [{ nickname, isHost: true, completedTiles: [12] }]
-      };
-    } else {
-      if (!room.players.some(p => p.nickname === nickname)) {
-        room.players.push({ nickname, isHost: false, completedTiles: [12] });
-      }
+    let room = null;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      room = await getRoomByCode(code);
+      if (room) break;
+      await sleep(500);
     }
-    await saveRoomByCode(code, room);
-    return res.status(200).json({ success: true, room });
+
+    if (room) {
+      const existingPlayer = room.players.find(p => p.nickname === nickname);
+      if (!existingPlayer) {
+        room.players.push({ nickname, isHost: false, completedTiles: [12] });
+        await saveRoomByCode(code, room);
+      }
+      return res.status(200).json({ success: true, room });
+    } else {
+      return res.status(404).json({ success: false, error: `Room code '${code}' not found. Please verify the code and try again.` });
+    }
   }
 
   // 3. GET ROOM
@@ -192,16 +197,7 @@ module.exports = async (req, res) => {
     if (room) {
       return res.status(200).json({ success: true, room });
     }
-    return res.status(200).json({
-      success: true,
-      room: {
-        code,
-        hostNickname,
-        deckId,
-        gameMode,
-        players: [{ nickname, isHost: true, completedTiles: [12] }]
-      }
-    });
+    return res.status(404).json({ success: false, error: `Room code '${code}' not found.` });
   }
 
   return res.status(200).json({ success: true, activeRooms: memoryRooms.size });

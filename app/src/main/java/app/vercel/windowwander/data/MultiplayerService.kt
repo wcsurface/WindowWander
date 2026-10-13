@@ -62,13 +62,13 @@ object MultiplayerService {
 
         return MultiplayerRoom(
             roomCode = upperCode,
-            hostId = newPlayer.id,
+            hostId = "host_pending",
             deckId = "deck_a",
             region = Region.UNIVERSAL,
             gameMode = GameMode.CLASSIC_LINE,
             players = listOf(newPlayer),
             discoveryFeed = listOf(
-                DiscoveryEvent("join", "$playerNickname joined room $upperCode!", playerNickname)
+                DiscoveryEvent("join", "$playerNickname joining room $upperCode...", playerNickname)
             ),
             isStarted = true
         )
