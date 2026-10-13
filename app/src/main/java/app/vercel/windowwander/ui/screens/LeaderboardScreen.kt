@@ -98,7 +98,7 @@ fun LeaderboardScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 16.dp)
         ) {
             // TOP HEADER
             Row(

@@ -1174,7 +1174,7 @@ class Router {
       const activeList = this.leaderboardTab === 0 ? pointsList : itemsList;
 
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">🏆 Leaderboard</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
