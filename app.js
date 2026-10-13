@@ -1224,9 +1224,6 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:12px;">
           <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
-          <div style="text-align:center;display:flex;align-items:center;gap:6px;">
-            <div style="font-size:13.5px;color:#FBBF24;font-weight:900;margin-top:5px;">${this.selectedMode.title}</div>
-          </div>
           <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="router.undoLastTap()">↩ Undo</button>
         </div>
 
@@ -1295,7 +1292,7 @@ class Router {
           <div style="margin-top:18px;width:100%;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <span style="font-size:12px;font-weight:900;color:#FBBF24;">CONNECTED PASSENGERS (${connectedPassengers.length})</span>
-              <span style="font-size:11px;font-weight:800;color:#10B981;">⚡ Live Sync</span>
+              <span style="font-size:12px;font-weight:900;color:#FEF08A;">🎯 ${this.selectedMode.title}</span>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;">

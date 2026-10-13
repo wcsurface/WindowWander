@@ -291,19 +291,6 @@ fun BingoGameScreen(
                         )
                     }
 
-                    // GAME MODE BADGE (DECK TITLE REMOVED TO CLEAR CAMERA CUTOUT)
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(top = 5.dp)
-                    ) {
-                        Text(
-                            text = gameMode.displayName,
-                            fontSize = 13.5.sp,
-                            fontWeight = FontWeight.Black,
-                            color = SunnyYellowLight
-                        )
-                    }
-
                     // UNDO ACCIDENTAL TAP BUTTON
                     if (canUndo) {
                         Box(
@@ -436,10 +423,10 @@ fun BingoGameScreen(
                                 color = SunnyYellow
                             )
                             Text(
-                                text = "⚡ Live Room Sync",
-                                fontSize = 11.sp,
-                                color = CompletedGreen,
-                                fontWeight = FontWeight.Bold
+                                text = "🎯 ${gameMode.displayName}",
+                                fontSize = 12.sp,
+                                color = SunnyYellowLight,
+                                fontWeight = FontWeight.Black
                             )
                         }
 
