@@ -70,11 +70,11 @@ fun LeaderboardScreen(
 
     // REAL USER LEADERBOARD DATA (ZERO FAKE BOTS!)
     val pointsLeaderboard = listOf(
-        LeaderboardEntry(1, "${profile.nickname} (You)", "🐻", profile.level, profile.xp, isCurrentUser = true)
+        LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.xp, isCurrentUser = true)
     ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
 
     val itemsLeaderboard = listOf(
-        LeaderboardEntry(1, "${profile.nickname} (You)", "🐻", profile.level, profile.squaresFound, isCurrentUser = true)
+        LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.squaresFound, isCurrentUser = true)
     ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
 
     val currentList = if (selectedCategory == 0) pointsLeaderboard else itemsLeaderboard

@@ -336,17 +336,32 @@ class AudioEngine {
   static playPop() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.12);
+      const now = ctx.currentTime;
+
+      // CHEERFUL BUBBLY RISING TWO-NOTE CHIME (C5 -> C6)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(523.25, now);
+      osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.10);
+      gain1.gain.setValueAtTime(0.25, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.12);
+
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(659.25, now + 0.03);
+      osc2.frequency.exponentialRampToValueAtTime(1318.51, now + 0.14);
+      gain2.gain.setValueAtTime(0.20, now + 0.03);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.03);
+      osc2.stop(now + 0.15);
     } catch(e) {}
   }
 }
@@ -964,7 +979,7 @@ class Router {
             <p style="font-size:12px;font-weight:900;color:#FBBF24;margin-bottom:8px;">PASSENGERS IN ROOM (${roomPlayers.length})</p>
             ${roomPlayers.map(p => `
               <div style="background:#0F172A;padding:10px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                <span style="font-weight:800;color:white;font-size:14px;">🐻 ${p.nickname} ${p.isHost ? '<span style="background:#FBBF24;color:#0F172A;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px;margin-left:6px;">HOST</span>' : ''}</span>
+                <span style="font-weight:800;color:white;font-size:14px;">🚗 ${p.nickname} ${p.isHost ? '<span style="background:#FBBF24;color:#0F172A;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px;margin-left:6px;">HOST</span>' : ''}</span>
                 <span style="color:#10B981;font-size:12px;font-weight:800;">READY ✓</span>
               </div>
             `).join('')}
@@ -1009,9 +1024,6 @@ class Router {
             <h3 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">👤 CURRENTLY LOGGED IN</h3>
             <h2 style="font-weight:900;color:white;margin-bottom:4px;font-size:24px;">${this.userNickname}</h2>
             <p style="font-size:13px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
-            <div style="background:rgba(16,185,129,0.2);border:1.5px solid #10B981;border-radius:12px;padding:12px;color:#10B981;font-weight:900;font-size:13px;margin-bottom:20px;">
-              ✅ Account Synced & Backed Up to Railway DB!
-            </div>
             <button class="btn btn-orange btn-beveled" style="min-height:54px;font-size:18px;" onclick="router.logoutUser()">
               🚪 LOG OUT
             </button>
@@ -1045,11 +1057,11 @@ class Router {
     } else if (this.currentScreen === 'leaderboard') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       const pointsList = [
-        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.xp, isUser: true }
+        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🚗", val: this.stats.xp, isUser: true }
       ];
 
       const itemsList = [
-        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🐻", val: this.stats.items || 18, isUser: true }
+        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🚗", val: this.stats.items || 18, isUser: true }
       ];
 
       const activeList = this.leaderboardTab === 0 ? pointsList : itemsList;
@@ -1097,7 +1109,7 @@ class Router {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
           <div style="text-align:center;display:flex;align-items:center;gap:6px;">
-            <span style="font-size:20px;">🐻</span>
+            <span style="font-size:20px;">🚗</span>
             <div>
               <div style="font-weight:900;font-size:16px;">${this.selectedDeck.title}</div>
               <div style="font-size:11px;color:#FBBF24;font-weight:700;">${this.selectedMode.title}</div>
@@ -1181,7 +1193,7 @@ class Router {
               ${connectedPassengers.map(p => `
                 <div class="card" style="padding:10px;margin-bottom:0;">
                   <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
-                    <span>🐻 ${p.nickname}</span>
+                    <span>🚗 ${p.nickname}</span>
                     <span style="color:#FBBF24;">${(p.completedTiles || [12]).length}/25</span>
                   </div>
                   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
@@ -1251,9 +1263,6 @@ class Router {
         </div>
 
         <h3 style="margin-top:16px;margin-bottom:8px;">Earned Badges</h3>
-        <div class="card">
-          <p>🐻 <strong>Dash the Bear</strong> ✓ (Unlocked)</p>
-        </div>
         <div class="card">
           <p>🚗 <strong>First Ride</strong> ✓ (Unlocked)</p>
         </div>

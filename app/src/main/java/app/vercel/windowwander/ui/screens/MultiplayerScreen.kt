@@ -199,7 +199,7 @@ fun MultiplayerScreen(
                                         .background(VividOrange),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "🐻", fontSize = 16.sp)
+                                    Text(text = "🚗", fontSize = 16.sp)
                                 }
 
                                 Spacer(modifier = Modifier.width(10.dp))

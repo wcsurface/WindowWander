@@ -344,14 +344,14 @@ app.get('/api/auth/leaderboard', async (req, res) => {
         pointsList: pointsResult.rows.map((u, i) => ({
           rank: i + 1,
           name: u.nickname,
-          emoji: '🐻',
+          emoji: '🚗',
           level: u.level || 1,
           val: u.xp || 0
         })),
         itemsList: itemsResult.rows.map((u, i) => ({
           rank: i + 1,
           name: u.nickname,
-          emoji: '🐻',
+          emoji: '🚗',
           level: u.level || 1,
           val: u.squares_found || 0
         }))
@@ -366,14 +366,14 @@ app.get('/api/auth/leaderboard', async (req, res) => {
   const pointsList = allUsers.sort((a,b) => b.xp - a.xp).map((u, i) => ({
     rank: i + 1,
     name: u.nickname,
-    emoji: '🐻',
+    emoji: '🚗',
     level: u.level || 1,
     val: u.xp || 0
   }));
   const itemsList = allUsers.sort((a,b) => b.squaresFound - a.squaresFound).map((u, i) => ({
     rank: i + 1,
     name: u.nickname,
-    emoji: '🐻',
+    emoji: '🚗',
     level: u.level || 1,
     val: u.squaresFound || 0
   }));

@@ -314,7 +314,7 @@ fun LoginScreen(
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "🐻", fontSize = 38.sp)
+                            Text(text = "🚗", fontSize = 38.sp)
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))

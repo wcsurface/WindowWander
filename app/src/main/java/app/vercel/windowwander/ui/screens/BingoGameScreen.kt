@@ -376,7 +376,7 @@ fun BingoGameScreen(
                             otherRealPlayers.forEach { realPlayer ->
                                 OpponentMiniBoardCard(
                                     nickname = realPlayer.nickname,
-                                    avatarEmoji = "🐻",
+                                    avatarEmoji = "🚗",
                                     completedIndices = realPlayer.completedTiles, // REAL LIVE UPDATED COMPLETED TILES!
                                     modifier = Modifier.weight(1f)
                                 )
