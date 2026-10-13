@@ -1,4 +1,4 @@
-// VERCEL PERSISTENT LIVE ROOMS API ENDPOINT WITH MASTER INDEX
+// VERCEL PERSISTENT LIVE ROOMS API ENDPOINT WITH INSTANT IN-MEMORY SYNC
 const https = require('https');
 
 const API_STORE_URL = 'https://api.restful-api.dev/objects';
@@ -76,22 +76,28 @@ async function updateMasterIndex(indexData) {
 async function getRoomByCode(code) {
   const cleanCode = code.toUpperCase().trim();
 
-  // Always fetch fresh room object from REST store first
+  // If memory cache has room updated within last 5 mins, prefer instant memory cache
+  const cachedRoom = memoryRooms.get(cleanCode);
+  if (cachedRoom && cachedRoom.updatedAt && (Date.now() - cachedRoom.updatedAt < 300000)) {
+    return cachedRoom;
+  }
+
+  // Otherwise fetch from REST store
   try {
     const masterIndex = await getMasterIndex();
     const roomId = masterIndex[cleanCode];
     if (roomId) {
       const roomRes = await httpRequest(`${API_STORE_URL}/${roomId}`, 'GET');
       if (roomRes && roomRes.data && Array.isArray(roomRes.data.players)) {
+        roomRes.data.updatedAt = Date.now();
         memoryRooms.set(cleanCode, roomRes.data);
         return roomRes.data;
       }
     }
   } catch(e) {}
 
-  // Fallback to local memory cache if network request fails
-  if (memoryRooms.has(cleanCode)) {
-    return memoryRooms.get(cleanCode);
+  if (cachedRoom) {
+    return cachedRoom;
   }
 
   return null;
@@ -99,6 +105,7 @@ async function getRoomByCode(code) {
 
 async function saveRoomByCode(code, room) {
   const cleanCode = code.toUpperCase().trim();
+  room.updatedAt = Date.now();
   memoryRooms.set(cleanCode, room);
 
   try {
@@ -216,16 +223,19 @@ module.exports = async (req, res) => {
   if (action === 'update_tiles') {
     let room = await getRoomByCode(code);
     if (room) {
-      const player = room.players.find(p => p.nickname === nickname);
-      if (player) {
-        player.completedTiles = Array.isArray(body.completedTiles) ? body.completedTiles : [12];
-        if (body.hasBingo) {
-          player.hasBingo = true;
-          room.hasWinner = true;
-          room.winnerNickname = nickname;
-        }
-        await saveRoomByCode(code, room);
+      let player = room.players.find(p => p.nickname === nickname);
+      if (!player) {
+        player = { nickname, isHost: false, completedTiles: [12], hasBingo: false };
+        room.players.push(player);
       }
+
+      player.completedTiles = Array.isArray(body.completedTiles) ? body.completedTiles : [12];
+      if (body.hasBingo) {
+        player.hasBingo = true;
+        room.hasWinner = true;
+        room.winnerNickname = nickname;
+      }
+      await saveRoomByCode(code, room);
       return res.status(200).json({ success: true, room });
     }
     return res.status(404).json({ success: false, error: 'Room not found' });
