@@ -104,7 +104,7 @@ object AccountService {
 
     suspend fun login(username: String, pass: String): AuthResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/auth/login")
+            val url = URL("$vercelBaseUrl/api/auth?action=login")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
@@ -150,7 +150,7 @@ object AccountService {
 
     suspend fun register(username: String, pass: String, nickname: String): AuthResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/auth/register")
+            val url = URL("$vercelBaseUrl/api/auth?action=register")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")
@@ -197,7 +197,7 @@ object AccountService {
 
     suspend fun saveProfileToRailway(profile: PlayerProfile) = withContext(Dispatchers.IO) {
         try {
-            val url = URL("$railwayBaseUrl/api/auth/save-profile")
+            val url = URL("$vercelBaseUrl/api/auth?action=save_profile")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")

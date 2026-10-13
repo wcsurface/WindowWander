@@ -46,6 +46,20 @@ class UserPreferences(context: Context) {
         )
     }
 
+    fun getProfileForUser(username: String): PlayerProfile {
+        val savedXp = prefs.getInt("xp_$username", -1)
+        if (savedXp != -1) {
+            return PlayerProfile(
+                nickname = username,
+                xp = savedXp,
+                bingosWon = prefs.getInt("bingos_$username", 0),
+                squaresFound = prefs.getInt("squares_$username", 0),
+                gamesPlayed = prefs.getInt("games_$username", 0)
+            )
+        }
+        return getProfile()
+    }
+
     fun saveProfile(profile: PlayerProfile) {
         val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         prefs.edit()
@@ -60,6 +74,11 @@ class UserPreferences(context: Context) {
             .putString("earned_badges", profile.earnedBadges.joinToString(","))
             .putInt("daily_games_played", profile.dailyGamesPlayedToday)
             .putString("last_play_date", todayStr)
+            // BACK UP USER DATA SPECIFICALLY BY NICKNAME
+            .putInt("xp_${profile.nickname}", profile.xp)
+            .putInt("bingos_${profile.nickname}", profile.bingosWon)
+            .putInt("squares_${profile.nickname}", profile.squaresFound)
+            .putInt("games_${profile.nickname}", profile.gamesPlayed)
             .apply()
     }
 
