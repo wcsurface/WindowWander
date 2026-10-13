@@ -1,6 +1,5 @@
 package app.vercel.windowwander.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.vercel.windowwander.R
 import app.vercel.windowwander.model.Badge
 import app.vercel.windowwander.model.PlayerProfile
 import app.vercel.windowwander.ui.components.GradientPillNavigationBar
@@ -57,22 +53,11 @@ fun StatsAchievementsScreen(
         Badge("road_legend", "Road Legend", "Reached Level 5 Explorer status", "👑", profile.level >= 5)
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // DEDICATED STATS & BADGES ROUTE 66 DOODLE MAP BACKGROUND ARTWORK
-        Image(
-            painter = painterResource(id = R.drawable.bg_stats),
-            contentDescription = "Stats & Badges Background Artwork",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // DARK SCRIM OVERLAY FOR HIGH CONTRAST & LEGIBILITY
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.35f))
-        )
-
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

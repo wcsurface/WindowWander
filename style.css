@@ -49,7 +49,8 @@ body.leaderboard-theme {
 }
 
 body.stats-theme {
-  background-image: url('bg_stats.jpg');
+  background-color: #000000;
+  background-image: none;
 }
 
 #app {
