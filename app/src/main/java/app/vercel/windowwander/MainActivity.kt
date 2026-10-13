@@ -7,12 +7,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import app.vercel.windowwander.data.BackgroundMusicManager
 import app.vercel.windowwander.ui.screens.BingoGameScreen
 import app.vercel.windowwander.ui.screens.DeckSelectScreen
 import app.vercel.windowwander.ui.screens.HomeScreen
@@ -38,6 +40,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
+
+            // BACKGROUND MUSIC SYNC Across SCREENS
+            LaunchedEffect(uiState.currentScreen, uiState.soundEnabled) {
+                BackgroundMusicManager.syncMusicState(
+                    context = this@MainActivity,
+                    currentScreen = uiState.currentScreen,
+                    soundEnabled = uiState.soundEnabled
+                )
+            }
 
             WindowWanderTheme(darkTheme = uiState.darkMode) {
                 Surface(
@@ -172,6 +183,21 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BackgroundMusicManager.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BackgroundMusicManager.syncMusicState(this, viewModel.uiState.value.currentScreen, viewModel.uiState.value.soundEnabled)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BackgroundMusicManager.stopAndRelease()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

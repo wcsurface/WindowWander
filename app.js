@@ -332,6 +332,40 @@ const HEARTLAND_MIDWEST_PROMPTS = [
   "Sports Team Sticker"
 ];
 
+class BackgroundMusicEngine {
+  static audio = null;
+
+  static init() {
+    if (!this.audio) {
+      this.audio = new Audio('road_trip_bingo_theme.mp3');
+      this.audio.loop = true;
+      this.audio.volume = 0.18; // 18% quiet background music volume
+    }
+  }
+
+  static syncState(currentScreen) {
+    this.init();
+    if (currentScreen === 'game') {
+      this.pause();
+    } else {
+      this.play();
+    }
+  }
+
+  static play() {
+    this.init();
+    if (this.audio && this.audio.paused) {
+      this.audio.play().catch(() => {});
+    }
+  }
+
+  static pause() {
+    if (this.audio && !this.audio.paused) {
+      this.audio.pause();
+    }
+  }
+}
+
 class AudioEngine {
   static playPop() {
     try {
@@ -619,6 +653,7 @@ class Router {
 
   navigate(screen) {
     this.currentScreen = screen;
+    BackgroundMusicEngine.syncState(screen);
     this.updateActiveNav();
     this.render();
   }
@@ -845,6 +880,7 @@ class Router {
     const main = document.getElementById('main-content');
     if (!main) return;
 
+    BackgroundMusicEngine.syncState(this.currentScreen);
     this.updateActiveNav();
 
     // UPDATE FOOTER NAV BUTTON LABEL FOR LOGIN / LOGOUT
