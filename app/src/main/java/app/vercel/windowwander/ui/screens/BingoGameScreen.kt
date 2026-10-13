@@ -256,7 +256,7 @@ fun BingoGameScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 22.dp, bottom = 12.dp)
                 .onGloballyPositioned { coordinates ->
                     rootBoxWindowOffset = coordinates.boundsInWindow().topLeft
                 }

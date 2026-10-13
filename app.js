@@ -1222,7 +1222,7 @@ class Router {
       const connectedPassengers = this.activeRoom && this.activeRoom.players ? this.activeRoom.players.filter(p => p.nickname !== this.userNickname) : [];
 
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:12px;">
           <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
           <div style="text-align:center;display:flex;align-items:center;gap:6px;">
             <span style="font-size:20px;">🚗</span>
