@@ -52,7 +52,7 @@ fun DeckSelectScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MidnightNavy)
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 16.dp)
     ) {
         // TOP HEADER
         Row(
@@ -61,7 +61,7 @@ fun DeckSelectScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🎴 Deck Catalog",
+                text = "🎴 Decks",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White

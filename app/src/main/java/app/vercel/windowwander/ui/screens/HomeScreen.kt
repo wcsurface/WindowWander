@@ -183,9 +183,9 @@ fun HomeScreen(
                         signColor = Color(0xFF0D9488)
                     )
 
-                    // DECK LIBRARY ROAD SIGN
+                    // DECKS ROAD SIGN
                     CartoonRoadSignCard(
-                        title = "Deck Library",
+                        title = "Decks",
                         subtitle = "8 Decks!",
                         icon = "🎴",
                         badgeText = null,

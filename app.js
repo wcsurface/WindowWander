@@ -979,12 +979,12 @@ class Router {
             <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
           </div>
 
-          <!-- DECK LIBRARY (NO ORANGE HIGHLIGHTED BADGE AT ALL) -->
+          <!-- DECKS CARD -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:10px;">Deck Library</div>
+            <div style="font-weight:900;font-size:16px;margin-top:10px;">Decks</div>
             <div style="font-size:11px;color:#E2E8F0;">8 Decks!</div>
           </div>
         </div>
@@ -1343,8 +1343,8 @@ class Router {
       `;
     } else if (this.currentScreen === 'decks') {
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;">🎴 Deck Library</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
+          <h2 style="font-weight:900;">🎴 Decks</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
         ${DECKS.map(d => `
