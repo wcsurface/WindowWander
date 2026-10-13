@@ -50,7 +50,7 @@ function httpRequest(urlStr, method, data) {
   });
 }
 
-// In-memory cache map for fast warm-instance lookups
+// Memory fallback cache
 const memoryRooms = new Map();
 
 async function getMasterIndex() {
@@ -75,21 +75,24 @@ async function updateMasterIndex(indexData) {
 
 async function getRoomByCode(code) {
   const cleanCode = code.toUpperCase().trim();
-  if (memoryRooms.has(cleanCode)) {
-    return memoryRooms.get(cleanCode);
-  }
 
+  // Always fetch fresh room object from REST store first
   try {
     const masterIndex = await getMasterIndex();
     const roomId = masterIndex[cleanCode];
     if (roomId) {
       const roomRes = await httpRequest(`${API_STORE_URL}/${roomId}`, 'GET');
-      if (roomRes && roomRes.data) {
+      if (roomRes && roomRes.data && Array.isArray(roomRes.data.players)) {
         memoryRooms.set(cleanCode, roomRes.data);
         return roomRes.data;
       }
     }
   } catch(e) {}
+
+  // Fallback to local memory cache if network request fails
+  if (memoryRooms.has(cleanCode)) {
+    return memoryRooms.get(cleanCode);
+  }
 
   return null;
 }
