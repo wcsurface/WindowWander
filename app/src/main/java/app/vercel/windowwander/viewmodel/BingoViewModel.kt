@@ -315,11 +315,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                             } ?: state
                         }
                     }
-                } catch (e: Exception) {
-                    // Ignore sync network errors
-                }
+                } catch (e: Exception) {}
 
-                delay(1500)
+                delay(1000)
             }
         }
     }
