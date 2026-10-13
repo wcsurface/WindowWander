@@ -341,7 +341,7 @@ fun BingoGameScreen(
                                 OpponentMiniBoardCard(
                                     nickname = realPlayer.nickname,
                                     avatarEmoji = "🐻",
-                                    completedIndices = listOf(12),
+                                    completedIndices = realPlayer.completedTiles, // REAL LIVE UPDATED COMPLETED TILES!
                                     modifier = Modifier.weight(1f)
                                 )
                             }
@@ -369,12 +369,15 @@ fun BingoGameScreen(
                 )
             }
 
-            // BINGO CELEBRATION OVERLAY
+            // BINGO CELEBRATION OVERLAY (TRIGGERED FOR SELF WINNER OR OTHER PASSENGER WINNER)
             AnimatedVisibility(
                 visible = showCelebration && !showAccountPrompt,
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
+                val winnerName = multiplayerRoom?.winnerNickname
+                val isSelfWinner = winnerName.isNullOrBlank() || winnerName == currentUserNickname
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -409,7 +412,7 @@ fun BingoGameScreen(
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Text(
-                                text = "BINGO VICTORY!",
+                                text = if (isSelfWinner) "BINGO VICTORY!" else "GAME OVER!",
                                 fontSize = 26.sp,
                                 fontWeight = FontWeight.Black,
                                 color = SunnyYellow
@@ -418,9 +421,11 @@ fun BingoGameScreen(
                             Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
-                                text = "Great roadside discoveries!",
-                                fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.8f)
+                                text = if (isSelfWinner) "Great roadside discoveries!" else "🎉 $winnerName won the Bingo match!",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White.copy(alpha = 0.9f),
+                                textAlign = TextAlign.Center
                             )
 
                             Spacer(modifier = Modifier.height(14.dp))
@@ -432,7 +437,7 @@ fun BingoGameScreen(
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
                             ) {
                                 Text(
-                                    text = "+100 BONUS XP ⭐️",
+                                    text = if (isSelfWinner) "+100 BONUS XP ⭐️" else "MATCH FINISHED 🏁",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
                                     color = CompletedGreen
