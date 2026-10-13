@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                             onSelectDeck = { deck -> viewModel.selectDeck(deck) },
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
                             onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },
-                            onStartGame = { viewModel.startNewGame() },
+                            onStartGame = { viewModel.launchGameByHost() },
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 

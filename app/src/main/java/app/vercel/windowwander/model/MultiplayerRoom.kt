@@ -6,7 +6,8 @@ data class RoomPlayer(
     val avatarId: String,
     val isHost: Boolean = false,
     val score: Int = 0,
-    val hasBingo: Boolean = false
+    val hasBingo: Boolean = false,
+    val completedTiles: List<Int> = listOf(12)
 )
 
 data class DiscoveryEvent(

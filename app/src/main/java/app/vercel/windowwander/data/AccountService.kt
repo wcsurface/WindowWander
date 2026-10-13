@@ -23,6 +23,9 @@ object AccountService {
     data class RoomResult(
         val success: Boolean,
         val roomCode: String = "",
+        val deckId: String = "deck_a",
+        val gameMode: String = "CLASSIC_LINE",
+        val isStarted: Boolean = false,
         val players: List<RoomPlayer> = emptyList(),
         val error: String? = null
     )
@@ -52,18 +55,31 @@ object AccountService {
 
     private fun parseRoomJson(roomObj: JSONObject): RoomResult {
         val code = roomObj.optString("code", "")
+        val deckId = roomObj.optString("deckId", "deck_a")
+        val gameMode = roomObj.optString("gameMode", "CLASSIC_LINE")
+        val isStarted = roomObj.optBoolean("isStarted", false)
         val playersArr = roomObj.optJSONArray("players")
         val playersList = mutableListOf<RoomPlayer>()
 
         if (playersArr != null) {
             for (i in 0 until playersArr.length()) {
                 val pObj = playersArr.getJSONObject(i)
+                val tilesArr = pObj.optJSONArray("completedTiles")
+                val tilesList = mutableListOf<Int>()
+                if (tilesArr != null) {
+                    for (t in 0 until tilesArr.length()) {
+                        tilesList.add(tilesArr.getInt(t))
+                    }
+                }
+                if (tilesList.isEmpty()) tilesList.add(12)
+
                 playersList.add(
                     RoomPlayer(
                         id = "p_$i",
                         nickname = pObj.optString("nickname", "Passenger"),
                         avatarId = "car_red",
-                        isHost = pObj.optBoolean("isHost", false)
+                        isHost = pObj.optBoolean("isHost", false),
+                        completedTiles = tilesList
                     )
                 )
             }
@@ -72,6 +88,9 @@ object AccountService {
         return RoomResult(
             success = true,
             roomCode = code,
+            deckId = deckId,
+            gameMode = gameMode,
+            isStarted = isStarted,
             players = playersList
         )
     }
@@ -266,6 +285,78 @@ object AccountService {
                 parseRoomJson(json.getJSONObject("room"))
             } else {
                 RoomResult(success = false, error = "Join room failed")
+            }
+        } catch (e: Exception) {
+            RoomResult(success = false, error = e.message)
+        }
+    }
+
+    suspend fun launchGameOnRailway(code: String, deckId: String, gameMode: String): RoomResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$vercelBaseUrl/api/rooms")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.connectTimeout = 4000
+            conn.readTimeout = 4000
+            conn.doOutput = true
+
+            val body = JSONObject().apply {
+                put("action", "launch")
+                put("code", code)
+                put("deckId", deckId)
+                put("gameMode", gameMode)
+            }
+
+            conn.outputStream.use { os ->
+                os.write(body.toString().toByteArray())
+            }
+
+            val statusCode = conn.responseCode
+            val stream = if (statusCode in 200..299) conn.inputStream else conn.errorStream
+            val responseStr = stream.bufferedReader().use { it.readText() }
+            val json = JSONObject(responseStr)
+
+            if (json.optBoolean("success", false)) {
+                parseRoomJson(json.getJSONObject("room"))
+            } else {
+                RoomResult(success = false, error = "Launch game failed")
+            }
+        } catch (e: Exception) {
+            RoomResult(success = false, error = e.message)
+        }
+    }
+
+    suspend fun updateTilesOnRailway(code: String, nickname: String, completedTiles: List<Int>): RoomResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$vercelBaseUrl/api/rooms")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.connectTimeout = 3000
+            conn.readTimeout = 3000
+            conn.doOutput = true
+
+            val body = JSONObject().apply {
+                put("action", "update_tiles")
+                put("code", code)
+                put("nickname", nickname)
+                put("completedTiles", JSONArray(completedTiles))
+            }
+
+            conn.outputStream.use { os ->
+                os.write(body.toString().toByteArray())
+            }
+
+            val statusCode = conn.responseCode
+            val stream = if (statusCode in 200..299) conn.inputStream else conn.errorStream
+            val responseStr = stream.bufferedReader().use { it.readText() }
+            val json = JSONObject(responseStr)
+
+            if (json.optBoolean("success", false)) {
+                parseRoomJson(json.getJSONObject("room"))
+            } else {
+                RoomResult(success = false, error = "Update tiles failed")
             }
         } catch (e: Exception) {
             RoomResult(success = false, error = e.message)

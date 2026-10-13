@@ -434,6 +434,32 @@ class RailwayAuthService {
     }
   }
 
+  static async launchGame(code, deckId, gameMode) {
+    try {
+      const res = await fetch('/api/rooms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'launch', code, deckId, gameMode })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
+
+  static async updateTiles(code, nickname, completedTiles) {
+    try {
+      const res = await fetch('/api/rooms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_tiles', code, nickname, completedTiles })
+      });
+      return await res.json();
+    } catch(err) {
+      return { success: false };
+    }
+  }
+
   static async getRoom(code) {
     try {
       const res = await fetch('/api/rooms', {
@@ -602,13 +628,19 @@ class Router {
     } else {
       this.activeRoom = {
         code: upperCode,
-        players: [{ nickname: this.userNickname, isHost: true }]
+        players: [{ nickname: this.userNickname, isHost: false }]
       };
     }
     this.showInCarModal = false;
     this.showJoinCodeInput = false;
     this.startRoomSync(upperCode);
     this.navigate('multiplayer');
+  }
+
+  async hostLaunchGame() {
+    await RailwayAuthService.launchGame(this.roomCode, this.selectedDeck.id, this.selectedMode.id);
+    this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
+    this.navigate('game');
   }
 
   startRoomSync(code) {
@@ -618,10 +650,17 @@ class Router {
         const res = await RailwayAuthService.getRoom(code);
         if (res.success && res.room) {
           this.activeRoom = res.room;
-          this.render();
+
+          // AUTO-LAUNCH JOINED PASSENGERS WHEN HOST LAUNCHES!
+          if (this.currentScreen === 'multiplayer' && res.room.isStarted) {
+            this.board = BingoWebEngine.generateBoard(this.selectedDeck.id);
+            this.navigate('game');
+          } else {
+            this.render();
+          }
         }
       }
-    }, 1500);
+    }, 1200);
   }
 
   toggleTile(index, event) {
@@ -636,6 +675,10 @@ class Router {
       AudioEngine.playPop();
       if (navigator.vibrate) navigator.vibrate(40);
       this.stats.items = (this.stats.items || 0) + 1;
+
+      // SYNC COMPLETED TILES TO LIVE SERVER
+      const completedIndices = this.board.filter(t => t.completed).map(t => t.index);
+      RailwayAuthService.updateTiles(this.roomCode, this.userNickname, completedIndices);
 
       // TRIGGER SCREEN-WIDE UNBOUNDED STAR EXPLOSION BURST
       if (event) this.triggerStarExplosion(event.clientX, event.clientY);
@@ -902,6 +945,8 @@ class Router {
       `;
     } else if (this.currentScreen === 'multiplayer') {
       const roomPlayers = this.activeRoom && this.activeRoom.players ? this.activeRoom.players : [{ nickname: this.userNickname, isHost: true }];
+      const isHost = roomPlayers.find(p => p.nickname === this.userNickname)?.isHost || false;
+
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">🚗 In-Car Room Lobby</h2>
@@ -925,9 +970,15 @@ class Router {
             `).join('')}
           </div>
 
-          <button class="btn btn-mockup-play" style="min-height:56px;font-size:18px;" onclick="router.board=BingoWebEngine.generateBoard(router.selectedDeck.id);router.navigate('game');">
-            🚀 LAUNCH GAME NOW ▶
-          </button>
+          ${isHost ? `
+            <button class="btn btn-mockup-play" style="min-height:56px;font-size:18px;" onclick="router.hostLaunchGame()">
+              🚀 LAUNCH GAME NOW ▶
+            </button>
+          ` : `
+            <div style="background:#0F172A;border:1.5px solid #FBBF24;padding:14px;border-radius:14px;color:#FBBF24;font-weight:900;font-size:15px;text-align:center;">
+              ⏳ WAITING FOR HOST TO START ▶
+            </div>
+          `}
         </div>
       `;
     } else if (this.currentScreen === 'login') {
@@ -1131,12 +1182,12 @@ class Router {
                 <div class="card" style="padding:10px;margin-bottom:0;">
                   <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
                     <span>🐻 ${p.nickname}</span>
-                    <span style="color:#FBBF24;">1/25</span>
+                    <span style="color:#FBBF24;">${(p.completedTiles || [12]).length}/25</span>
                   </div>
                   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;aspect-ratio:1;">
                     ${Array.from({length:25},(_,i)=>`
-                      <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
-                        ${i===12?'⭐':''}
+                      <div style="aspect-ratio:1;border-radius:3px;background:${i===12?'#FBBF24':(p.completedTiles || [12]).includes(i)?'#10B981':'#2A364F'};display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:900;">
+                        ${i===12?'⭐':(p.completedTiles || [12]).includes(i)?'✓':''}
                       </div>
                     `).join('')}
                   </div>
@@ -1152,7 +1203,7 @@ class Router {
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;">
               <div style="font-size:36px;margin-bottom:8px;">💾</div>
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">SAVE YOUR ACHIEVEMENTS!</h2>
-              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with your account to back up your Level, XP, earned badges, and lifetime Bingo wins!</p>
+              <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with your account to back up your Level, XP, earned badges, and lifetime Bingo wins so you never lose your road trip progress!</p>
 
               <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="router.navigate('login')">
                 🔑 LOG IN / REGISTER NOW

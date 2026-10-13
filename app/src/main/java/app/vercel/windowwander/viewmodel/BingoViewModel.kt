@@ -150,6 +150,18 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun launchGameByHost() {
+        val roomCode = _uiState.value.multiplayerRoom?.roomCode ?: return
+        val deck = _uiState.value.selectedDeck
+        val gameMode = _uiState.value.gameMode
+
+        viewModelScope.launch {
+            AccountService.launchGameOnRailway(roomCode, deck.id, gameMode.name)
+        }
+
+        startNewGame(deck = deck, gameMode = gameMode)
+    }
+
     fun tapTile(index: Int) {
         val currentBoard = _uiState.value.currentBoard
         if (index !in currentBoard.indices) return
@@ -159,6 +171,18 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         boardHistory.add(updatedBoard)
+
+        val roomCode = _uiState.value.multiplayerRoom?.roomCode
+        if (!roomCode.isNullOrBlank()) {
+            val completedIndices = updatedBoard.filter { it.isCompleted }.map { it.index }
+            viewModelScope.launch {
+                AccountService.updateTilesOnRailway(
+                    code = roomCode,
+                    nickname = _uiState.value.playerProfile.nickname,
+                    completedTiles = completedIndices
+                )
+            }
+        }
 
         val winEval = BingoEngine.evaluateWin(updatedBoard, _uiState.value.gameMode)
         val newlyWon = winEval.hasWon && !_uiState.value.winResult.hasWon
@@ -311,8 +335,16 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     if (res.success && res.players.isNotEmpty()) {
                         _uiState.update { state ->
                             state.multiplayerRoom?.let { room ->
-                                state.copy(multiplayerRoom = room.copy(players = res.players))
+                                state.copy(multiplayerRoom = room.copy(players = res.players, isStarted = res.isStarted))
                             } ?: state
+                        }
+
+                        // AUTO-LAUNCH PASSENGERS INTO GAME WHEN HOST LAUNCHES!
+                        if (_uiState.value.currentScreen == Screen.MULTIPLAYER_LOBBY && res.isStarted) {
+                            startNewGame(
+                                deck = _uiState.value.selectedDeck,
+                                gameMode = _uiState.value.gameMode
+                            )
                         }
                     }
                 } catch (e: Exception) {}

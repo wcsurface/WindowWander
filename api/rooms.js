@@ -162,6 +162,7 @@ module.exports = async (req, res) => {
         hostNickname,
         deckId,
         gameMode,
+        isStarted: false,
         players: [{ nickname: hostNickname, isHost: true, completedTiles: [12] }]
       };
     } else {
@@ -173,7 +174,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ success: true, room });
   }
 
-  // 2. JOIN ROOM (PASSENGER) - RETRIES UP TO 5 TIMES, NEVER CREATES HOST ROOM
+  // 2. JOIN ROOM (PASSENGER)
   if (action === 'join') {
     let room = null;
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -194,7 +195,34 @@ module.exports = async (req, res) => {
     }
   }
 
-  // 3. GET ROOM
+  // 3. LAUNCH GAME (HOST LAUNCHES ROOM FOR ALL PASSENGERS)
+  if (action === 'launch') {
+    let room = await getRoomByCode(code);
+    if (room) {
+      room.isStarted = true;
+      if (deckId) room.deckId = deckId;
+      if (gameMode) room.gameMode = gameMode;
+      await saveRoomByCode(code, room);
+      return res.status(200).json({ success: true, room });
+    }
+    return res.status(404).json({ success: false, error: 'Room not found' });
+  }
+
+  // 4. UPDATE COMPLETED TILES FOR REAL-TIME OPPONENT BOARD PREVIEW
+  if (action === 'update_tiles') {
+    let room = await getRoomByCode(code);
+    if (room) {
+      const player = room.players.find(p => p.nickname === nickname);
+      if (player) {
+        player.completedTiles = Array.isArray(body.completedTiles) ? body.completedTiles : [12];
+        await saveRoomByCode(code, room);
+      }
+      return res.status(200).json({ success: true, room });
+    }
+    return res.status(404).json({ success: false, error: 'Room not found' });
+  }
+
+  // 5. GET ROOM
   if (action === 'get') {
     let room = await getRoomByCode(code);
     if (room) {
