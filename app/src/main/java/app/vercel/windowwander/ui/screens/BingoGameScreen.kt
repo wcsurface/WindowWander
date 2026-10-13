@@ -184,7 +184,6 @@ fun playGameOverSadTrombone() {
                     Pair(slideFreq, fade * 0.9)
                 }
             }
-            // Sawtooth waveform for classic brass wah-wah character
             val period = sampleRate / freq
             val saw = (2.0 * (i % period) / period - 1.0)
             val sampleValue = (saw * 22000.0 * volume).toInt()
@@ -394,50 +393,31 @@ fun BingoGameScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                // GAME ACTION & WIN STATUS BAR
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        onClick = onNewGame,
-                        colors = ButtonDefaults.buttonColors(containerColor = MediumNavy),
-                        shape = RoundedCornerShape(14.dp)
+                // BINGO WIN STATUS BADGE (NO NEW BOARD BUTTON DURING GAMEPLAY)
+                if (winResult.hasWon) {
+                    Box(
+                        modifier = Modifier
+                            .shadow(8.dp, RoundedCornerShape(14.dp))
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(
+                                Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner))
+                            )
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
                     ) {
                         Text(
-                            text = "🔄 New Board",
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontSize = 13.sp
+                            text = "🎉 BINGO! (${winResult.winningLinesCount} Line${if (winResult.winningLinesCount > 1) "s" else ""})",
+                            fontWeight = FontWeight.Black,
+                            color = DeepNavy,
+                            fontSize = 14.sp
                         )
-                    }
-
-                    if (winResult.hasWon) {
-                        Box(
-                            modifier = Modifier
-                                .shadow(8.dp, RoundedCornerShape(14.dp))
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(
-                                    Brush.horizontalGradient(listOf(SunnyYellow, GoldWinner))
-                                )
-                                .padding(horizontal = 14.dp, vertical = 10.dp)
-                        ) {
-                            Text(
-                                text = "🎉 BINGO! (${winResult.winningLinesCount} Line${if (winResult.winningLinesCount > 1) "s" else ""})",
-                                fontWeight = FontWeight.Black,
-                                color = DeepNavy,
-                                fontSize = 13.sp
-                            )
-                        }
                     }
                 }
 
-                // LIVE REAL CONNECTED PASSENGER BOARDS SECTION (DISPLAYED ONLY IF REAL PLAYERS ARE CONNECTED)
+                // LIVE REAL CONNECTED PASSENGER BOARDS SECTION (DISPLAYED IN ROWS OF EXACTLY 2 BOARDS SIDE-BY-SIDE)
                 if (otherRealPlayers.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Column(
                         modifier = Modifier.fillMaxWidth()
@@ -463,17 +443,25 @@ fun BingoGameScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            otherRealPlayers.forEach { realPlayer ->
-                                OpponentMiniBoardCard(
-                                    nickname = realPlayer.nickname,
-                                    avatarEmoji = "🚗",
-                                    completedIndices = realPlayer.completedTiles, // REAL LIVE UPDATED COMPLETED TILES!
-                                    modifier = Modifier.weight(1f)
-                                )
+                        // CHUNK PASSENGERS INTO PAIRS OF 2 BOARDS PER ROW
+                        otherRealPlayers.chunked(2).forEach { pair ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                pair.forEach { realPlayer ->
+                                    OpponentMiniBoardCard(
+                                        nickname = realPlayer.nickname,
+                                        avatarEmoji = "🚗",
+                                        completedIndices = realPlayer.completedTiles,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (pair.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
                             }
                         }
                     }

@@ -1278,14 +1278,11 @@ class Router {
           }).join('')}
         </div>
 
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-          <button class="btn btn-outline" style="width:auto;min-height:42px;padding:0 16px;font-size:13px;" onclick="router.board=BingoWebEngine.generateBoard(router.selectedDeck.id);router.render();">
-            🔄 New Board
-          </button>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:12px;">
           ${isWin ? '<div style="background:#F59E0B;color:#0F172A;font-weight:900;padding:8px 14px;border-radius:12px;font-size:13px;">🎉 BINGO!</div>' : ''}
         </div>
 
-        <!-- LIVE CONNECTED PASSENGER BOARDS SECTION (DISPLAYED ONLY IF REAL USERS CONNECTED) -->
+        <!-- LIVE CONNECTED PASSENGER BOARDS SECTION (DISPLAYED IN ROWS OF EXACTLY 2 BOARDS SIDE-BY-SIDE) -->
         ${connectedPassengers.length > 0 ? `
           <div style="margin-top:18px;width:100%;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -1293,7 +1290,7 @@ class Router {
               <span style="font-size:11px;font-weight:800;color:#10B981;">⚡ Live Sync</span>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;">
               ${connectedPassengers.map(p => `
                 <div class="card" style="padding:10px;margin-bottom:0;">
                   <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;margin-bottom:6px;">
