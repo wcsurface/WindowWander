@@ -73,7 +73,7 @@ fun ShopScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // TOP BAR WITH XP & TITLE
@@ -83,7 +83,7 @@ fun ShopScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "🏪 Road Trip Shop",
+                        text = "🏪 Shop",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
@@ -189,7 +189,7 @@ fun ShopScreen(
                             Spacer(modifier = Modifier.height(10.dp))
 
                             Text(
-                                text = "The Road Trip Shop is opening soon!\nKeep earning XP on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
+                                text = "The Shop is opening soon!\nKeep earning XP on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFEF3C7),

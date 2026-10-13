@@ -1148,8 +1148,8 @@ class Router {
       `;
     } else if (this.currentScreen === 'shop') {
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h2 style="font-weight:900;color:white;">🏪 Road Trip Shop</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">🏪 Shop</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
 
@@ -1165,7 +1165,7 @@ class Router {
           </div>
           <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 UNDER CONSTRUCTION 🚧</h2>
           <p style="font-size:14px;font-weight:800;color:#FEF3C7;line-height:1.5;">
-            The Road Trip Shop is opening soon!<br>
+            The Shop is opening soon!<br>
             Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and avatars!
           </p>
         </div>
