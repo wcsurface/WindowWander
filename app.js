@@ -893,12 +893,21 @@ class Router {
     if (this.currentScreen === 'settings') {
       document.body.classList.add('settings-theme');
       document.body.classList.remove('leaderboard-theme');
+      document.body.classList.remove('stats-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
     } else if (this.currentScreen === 'leaderboard') {
       document.body.classList.add('leaderboard-theme');
       document.body.classList.remove('settings-theme');
+      document.body.classList.remove('stats-theme');
+      document.body.classList.remove('main-home-theme');
+      document.body.classList.remove('deck-game-theme');
+      document.body.style.backgroundImage = '';
+    } else if (this.currentScreen === 'stats') {
+      document.body.classList.add('stats-theme');
+      document.body.classList.remove('settings-theme');
+      document.body.classList.remove('leaderboard-theme');
       document.body.classList.remove('main-home-theme');
       document.body.classList.remove('deck-game-theme');
       document.body.style.backgroundImage = '';
@@ -1354,7 +1363,7 @@ class Router {
       `;
     } else if (this.currentScreen === 'stats') {
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;">🏆 Stats & Badges</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
