@@ -937,9 +937,12 @@ class Router {
       const level = Math.floor(this.stats.xp / 100) + 1;
       main.innerHTML = `
         <div class="user-header">
-          <!-- USERNAME - LEVEL TITLE ON ONE SINGLE LINE -->
+          <!-- USERNAME ON LINE 1, LEVEL AND TITLE ON LINE 2 BELOW USERNAME -->
           <div class="profile-badge" onclick="router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
-            <div style="font-weight:900;font-size:13px;color:white;">${this.userNickname} - Lvl ${level} Explorer</div>
+            <div style="display:flex;flex-direction:column;align-items:flex-start;">
+              <div style="font-weight:900;font-size:13.5px;color:white;line-height:1.2;">${this.userNickname}</div>
+              <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">Lvl ${level} Explorer</div>
+            </div>
           </div>
           <!-- XP TOTAL PILL -->
           <div class="currency-pill" onclick="router.navigate('leaderboard')" style="cursor:pointer;border-color:#FBBF24;">⭐ ${this.stats.xp} XP</div>

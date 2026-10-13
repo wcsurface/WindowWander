@@ -285,7 +285,7 @@ fun ArcadeHudBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // USER NICKNAME - LEVEL TITLE ON ONE SINGLE LINE
+        // USER NICKNAME ON LINE 1, LEVEL & TITLE ON LINE 2 BELOW USER NAME
         Box(
             modifier = Modifier
                 .shadow(10.dp, RoundedCornerShape(22.dp))
@@ -293,14 +293,22 @@ fun ArcadeHudBar(
                 .background(Color(0xFF0F172A))
                 .border(2.5.dp, SunnyYellow, RoundedCornerShape(22.dp))
                 .clickable { onOpenStats() }
-                .padding(horizontal = 16.dp, vertical = 9.dp)
+                .padding(horizontal = 16.dp, vertical = 7.dp)
         ) {
-            Text(
-                text = "$nickname - Lvl $level Explorer",
-                fontSize = 13.5.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White
-            )
+            Column {
+                Text(
+                    text = nickname,
+                    fontSize = 13.5.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White
+                )
+                Text(
+                    text = "Lvl $level Explorer",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = SunnyYellow
+                )
+            }
         }
 
         // XP TOTAL PILL
