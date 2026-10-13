@@ -94,6 +94,27 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun selectDeck(deck: Deck) {
         _uiState.update { it.copy(selectedDeck = deck) }
+        updateRoomSettings(deck = deck)
+    }
+
+    fun selectGameMode(gameMode: GameMode) {
+        _uiState.update { it.copy(gameMode = gameMode) }
+        updateRoomSettings(gameMode = gameMode)
+    }
+
+    fun updateRoomSettings(deck: Deck = _uiState.value.selectedDeck, gameMode: GameMode = _uiState.value.gameMode) {
+        _uiState.update { it.copy(selectedDeck = deck, gameMode = gameMode) }
+
+        val roomCode = _uiState.value.multiplayerRoom?.roomCode
+        if (!roomCode.isNullOrBlank()) {
+            viewModelScope.launch {
+                AccountService.updateRoomSettingsOnRailway(
+                    code = roomCode,
+                    deckId = deck.id,
+                    gameMode = gameMode.name
+                )
+            }
+        }
     }
 
     fun loginUser(username: String, pass: String) {
@@ -129,7 +150,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
 
     fun startNewGame(
         deck: Deck = _uiState.value.selectedDeck,
-        gameMode: GameMode = GameMode.CLASSIC_LINE
+        gameMode: GameMode = _uiState.value.gameMode
     ) {
         val newBoard = BingoEngine.generateBoard(
             deck = deck,
@@ -362,8 +383,13 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 try {
                     val res = AccountService.getRoomFromRailway(roomCode)
                     if (res.success && res.players.isNotEmpty()) {
+                        val syncedDeck = DeckRepository.DECKS.find { it.id == res.deckId } ?: _uiState.value.selectedDeck
+                        val syncedGameMode = GameMode.values().firstOrNull { it.name == res.gameMode } ?: _uiState.value.gameMode
+
                         _uiState.update { state ->
                             val updatedRoom = state.multiplayerRoom?.copy(
+                                deckId = res.deckId,
+                                gameMode = syncedGameMode,
                                 players = res.players,
                                 isStarted = res.isStarted,
                                 isFinished = res.hasWinner,
@@ -373,6 +399,8 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                             val someoneWon = res.hasWinner && !res.winnerNickname.isNullOrBlank()
 
                             state.copy(
+                                selectedDeck = syncedDeck,
+                                gameMode = syncedGameMode,
                                 multiplayerRoom = updatedRoom,
                                 showBingoCelebration = state.showBingoCelebration || someoneWon
                             )
@@ -381,8 +409,8 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                         // AUTO-LAUNCH PASSENGERS INTO GAME WHEN HOST LAUNCHES!
                         if (_uiState.value.currentScreen == Screen.MULTIPLAYER_LOBBY && res.isStarted) {
                             startNewGame(
-                                deck = _uiState.value.selectedDeck,
-                                gameMode = _uiState.value.gameMode
+                                deck = syncedDeck,
+                                gameMode = syncedGameMode
                             )
                         }
                     }

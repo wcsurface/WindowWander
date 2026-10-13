@@ -61,8 +61,10 @@ import app.vercel.windowwander.ui.theme.VividOrange
 fun MultiplayerScreen(
     room: MultiplayerRoom?,
     selectedDeck: Deck,
+    selectedGameMode: GameMode = GameMode.CLASSIC_LINE,
     currentUserNickname: String = "You",
     onSelectDeck: (Deck) -> Unit,
+    onSelectGameMode: (GameMode) -> Unit = {},
     onCreateRoom: () -> Unit,
     onJoinRoom: (String) -> Unit,
     onStartGame: () -> Unit,
@@ -70,8 +72,9 @@ fun MultiplayerScreen(
 ) {
     val scrollState = rememberScrollState()
     var joinCodeInput by remember { mutableStateOf("") }
-    var selectedDeckChoice by remember { mutableStateOf(selectedDeck) }
-    var selectedGameMode by remember { mutableStateOf(GameMode.CLASSIC_LINE) }
+
+    val hostChosenDeck = DeckRepository.DECKS.find { it.id == room?.deckId } ?: selectedDeck
+    val hostChosenGameMode = room?.gameMode ?: selectedGameMode
 
     var deckDropdownExpanded by remember { mutableStateOf(false) }
     var gameModeDropdownExpanded by remember { mutableStateOf(false) }
@@ -247,7 +250,7 @@ fun MultiplayerScreen(
                             onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                         ) {
                             OutlinedTextField(
-                                value = "🎴 Deck: ${selectedDeckChoice.title}",
+                                value = "🎴 Deck: ${hostChosenDeck.title}",
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Game Deck Choice (Host Only)", color = SunnyYellow) },
@@ -269,7 +272,6 @@ fun MultiplayerScreen(
                                     DropdownMenuItem(
                                         text = { Text("🎴 ${deck.title} (${deck.audience})") },
                                         onClick = {
-                                            selectedDeckChoice = deck
                                             onSelectDeck(deck)
                                             deckDropdownExpanded = false
                                         }
@@ -286,7 +288,7 @@ fun MultiplayerScreen(
                             onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
                         ) {
                             OutlinedTextField(
-                                value = "🎯 Rule: ${selectedGameMode.displayName}",
+                                value = "🎯 Rule: ${hostChosenGameMode.displayName}",
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Victory Rules Choice (Host Only)", color = SunnyYellow) },
@@ -312,7 +314,7 @@ fun MultiplayerScreen(
                                         }
                                     },
                                     onClick = {
-                                        selectedGameMode = GameMode.CLASSIC_LINE
+                                        onSelectGameMode(GameMode.CLASSIC_LINE)
                                         gameModeDropdownExpanded = false
                                     }
                                 )
@@ -325,7 +327,7 @@ fun MultiplayerScreen(
                                         }
                                     },
                                     onClick = {
-                                        selectedGameMode = GameMode.TWO_LINES
+                                        onSelectGameMode(GameMode.TWO_LINES)
                                         gameModeDropdownExpanded = false
                                     }
                                 )
@@ -338,14 +340,14 @@ fun MultiplayerScreen(
                                         }
                                     },
                                     onClick = {
-                                        selectedGameMode = GameMode.BLACKOUT
+                                        onSelectGameMode(GameMode.BLACKOUT)
                                         gameModeDropdownExpanded = false
                                     }
                                 )
                             }
                         }
                     } else {
-                        // READ-ONLY DECK AND RULES CARDS FOR JOINED PASSENGERS
+                        // READ-ONLY DECK AND RULES CARDS FOR JOINED PASSENGERS (UPDATED LIVE WHEN HOST CHANGES)
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -356,14 +358,14 @@ fun MultiplayerScreen(
                         ) {
                             Column {
                                 Text(
-                                    text = "🎴 Deck (Set by Host): ${selectedDeckChoice.title}",
+                                    text = "🎴 Deck (Set by Host): ${hostChosenDeck.title}",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = "🎯 Victory Rules (Set by Host): ${selectedGameMode.displayName}",
+                                    text = "🎯 Victory Rules (Set by Host): ${hostChosenGameMode.displayName}",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = SunnyYellow
@@ -410,7 +412,7 @@ fun MultiplayerScreen(
                         onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                     ) {
                         OutlinedTextField(
-                            value = "🎴 Deck: ${selectedDeckChoice.title}",
+                            value = "🎴 Deck: ${hostChosenDeck.title}",
                             onValueChange = {},
                             readOnly = true,
                             label = { Text("Game Deck", color = SunnyYellow) },
@@ -432,7 +434,6 @@ fun MultiplayerScreen(
                                 DropdownMenuItem(
                                     text = { Text("🎴 ${deck.title} (${deck.audience})") },
                                     onClick = {
-                                        selectedDeckChoice = deck
                                         onSelectDeck(deck)
                                         deckDropdownExpanded = false
                                     }
@@ -449,7 +450,7 @@ fun MultiplayerScreen(
                         onExpandedChange = { gameModeDropdownExpanded = !gameModeDropdownExpanded }
                     ) {
                         OutlinedTextField(
-                            value = "🎯 Rule: ${selectedGameMode.displayName}",
+                            value = "🎯 Rule: ${hostChosenGameMode.displayName}",
                             onValueChange = {},
                             readOnly = true,
                             label = { Text("Victory Rules", color = SunnyYellow) },
@@ -475,7 +476,7 @@ fun MultiplayerScreen(
                                     }
                                 },
                                 onClick = {
-                                    selectedGameMode = GameMode.CLASSIC_LINE
+                                    onSelectGameMode(GameMode.CLASSIC_LINE)
                                     gameModeDropdownExpanded = false
                                 }
                             )
@@ -488,7 +489,7 @@ fun MultiplayerScreen(
                                     }
                                 },
                                 onClick = {
-                                    selectedGameMode = GameMode.TWO_LINES
+                                    onSelectGameMode(GameMode.TWO_LINES)
                                     gameModeDropdownExpanded = false
                                 }
                             )
@@ -501,7 +502,7 @@ fun MultiplayerScreen(
                                     }
                                 },
                                 onClick = {
-                                    selectedGameMode = GameMode.BLACKOUT
+                                    onSelectGameMode(GameMode.BLACKOUT)
                                     gameModeDropdownExpanded = false
                                 }
                             )

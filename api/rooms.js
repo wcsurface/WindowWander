@@ -229,7 +229,19 @@ module.exports = async (req, res) => {
     return res.status(404).json({ success: false, error: 'Room not found' });
   }
 
-  // 5. GET ROOM
+  // 5. UPDATE ROOM DECK AND RULES SETTINGS (HOST)
+  if (action === 'update_settings') {
+    let room = await getRoomByCode(code);
+    if (room) {
+      if (deckId) room.deckId = deckId;
+      if (gameMode) room.gameMode = gameMode;
+      await saveRoomByCode(code, room);
+      return res.status(200).json({ success: true, room });
+    }
+    return res.status(404).json({ success: false, error: 'Room not found' });
+  }
+
+  // 6. GET ROOM
   if (action === 'get') {
     let room = await getRoomByCode(code);
     if (room) {

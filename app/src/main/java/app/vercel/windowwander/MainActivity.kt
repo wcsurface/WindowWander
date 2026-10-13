@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsState()
 
-            // BACKGROUND MUSIC SYNC Across SCREENS
+            // BACKGROUND MUSIC SYNC ACROSS SCREENS
             LaunchedEffect(uiState.currentScreen, uiState.soundEnabled) {
                 BackgroundMusicManager.syncMusicState(
                     context = this@MainActivity,
@@ -110,8 +110,10 @@ class MainActivity : ComponentActivity() {
                         Screen.MULTIPLAYER_LOBBY -> MultiplayerScreen(
                             room = uiState.multiplayerRoom,
                             selectedDeck = uiState.selectedDeck,
+                            selectedGameMode = uiState.gameMode,
                             currentUserNickname = uiState.playerProfile.nickname,
                             onSelectDeck = { deck -> viewModel.selectDeck(deck) },
+                            onSelectGameMode = { gameMode -> viewModel.selectGameMode(gameMode) },
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
                             onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },
                             onStartGame = { viewModel.launchGameByHost() },
