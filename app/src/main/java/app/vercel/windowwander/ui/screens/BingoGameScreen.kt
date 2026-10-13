@@ -1,6 +1,8 @@
 package app.vercel.windowwander.ui.screens
 
+import android.media.AudioFormat
 import android.media.AudioManager
+import android.media.AudioTrack
 import android.media.ToneGenerator
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -89,6 +91,40 @@ import app.vercel.windowwander.ui.theme.VividOrange
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+
+// CHEERFUL BUBBLY GAME POP AUDIO SYNTHESIZER
+fun playCheerfulBubblyPop() {
+    try {
+        val sampleRate = 22050
+        val numSamples = (sampleRate * 0.12).toInt()
+        val samples = ShortArray(numSamples)
+
+        for (i in 0 until numSamples) {
+            val t = i.toDouble() / sampleRate
+            val freq = 520.0 + (t / 0.12) * 820.0 // Bouncy rising pitch 520Hz -> 1340Hz
+            val volume = (1.0 - (t / 0.12)).coerceIn(0.0, 1.0)
+            val sampleValue = (Math.sin(2.0 * Math.PI * freq * t) * 26000.0 * volume).toInt()
+            samples[i] = sampleValue.toShort()
+        }
+
+        val track = AudioTrack(
+            AudioManager.STREAM_MUSIC,
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            samples.size * 2,
+            AudioTrack.MODE_STATIC
+        )
+
+        track.write(samples, 0, samples.size)
+        track.play()
+    } catch (e: Exception) {
+        try {
+            val toneGen = ToneGenerator(AudioManager.STREAM_MUSIC, 90)
+            toneGen.startTone(ToneGenerator.TONE_DTMF_8, 80)
+        } catch (ex: Exception) {}
+    }
+}
 
 @Composable
 fun BingoGameScreen(
@@ -668,10 +704,6 @@ fun BingoTileView(
     val isPressed by interactionSource.collectIsPressedAsState()
     var tileCenterOffset by remember { mutableStateOf(Offset.Zero) }
 
-    val toneGenerator = remember {
-        try { ToneGenerator(AudioManager.STREAM_MUSIC, 80) } catch (e: Exception) { null }
-    }
-
     // DYNAMIC 3-LINE PROMPT FORMATTING & LONGEST WORD FIT FONT CALCULATION
     val (formattedText, fontSizeSp) = remember(tile.prompt.name) {
         val words = tile.prompt.name.split(" ").filter { it.isNotBlank() }
@@ -786,9 +818,7 @@ fun BingoTileView(
                 indication = null,
                 onClick = {
                     if (soundEnabled && !tile.isCompleted) {
-                        try {
-                            toneGenerator?.startTone(ToneGenerator.TONE_PROP_ACK, 70)
-                        } catch (e: Exception) {}
+                        playCheerfulBubblyPop()
                     }
                     if (hapticsEnabled) {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
