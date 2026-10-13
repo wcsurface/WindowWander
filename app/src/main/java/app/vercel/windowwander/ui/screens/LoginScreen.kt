@@ -1,5 +1,6 @@
 package app.vercel.windowwander.ui.screens
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,10 +35,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
@@ -49,6 +50,11 @@ import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.MidnightNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.VividOrange
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 
 @Composable
 fun LoginScreen(
@@ -63,17 +69,32 @@ fun LoginScreen(
     onBackToHome: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
     var isRegisterTab by remember { mutableStateOf(false) }
 
     var usernameInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
     var nicknameInput by remember { mutableStateOf("") }
 
+    // COIL GIF DECODER LOADER TO PREVENT RUNTIME CRASHES ON GIF ANIMATION
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // MAIN LOBBY DEDICATED DOODLE BACKGROUND ARTWORK
         Image(
             painter = painterResource(id = R.drawable.bg_main_home),
             contentDescription = "Main Lobby Background Artwork",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -128,9 +149,13 @@ fun LoginScreen(
                     .height(180.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.road_trip_bingo_animated_logo),
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(R.drawable.road_trip_bingo_animated_logo)
+                        .build(),
+                    imageLoader = imageLoader,
                     contentDescription = "Road Trip Bingo Animated Logo",
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
             }
