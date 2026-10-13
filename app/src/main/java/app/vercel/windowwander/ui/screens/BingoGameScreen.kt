@@ -126,6 +126,85 @@ fun playCheerfulBubblyPop() {
     }
 }
 
+// 4-NOTE CHEERFUL TRIUMPHANT VICTORY FANFARE (C5 -> E5 -> G5 -> C6)
+fun playVictoryFanfare() {
+    try {
+        val sampleRate = 22050
+        val totalSecs = 0.65
+        val numSamples = (sampleRate * totalSecs).toInt()
+        val samples = ShortArray(numSamples)
+
+        for (i in 0 until numSamples) {
+            val t = i.toDouble() / sampleRate
+            val (freq, volume) = when {
+                t < 0.09 -> Pair(523.25, 1.0 - (t / 0.09) * 0.3) // C5
+                t < 0.18 -> Pair(659.25, 1.0 - ((t - 0.09) / 0.09) * 0.3) // E5
+                t < 0.28 -> Pair(783.99, 1.0 - ((t - 0.18) / 0.10) * 0.3) // G5
+                else -> {
+                    val fade = (1.0 - ((t - 0.28) / 0.37)).coerceIn(0.0, 1.0)
+                    Pair(1046.50, fade) // C6 High Hold!
+                }
+            }
+            val sampleValue = (Math.sin(2.0 * Math.PI * freq * t) * 28000.0 * volume).toInt()
+            samples[i] = sampleValue.toShort()
+        }
+
+        val track = AudioTrack(
+            AudioManager.STREAM_MUSIC,
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            samples.size * 2,
+            AudioTrack.MODE_STATIC
+        )
+
+        track.write(samples, 0, samples.size)
+        track.play()
+    } catch (e: Exception) {}
+}
+
+// GENTLE PLAYFUL DESCENDING "WAH-WAH" SAD TROMBONE FOR GAME OVER
+fun playGameOverSadTrombone() {
+    try {
+        val sampleRate = 22050
+        val totalSecs = 0.85
+        val numSamples = (sampleRate * totalSecs).toInt()
+        val samples = ShortArray(numSamples)
+
+        for (i in 0 until numSamples) {
+            val t = i.toDouble() / sampleRate
+            val (freq, volume) = when {
+                t < 0.14 -> Pair(622.25, 0.8) // Eb5
+                t < 0.28 -> Pair(587.33, 0.8) // D5
+                t < 0.42 -> Pair(554.37, 0.8) // Db5
+                else -> {
+                    val slideProgress = (t - 0.42) / 0.43
+                    val slideFreq = 523.25 - slideProgress * 140.0 // Slide down 523Hz -> 383Hz
+                    val fade = (1.0 - slideProgress).coerceIn(0.0, 1.0)
+                    Pair(slideFreq, fade * 0.9)
+                }
+            }
+            // Sawtooth waveform for classic brass wah-wah character
+            val period = sampleRate / freq
+            val saw = (2.0 * (i % period) / period - 1.0)
+            val sampleValue = (saw * 22000.0 * volume).toInt()
+            samples[i] = sampleValue.toShort()
+        }
+
+        val track = AudioTrack(
+            AudioManager.STREAM_MUSIC,
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            samples.size * 2,
+            AudioTrack.MODE_STATIC
+        )
+
+        track.write(samples, 0, samples.size)
+        track.play()
+    } catch (e: Exception) {}
+}
+
 @Composable
 fun BingoGameScreen(
     deck: Deck,
@@ -154,6 +233,20 @@ fun BingoGameScreen(
     var rootBoxWindowOffset by remember { mutableStateOf(Offset.Zero) }
 
     val otherRealPlayers = multiplayerRoom?.players?.filter { it.nickname != currentUserNickname } ?: emptyList()
+
+    // TRIGGER FANFARE OR SAD TROMBONE AUDIO EFFECT WHEN CELEBRATION OVERLAY OPENS
+    val winnerName = multiplayerRoom?.winnerNickname
+    val isSelfWinner = winnerName.isNullOrBlank() || winnerName == currentUserNickname
+
+    LaunchedEffect(showCelebration) {
+        if (showCelebration && soundEnabled) {
+            if (isSelfWinner) {
+                playVictoryFanfare()
+            } else {
+                playGameOverSadTrombone()
+            }
+        }
+    }
 
     ScenicHighwayBackground(deckId = deck.id, region = deck.region) {
         Box(
@@ -412,9 +505,6 @@ fun BingoGameScreen(
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
-                val winnerName = multiplayerRoom?.winnerNickname
-                val isSelfWinner = winnerName.isNullOrBlank() || winnerName == currentUserNickname
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -443,7 +533,7 @@ fun BingoGameScreen(
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "🏆", fontSize = 36.sp)
+                                Text(text = if (isSelfWinner) "🏆" else "🏁", fontSize = 36.sp)
                             }
 
                             Spacer(modifier = Modifier.height(12.dp))

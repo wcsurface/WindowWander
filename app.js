@@ -364,6 +364,69 @@ class AudioEngine {
       osc2.stop(now + 0.15);
     } catch(e) {}
   }
+
+  static playVictoryFanfare() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+      const notes = [
+        { f: 523.25, start: 0, duration: 0.09 },
+        { f: 659.25, start: 0.09, duration: 0.09 },
+        { f: 783.99, start: 0.18, duration: 0.10 },
+        { f: 1046.50, start: 0.28, duration: 0.35 }
+      ];
+
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.f, now + n.start);
+        gain.gain.setValueAtTime(0.3, now + n.start);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + n.start);
+        osc.stop(now + n.start + n.duration);
+      });
+    } catch(e) {}
+  }
+
+  static playGameOverSadTrombone() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+      const notes = [
+        { f: 622.25, start: 0, duration: 0.14 },
+        { f: 587.33, start: 0.14, duration: 0.14 },
+        { f: 554.37, start: 0.28, duration: 0.14 }
+      ];
+
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(n.f, now + n.start);
+        gain.gain.setValueAtTime(0.2, now + n.start);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + n.start);
+        osc.stop(now + n.start + n.duration);
+      });
+
+      const oscFinal = ctx.createOscillator();
+      const gainFinal = ctx.createGain();
+      oscFinal.type = 'sawtooth';
+      oscFinal.frequency.setValueAtTime(523.25, now + 0.42);
+      oscFinal.frequency.exponentialRampToValueAtTime(370.00, now + 0.85);
+      gainFinal.gain.setValueAtTime(0.25, now + 0.42);
+      gainFinal.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+      oscFinal.connect(gainFinal);
+      gainFinal.connect(ctx.destination);
+      oscFinal.start(now + 0.42);
+      oscFinal.stop(now + 0.85);
+    } catch(e) {}
+  }
 }
 
 class RailwayAuthService {
@@ -462,12 +525,12 @@ class RailwayAuthService {
     }
   }
 
-  static async updateTiles(code, nickname, completedTiles) {
+  static async updateTiles(code, nickname, completedTiles, hasBingo) {
     try {
       const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'update_tiles', code, nickname, completedTiles })
+        body: JSON.stringify({ action: 'update_tiles', code, nickname, completedTiles, hasBingo })
       });
       return await res.json();
     } catch(err) {
@@ -693,7 +756,12 @@ class Router {
 
       // SYNC COMPLETED TILES TO LIVE SERVER
       const completedIndices = this.board.filter(t => t.completed).map(t => t.index);
-      RailwayAuthService.updateTiles(this.roomCode, this.userNickname, completedIndices);
+      const isWin = BingoWebEngine.checkWin(this.board, this.selectedMode.id);
+      RailwayAuthService.updateTiles(this.roomCode, this.userNickname, completedIndices, isWin);
+
+      if (isWin) {
+        AudioEngine.playVictoryFanfare();
+      }
 
       // TRIGGER SCREEN-WIDE UNBOUNDED STAR EXPLOSION BURST
       if (event) this.triggerStarExplosion(event.clientX, event.clientY);
