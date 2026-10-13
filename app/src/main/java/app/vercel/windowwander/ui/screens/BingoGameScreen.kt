@@ -292,7 +292,10 @@ fun BingoGameScreen(
                     }
 
                     // GAME MODE BADGE (DECK TITLE REMOVED TO CLEAR CAMERA CUTOUT)
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(top = 5.dp)
+                    ) {
                         Text(
                             text = gameMode.displayName,
                             fontSize = 13.5.sp,
