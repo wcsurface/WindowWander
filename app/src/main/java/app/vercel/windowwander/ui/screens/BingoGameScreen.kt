@@ -236,6 +236,11 @@ fun BingoGameScreen(
     // TRIGGER FANFARE OR SAD TROMBONE AUDIO EFFECT WHEN CELEBRATION OVERLAY OPENS
     val winnerName = multiplayerRoom?.winnerNickname
     val isSelfWinner = winnerName.isNullOrBlank() || winnerName == currentUserNickname
+    val isHost = multiplayerRoom?.players?.find { it.nickname == currentUserNickname }?.isHost
+        ?: (multiplayerRoom?.players?.firstOrNull()?.nickname == currentUserNickname || multiplayerRoom == null)
+
+    val isRoomFinished = multiplayerRoom?.isFinished == true || multiplayerRoom?.winnerNickname != null
+    val canStartNextRound = isHost || !isRoomFinished
 
     LaunchedEffect(showCelebration) {
         if (showCelebration && soundEnabled) {
@@ -561,18 +566,21 @@ fun BingoGameScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            // START NEXT ROUND BUTTON (BLACK TEXT FOR HIGH CONTRAST & LEGIBILITY)
+                            // START NEXT ROUND BUTTON (DIMMED/DISABLED FOR PASSENGERS UNTIL HOST STARTS NEXT ROUND)
                             BeveledGameButton(
-                                text = "START NEXT ROUND 🔄",
+                                text = if (canStartNextRound) "START NEXT ROUND 🔄" else "⏳ WAITING FOR HOST TO START NEXT ROUND...",
                                 onClick = {
-                                    onDismissCelebration()
-                                    onNextRound()
+                                    if (canStartNextRound) {
+                                        onDismissCelebration()
+                                        onNextRound()
+                                    }
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                textColor = DeepNavy,
-                                fontSize = 16
+                                buttonColor = if (canStartNextRound) SunnyYellow else MediumNavy,
+                                textColor = if (canStartNextRound) DeepNavy else Color.White.copy(alpha = 0.5f),
+                                fontSize = if (canStartNextRound) 16 else 12
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))

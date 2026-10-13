@@ -416,6 +416,16 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                                 gameMode = syncedGameMode
                             )
                         }
+
+                        // AUTO-RETURN PASSENGERS TO LOBBY WHEN HOST STARTS NEXT ROUND!
+                        if (_uiState.value.currentScreen == Screen.BINGO_GAME && !res.isStarted && !res.hasWinner) {
+                            _uiState.update {
+                                it.copy(
+                                    currentScreen = Screen.MULTIPLAYER_LOBBY,
+                                    showBingoCelebration = false
+                                )
+                            }
+                        }
                     }
                 } catch (e: Exception) {}
 
