@@ -89,6 +89,7 @@ class MainActivity : ComponentActivity() {
                             onTapTile = { index -> viewModel.tapTile(index) },
                             onUndo = { viewModel.undoLastTap() },
                             onNewGame = { viewModel.startNewGame() },
+                            onNextRound = { viewModel.startNextRound() },
                             onDismissCelebration = { viewModel.dismissCelebration() },
                             onGoogleSignIn = { viewModel.handleGoogleSignIn() },
                             onDismissAccountPrompt = { viewModel.dismissAccountPrompt() },

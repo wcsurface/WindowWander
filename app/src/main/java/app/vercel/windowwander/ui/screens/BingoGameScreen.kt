@@ -142,6 +142,7 @@ fun BingoGameScreen(
     onTapTile: (Int) -> Unit,
     onUndo: () -> Unit,
     onNewGame: () -> Unit,
+    onNextRound: () -> Unit = {},
     onDismissCelebration: () -> Unit,
     onGoogleSignIn: () -> Unit,
     onDismissAccountPrompt: () -> Unit,
@@ -482,29 +483,34 @@ fun BingoGameScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
+                            // START NEXT ROUND BUTTON (BLACK TEXT FOR HIGH CONTRAST & LEGIBILITY)
                             BeveledGameButton(
                                 text = "START NEXT ROUND 🔄",
                                 onClick = {
                                     onDismissCelebration()
-                                    onNewGame()
+                                    onNextRound()
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                textColor = Color.White,
+                                textColor = DeepNavy,
                                 fontSize = 16
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))
 
+                            // RETURN HOME BUTTON
                             OutlinedButton(
-                                onClick = onDismissCelebration,
+                                onClick = {
+                                    onDismissCelebration()
+                                    onBackToHome()
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(48.dp),
                                 shape = RoundedCornerShape(14.dp)
                             ) {
-                                Text(text = "Keep Playing Board", fontWeight = FontWeight.Bold, color = Color.White)
+                                Text(text = "Return Home", fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }

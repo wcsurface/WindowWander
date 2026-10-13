@@ -173,6 +173,22 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         startNewGame(deck = deck, gameMode = gameMode)
     }
 
+    fun startNextRound() {
+        _uiState.update { it.copy(showBingoCelebration = false) }
+
+        val roomCode = _uiState.value.multiplayerRoom?.roomCode
+        if (!roomCode.isNullOrBlank()) {
+            _uiState.update {
+                it.copy(
+                    multiplayerRoom = it.multiplayerRoom?.copy(isStarted = false, isFinished = false, winnerNickname = null),
+                    currentScreen = Screen.MULTIPLAYER_LOBBY
+                )
+            }
+        } else {
+            startNewGame()
+        }
+    }
+
     fun tapTile(index: Int) {
         val currentBoard = _uiState.value.currentBoard
         if (index !in currentBoard.indices) return
