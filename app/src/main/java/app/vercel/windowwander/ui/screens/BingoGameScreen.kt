@@ -729,22 +729,9 @@ fun BingoGameScreen(
 
                             Spacer(modifier = Modifier.height(18.dp))
 
-                            // GOOGLE SIGN IN BUTTON
-                            BeveledGameButton(
-                                text = "🌐 SIGN IN WITH GOOGLE",
-                                onClick = onGoogleSignIn,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(54.dp),
-                                textColor = Color.White,
-                                fontSize = 15
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
                             // CREATE FREE ACCOUNT BUTTON
                             BeveledGameButton(
-                                text = "✉️ CREATE FREE ACCOUNT",
+                                text = "✉️ CREATE FREE ACCOUNT / LOG IN",
                                 onClick = onGoogleSignIn,
                                 modifier = Modifier
                                     .fillMaxWidth()
