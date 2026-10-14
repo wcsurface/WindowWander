@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import app.vercel.windowwander.data.AdMobManager
 import app.vercel.windowwander.data.BackgroundMusicManager
 import app.vercel.windowwander.ui.screens.BingoGameScreen
 import app.vercel.windowwander.ui.screens.DeckSelectScreen
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableImmersiveStickyMode()
+        AdMobManager.initialize(this)
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
@@ -74,7 +76,14 @@ class MainActivity : ComponentActivity() {
                             onOpenShop = { viewModel.navigateTo(Screen.SHOP) },
                             onOpenStats = { viewModel.navigateTo(Screen.STATS) },
                             onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },
-                            onOpenPrivacy = { viewModel.navigateTo(Screen.PRIVACY_TERMS) }
+                            onOpenPrivacy = { viewModel.navigateTo(Screen.PRIVACY_TERMS) },
+                            onWatchRewardedAd = {
+                                AdMobManager.showRewardedAd(
+                                    activity = this@MainActivity,
+                                    onRewardEarned = { viewModel.unlockBonusGamesFromAd() },
+                                    onAdFailed = {}
+                                )
+                            }
                         )
 
                         Screen.DECK_SELECT -> DeckSelectScreen(
@@ -95,6 +104,7 @@ class MainActivity : ComponentActivity() {
                             showAccountPrompt = uiState.showAccountPrompt,
                             soundEnabled = uiState.soundEnabled,
                             hapticsEnabled = uiState.hapticsEnabled,
+                            hasReachedDailyLimit = uiState.playerProfile.hasReachedDailyLimit,
                             multiplayerRoom = uiState.multiplayerRoom,
                             currentUserNickname = uiState.playerProfile.nickname,
                             onTapTile = { index -> viewModel.tapTile(index) },
@@ -104,7 +114,14 @@ class MainActivity : ComponentActivity() {
                             onDismissCelebration = { viewModel.dismissCelebration() },
                             onGoogleSignIn = { viewModel.handleGoogleSignIn() },
                             onDismissAccountPrompt = { viewModel.dismissAccountPrompt() },
-                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) },
+                            onWatchRewardedAd = {
+                                AdMobManager.showRewardedAd(
+                                    activity = this@MainActivity,
+                                    onRewardEarned = { viewModel.unlockBonusGamesFromAd() },
+                                    onAdFailed = {}
+                                )
+                            }
                         )
 
                         Screen.MULTIPLAYER_LOBBY -> MultiplayerScreen(

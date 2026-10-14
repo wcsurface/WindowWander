@@ -306,6 +306,15 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun unlockBonusGamesFromAd() {
+        val currentProfile = _uiState.value.playerProfile
+        val updatedProfile = currentProfile.copy(
+            bonusGamesUnlockedToday = currentProfile.bonusGamesUnlockedToday + 2
+        )
+        preferences.saveProfile(updatedProfile)
+        _uiState.update { it.copy(playerProfile = updatedProfile) }
+    }
+
     fun handleGoogleSignIn() {
         val updated = _uiState.value.playerProfile.copy(
             nickname = "RoadExplorer_User",

@@ -269,13 +269,16 @@ fun ScenicHighwayBackground(
     }
 }
 
-// ARCADE HUD STATUS BAR (NAME, LEVEL & TITLE ON ONE SINGLE LINE)
+// ARCADE HUD STATUS BAR (USERNAME & STAR XP UNDERNEATH ON LEFT, DAILY GAMES 0/2 OR UNLOCK GAMES ON RIGHT)
 @Composable
 fun ArcadeHudBar(
     nickname: String = "Road Explorer",
-    level: Int = 3,
-    xp: Int = 250,
+    level: Int = 1,
+    xp: Int = 0,
+    dailyGamesPlayed: Int = 0,
+    maxDailyGames: Int = 2,
     onOpenStats: () -> Unit = {},
+    onOpenRewardAdModal: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -285,7 +288,7 @@ fun ArcadeHudBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // USER NICKNAME ON LINE 1, LEVEL & TITLE ON LINE 2 BELOW USER NAME
+        // USER NICKNAME ON LINE 1, ⭐ [XP] XP • Lvl [LEVEL] ON LINE 2 BELOW USER NAME
         Box(
             modifier = Modifier
                 .shadow(10.dp, RoundedCornerShape(22.dp))
@@ -303,7 +306,7 @@ fun ArcadeHudBar(
                     color = Color.White
                 )
                 Text(
-                    text = "Lvl $level Explorer",
+                    text = "⭐ $xp XP • Lvl $level",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     color = SunnyYellow
@@ -311,24 +314,25 @@ fun ArcadeHudBar(
             }
         }
 
-        // XP TOTAL PILL
+        // DAILY GAMES COUNTER (0/2, 1/2) OR "🎬 UNLOCK GAMES" REWARD AD BUTTON
+        val isLimitReached = dailyGamesPlayed >= maxDailyGames
         Box(
             modifier = Modifier
                 .shadow(8.dp, RoundedCornerShape(18.dp))
                 .clip(RoundedCornerShape(18.dp))
-                .background(Color(0xFF0F172A))
-                .border(2.dp, SunnyYellow, RoundedCornerShape(18.dp))
-                .clickable { onOpenStats() }
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .background(if (isLimitReached) Color(0xFFC2410C) else Color(0xFF0F172A))
+                .border(2.dp, if (isLimitReached) SunnyYellow else SunnyYellow.copy(alpha = 0.8f), RoundedCornerShape(18.dp))
+                .clickable { onOpenRewardAdModal() }
+                .padding(horizontal = 14.dp, vertical = 8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "⭐", fontSize = 16.sp)
+                Text(text = if (isLimitReached) "🎬" else "🎮", fontSize = 15.sp)
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "$xp XP",
-                    fontSize = 14.sp,
+                    text = if (isLimitReached) "Unlock Games" else "$dailyGamesPlayed/$maxDailyGames Today",
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Black,
-                    color = SunnyYellowLight
+                    color = Color.White
                 )
             }
         }

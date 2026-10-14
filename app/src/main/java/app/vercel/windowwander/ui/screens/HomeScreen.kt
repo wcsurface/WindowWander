@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -63,6 +61,7 @@ import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.MediumNavy
 import app.vercel.windowwander.ui.theme.SunnyYellow
+import app.vercel.windowwander.ui.theme.TravelTeal
 import app.vercel.windowwander.ui.theme.VividOrange
 import coil.ImageLoader
 import coil.compose.AsyncImage
@@ -90,13 +89,15 @@ fun HomeScreen(
     onOpenShop: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenPrivacy: () -> Unit
+    onOpenPrivacy: () -> Unit,
+    onWatchRewardedAd: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     var showInCarPlayModal by remember { mutableStateOf(false) }
     var showOnlineMultiplayerModal by remember { mutableStateOf(false) }
     var showJoinCodeInput by remember { mutableStateOf(false) }
+    var showDailyLimitModal by remember { mutableStateOf(false) }
     var joinCodeInputText by remember { mutableStateOf("") }
     var currentDeckChoice by remember { mutableStateOf(selectedDeck) }
     var deckDropdownExpanded by remember { mutableStateOf(false) }
@@ -122,12 +123,15 @@ fun HomeScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 104.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TOP ARCADE HUD BAR (NAME, LEVEL & XP PILLS)
+                // TOP ARCADE HUD BAR (NAME & STAR XP ON LEFT, DAILY GAMES 0/2 OR UNLOCK GAMES ON RIGHT)
                 ArcadeHudBar(
                     nickname = profile.nickname,
                     level = profile.level,
                     xp = profile.xp,
-                    onOpenStats = onOpenStats
+                    dailyGamesPlayed = profile.dailyGamesPlayedToday,
+                    maxDailyGames = profile.maxDailyGamesAllowed,
+                    onOpenStats = onOpenStats,
+                    onOpenRewardAdModal = { showDailyLimitModal = true }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -152,15 +156,23 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // LARGE CAPSULE PLAY NOW BUTTON (HEIGHT 68DP)
+                // LARGE CAPSULE PLAY NOW BUTTON (CHECK DAILY LIMIT)
                 BeveledGameButton(
                     text = "⚡ PLAY NOW ▶",
-                    onClick = { showInCarPlayModal = true },
+                    onClick = {
+                        if (profile.hasReachedDailyLimit) {
+                            showDailyLimitModal = true
+                        } else {
+                            showInCarPlayModal = true
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(68.dp),
-                    textColor = Color(0xFF0F172A),
-                    fontSize = 24
+                    buttonColor = Color(0xFFFFFBEB),
+                    bevelColor = Color(0xFFFDE68A),
+                    textColor = DeepNavy,
+                    fontSize = 22
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
@@ -224,38 +236,30 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(14.dp, RoundedCornerShape(24.dp))
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(VividOrange)
-                        .border(2.5.dp, Color(0xFFC2410C), RoundedCornerShape(24.dp))
-                        .padding(vertical = 18.dp, horizontal = 20.dp),
+                        .shadow(10.dp, RoundedCornerShape(22.dp))
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xFFF97316), Color(0xFFEA580C))
+                            )
+                        )
+                        .border(2.5.dp, Color.White.copy(alpha = 0.9f), RoundedCornerShape(22.dp))
+                        .padding(horizontal = 22.dp, vertical = 14.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Passengers Play. Drivers Drive.",
-                        fontSize = 20.sp,
+                        fontSize = 15.5.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White,
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 0.5.sp
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // FLOATING GRADIENT PILL 3D NAVIGATION BAR (SET 6)
-            GradientPillNavigationBar(
-                currentScreenName = "home",
-                isLoggedIn = isLoggedIn,
-                onNavigateHome = { },
-                onNavigateLogin = onOpenLogin,
-                onNavigateShop = onOpenShop,
-                onNavigateSettings = onOpenSettings,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-
-            // SAME-CAR PLAY MODAL (HOST GAME OR JOIN GAME WITH CODE/QR)
+            // HOST / JOIN GAME MODAL POPUP OVERLAY
             AnimatedVisibility(
                 visible = showInCarPlayModal,
                 enter = scaleIn(),
@@ -303,7 +307,11 @@ fun HomeScreen(
                                     text = "🚗 START A GAME (HOST)",
                                     onClick = {
                                         showInCarPlayModal = false
-                                        onPlayInCarHost()
+                                        if (profile.hasReachedDailyLimit) {
+                                            showDailyLimitModal = true
+                                        } else {
+                                            onPlayInCarHost()
+                                        }
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -372,7 +380,7 @@ fun HomeScreen(
                                     onClick = { showJoinCodeInput = false },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                                 ) {
-                                    Text(text = "◀ Back", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
+                                    Text(text = "◀ Back", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
                                 }
                             }
                         }
@@ -380,9 +388,9 @@ fun HomeScreen(
                 }
             }
 
-            // ONLINE MULTIPLAYER POPUP MODAL
+            // DAILY GAME LIMIT / REWARDED AD PROMPT MODAL OVERLAY
             AnimatedVisibility(
-                visible = showOnlineMultiplayerModal && !isSearchingOpponent,
+                visible = showDailyLimitModal,
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
@@ -390,7 +398,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.88f))
-                        .clickable { showOnlineMultiplayerModal = false },
+                        .clickable { showDailyLimitModal = false },
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
@@ -406,181 +414,63 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "🌐 ONLINE MULTIPLAYER",
+                                text = "🚗 DAILY GAMES LIMIT",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Black,
                                 color = SunnyYellow
                             )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
                             Text(
-                                text = "Play Classic Bingo against online passengers across America!",
-                                fontSize = 13.sp,
-                                color = Color.White.copy(alpha = 0.8f),
+                                text = "Want another round on this road trip?\nWatch a quick video to unlock 2 more games instantly!",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
+                                lineHeight = 20.sp
                             )
 
-                            // REGION / DECK SELECTOR BUTTON
-                            ExposedDropdownMenuBox(
-                                expanded = deckDropdownExpanded,
-                                onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
-                            ) {
-                                OutlinedTextField(
-                                    value = "🎴 Deck: ${currentDeckChoice.title}",
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    label = { Text("Game Deck", color = SunnyYellow) },
-                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
-                                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedTextColor = Color.White,
-                                        unfocusedTextColor = Color.White,
-                                        focusedBorderColor = SunnyYellow,
-                                        unfocusedBorderColor = Color.White.copy(alpha = 0.4f)
-                                    )
-                                )
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                                ExposedDropdownMenu(
-                                    expanded = deckDropdownExpanded,
-                                    onDismissRequest = { deckDropdownExpanded = false }
-                                ) {
-                                    DeckRepository.DECKS.forEach { deck ->
-                                        DropdownMenuItem(
-                                            text = { Text("🎴 ${deck.title} (${deck.audience})") },
-                                            onClick = {
-                                                currentDeckChoice = deck
-                                                deckDropdownExpanded = false
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // FIXED GAME MODE BADGE
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFF0F172A))
-                                    .border(1.5.dp, Color(0xFF2563EB), RoundedCornerShape(12.dp))
-                                    .padding(12.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "🎯 Rule: Classic Bingo (Line Win)",
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(18.dp))
-
-                            // START GAME BUTTON
                             BeveledGameButton(
-                                text = "START GAME ▶",
+                                text = "🎬 WATCH AD TO UNLOCK +2 GAMES ▶",
                                 onClick = {
-                                    showOnlineMultiplayerModal = false
-                                    onStartOnlineMatchmaking(currentDeckChoice)
+                                    showDailyLimitModal = false
+                                    onWatchRewardedAd()
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),
-                                textColor = DeepNavy,
-                                fontSize = 18
+                                buttonColor = VividOrange,
+                                bevelColor = Color(0xFFC2410C),
+                                textColor = Color.White,
+                                fontSize = 15
                             )
-                        }
-                    }
-                }
-            }
 
-            // SEARCHING FOR OPPONENT STATUS OVERLAY
-            AnimatedVisibility(
-                visible = isSearchingOpponent,
-                enter = scaleIn(),
-                exit = scaleOut()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.9f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .padding(24.dp)
-                            .shadow(24.dp, RoundedCornerShape(24.dp)),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(28.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(68.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        Brush.radialGradient(listOf(SunnyYellow, VividOrange))
-                                    ),
-                                contentAlignment = Alignment.Center
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Button(
+                                onClick = { showDailyLimitModal = false },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Text(text = if (opponentFoundName != null) "🎉" else "🔍", fontSize = 32.sp)
-                            }
-
-                            Spacer(modifier = Modifier.height(14.dp))
-
-                            if (opponentFoundName == null) {
-                                Text(
-                                    text = "SEARCHING FOR OPPONENT...",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = SunnyYellow,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = "Matching with another passenger traveling in America...",
-                                    fontSize = 12.sp,
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(18.dp))
-                                Button(
-                                    onClick = onCancelMatchmaking,
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                                ) {
-                                    Text(text = "Cancel Search", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
-                                }
-                            } else {
-                                Text(
-                                    text = "OPPONENT FOUND!",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = CompletedGreen,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = "Match: $opponentFoundName",
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = "Loading Classic Bingo board...",
-                                    fontSize = 12.sp,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
+                                Text(text = "Cancel", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
                             }
                         }
                     }
                 }
             }
+
+            // FLOATING GRADIENT PILL 3D NAVIGATION BAR
+            GradientPillNavigationBar(
+                currentScreenName = "home",
+                isLoggedIn = isLoggedIn,
+                onNavigateHome = {},
+                onNavigateLogin = onOpenLogin,
+                onNavigateShop = onOpenShop,
+                onNavigateSettings = onOpenSettings,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
 }

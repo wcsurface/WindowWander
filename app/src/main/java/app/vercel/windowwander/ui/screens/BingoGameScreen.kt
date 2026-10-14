@@ -215,6 +215,7 @@ fun BingoGameScreen(
     showAccountPrompt: Boolean,
     soundEnabled: Boolean = true,
     hapticsEnabled: Boolean = true,
+    hasReachedDailyLimit: Boolean = false,
     multiplayerRoom: MultiplayerRoom? = null,
     currentUserNickname: String = "You",
     onTapTile: (Int) -> Unit,
@@ -224,12 +225,14 @@ fun BingoGameScreen(
     onDismissCelebration: () -> Unit,
     onGoogleSignIn: () -> Unit,
     onDismissAccountPrompt: () -> Unit,
-    onBackToHome: () -> Unit
+    onBackToHome: () -> Unit,
+    onWatchRewardedAd: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val completedCount = tiles.count { it.isCompleted }
     var globalExplosionCenter by remember { mutableStateOf<Offset?>(null) }
     var rootBoxWindowOffset by remember { mutableStateOf(Offset.Zero) }
+    var showDailyLimitModal by remember { mutableStateOf(false) }
 
     val otherRealPlayers = multiplayerRoom?.players?.filter { it.nickname != currentUserNickname } ?: emptyList()
 
@@ -550,11 +553,13 @@ fun BingoGameScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            // START NEXT ROUND BUTTON (DIMMED/DISABLED FOR PASSENGERS UNTIL HOST STARTS NEXT ROUND)
+                            // START NEXT ROUND BUTTON (CHECKS DAILY LIMIT)
                             BeveledGameButton(
                                 text = if (canStartNextRound) "START NEXT ROUND 🔄" else "⏳ WAITING FOR HOST TO START NEXT ROUND...",
                                 onClick = {
-                                    if (canStartNextRound) {
+                                    if (hasReachedDailyLimit) {
+                                        showDailyLimitModal = true
+                                    } else if (canStartNextRound) {
                                         onDismissCelebration()
                                         onNextRound()
                                     }
@@ -569,11 +574,15 @@ fun BingoGameScreen(
 
                             Spacer(modifier = Modifier.height(10.dp))
 
-                            // RETURN HOME BUTTON
+                            // RETURN HOME BUTTON (CHECKS DAILY LIMIT AS WELL BEFORE PLAYING ANOTHER ROUND LATER)
                             OutlinedButton(
                                 onClick = {
-                                    onDismissCelebration()
-                                    onBackToHome()
+                                    if (hasReachedDailyLimit) {
+                                        showDailyLimitModal = true
+                                    } else {
+                                        onDismissCelebration()
+                                        onBackToHome()
+                                    }
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -581,6 +590,83 @@ fun BingoGameScreen(
                                 shape = RoundedCornerShape(14.dp)
                             ) {
                                 Text(text = "Return Home", fontWeight = FontWeight.Bold, color = Color.White)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // DAILY GAME LIMIT / REWARDED AD PROMPT MODAL OVERLAY
+            AnimatedVisibility(
+                visible = showDailyLimitModal,
+                enter = scaleIn(),
+                exit = scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.88f))
+                        .clickable { showDailyLimitModal = false },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .shadow(24.dp, RoundedCornerShape(24.dp))
+                            .clickable(enabled = false) {},
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MediumNavy)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "🚗 DAILY GAMES LIMIT",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Black,
+                                color = SunnyYellow
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Want another round on this road trip?\nWatch a quick video to unlock 2 more games instantly!",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 20.sp
+                            )
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            BeveledGameButton(
+                                text = "🎬 WATCH AD TO UNLOCK +2 GAMES ▶",
+                                onClick = {
+                                    showDailyLimitModal = false
+                                    onWatchRewardedAd()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                buttonColor = VividOrange,
+                                bevelColor = Color(0xFFC2410C),
+                                textColor = Color.White,
+                                fontSize = 15
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Button(
+                                onClick = {
+                                    showDailyLimitModal = false
+                                    onDismissCelebration()
+                                    onBackToHome()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
+                                Text(text = "Return Home", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
                             }
                         }
                     }

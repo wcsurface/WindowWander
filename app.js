@@ -646,9 +646,29 @@ class Router {
     if (!localStorage.getItem('bingo_nickname')) {
       localStorage.setItem('bingo_nickname', this.userNickname);
     }
-    this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":250,"games":3,"bingos":1,"items":18}');
-    this.activeRoom = null;
-    this.syncTimer = null;
+    this.showDailyLimitModal = false;
+    this.dailyGamesPlayed = parseInt(localStorage.getItem('daily_games_played') || '0', 10);
+    this.bonusGamesUnlocked = parseInt(localStorage.getItem('bonus_games_unlocked') || '0', 10);
+    this.lastPlayDate = localStorage.getItem('last_play_date') || '';
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (this.lastPlayDate !== todayStr) {
+      this.dailyGamesPlayed = 0;
+      this.bonusGamesUnlocked = 0;
+      this.lastPlayDate = todayStr;
+      localStorage.setItem('daily_games_played', '0');
+      localStorage.setItem('bonus_games_unlocked', '0');
+      localStorage.setItem('last_play_date', todayStr);
+    }
+  }
+
+  maxDailyGames() { return 2 + this.bonusGamesUnlocked; }
+  hasReachedDailyLimit() { return this.dailyGamesPlayed >= this.maxDailyGames(); }
+
+  watchRewardedAd() {
+    this.bonusGamesUnlocked += 2;
+    localStorage.setItem('bonus_games_unlocked', this.bonusGamesUnlocked.toString());
+    this.showDailyLimitModal = false;
+    this.render();
   }
 
   navigate(screen) {
@@ -946,15 +966,17 @@ class Router {
       const level = Math.floor(this.stats.xp / 100) + 1;
       main.innerHTML = `
         <div class="user-header">
-          <!-- USERNAME ON LINE 1, LEVEL AND TITLE ON LINE 2 BELOW USERNAME -->
+          <!-- USERNAME ON LINE 1, ⭐ [XP] XP • Lvl [LEVEL] ON LINE 2 BELOW USERNAME -->
           <div class="profile-badge" onclick="router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
             <div style="display:flex;flex-direction:column;align-items:flex-start;">
               <div style="font-weight:900;font-size:13.5px;color:white;line-height:1.2;">${this.userNickname}</div>
-              <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">Lvl ${level} Explorer</div>
+              <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">⭐ ${this.stats.xp} XP • Lvl ${level}</div>
             </div>
           </div>
-          <!-- XP TOTAL PILL -->
-          <div class="currency-pill" onclick="router.navigate('leaderboard')" style="cursor:pointer;border-color:#FBBF24;">⭐ ${this.stats.xp} XP</div>
+          <!-- DAILY GAMES COUNTER (0/2 TODAY) OR REWARD AD UNLOCK BUTTON -->
+          <div class="currency-pill" onclick="router.showDailyLimitModal=true;router.render();" style="cursor:pointer;border-color:#FBBF24;background:${this.hasReachedDailyLimit() ? '#C2410C' : '#0F172A'};">
+            ${this.hasReachedDailyLimit() ? '🎬 Unlock Games' : '🎮 ' + this.dailyGamesPlayed + '/' + this.maxDailyGames() + ' Today'}
+          </div>
         </div>
 
         <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
@@ -963,7 +985,7 @@ class Router {
         </div>
 
         <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
-        <button class="btn btn-mockup-play" onclick="router.showInCarModal=true;router.render();" style="margin-bottom:18px;">
+        <button class="btn btn-mockup-play" onclick="if(router.hasReachedDailyLimit()){router.showDailyLimitModal=true;}else{router.showInCarModal=true;}router.render();" style="margin-bottom:18px;">
           ⚡ PLAY NOW ▶
         </button>
 
@@ -1026,6 +1048,25 @@ class Router {
                   ◀ Back
                 </button>
               `}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- DAILY GAME LIMIT / REWARDED AD PROMPT MODAL -->
+        ${this.showDailyLimitModal ? `
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showDailyLimitModal=false;router.render();">
+            <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
+              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 DAILY GAMES LIMIT</h2>
+              <p style="font-size:14px;font-weight:800;color:white;line-height:1.5;margin-bottom:18px;">
+                Want another round on this road trip?<br>
+                Watch a quick video to unlock 2 more games instantly!
+              </p>
+              <button class="btn btn-orange btn-beveled" style="font-size:15px;margin-bottom:10px;" onclick="router.watchRewardedAd();">
+                🎬 WATCH AD TO UNLOCK +2 GAMES ▶
+              </button>
+              <button style="background:none;border:none;color:#94A3B8;font-size:13px;font-weight:700;cursor:pointer;" onclick="router.showDailyLimitModal=false;router.render();">
+                Cancel
+              </button>
             </div>
           </div>
         ` : ''}
