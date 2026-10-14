@@ -170,17 +170,17 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // MULTIPLAYER ARENA ROAD SIGN
+                    // PROFILE ROAD SIGN
                     CartoonRoadSignCard(
-                        title = "Multiplayer Arena",
-                        subtitle = "Online Now!",
-                        icon = "🌐",
-                        badgeText = "LIVE",
-                        onClick = { showOnlineMultiplayerModal = true },
+                        title = "Profile",
+                        subtitle = "Stats & Badges",
+                        icon = "👤",
+                        badgeText = null,
+                        onClick = onOpenStats,
                         modifier = Modifier
                             .weight(1f)
                             .height(130.dp),
-                        signColor = Color(0xFF0D9488)
+                        signColor = Color(0xFF2563EB)
                     )
 
                     // DECKS ROAD SIGN

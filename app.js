@@ -969,14 +969,13 @@ class Router {
 
         <!-- TWO CARTOON ROAD SIGN CARDS -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <!-- MULTIPLAYER ARENA (KEEPS LIVE TEXT) -->
-          <div class="road-sign-card sign-blue" onclick="router.showOnlineModal=true;router.render();" style="cursor:pointer;">
+          <!-- PROFILE CARD -->
+          <div class="road-sign-card sign-blue" onclick="router.navigate('stats')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:26px;">🌐</span>
-              <span class="sign-badge">LIVE</span>
+              <span style="font-size:26px;">👤</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:10px;">Multiplayer Arena</div>
-            <div style="font-size:11px;color:#E2E8F0;">Online Now!</div>
+            <div style="font-weight:900;font-size:16px;margin-top:10px;">Profile</div>
+            <div style="font-size:11px;color:#E2E8F0;">Stats & Badges</div>
           </div>
 
           <!-- DECKS CARD -->
