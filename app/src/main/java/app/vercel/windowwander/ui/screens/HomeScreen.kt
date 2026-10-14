@@ -284,7 +284,7 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "🚗 IN-CAR PLAY",
+                                text = "🚗 ROAD TRIP BINGO!",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Black,
                                 color = SunnyYellow

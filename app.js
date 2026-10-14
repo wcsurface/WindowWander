@@ -1006,7 +1006,7 @@ class Router {
         ${this.showInCarModal ? `
           <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
-              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 IN-CAR PLAY</h2>
+              <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 ROAD TRIP BINGO!</h2>
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Play bingo with passengers in your car!</p>
 
               ${!this.showJoinCodeInput ? `
