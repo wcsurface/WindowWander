@@ -76,7 +76,9 @@ class MainActivity : ComponentActivity() {
                             onOpenShop = { viewModel.navigateTo(Screen.SHOP) },
                             onOpenStats = { viewModel.navigateTo(Screen.STATS) },
                             onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },
-                            onOpenPrivacy = { viewModel.navigateTo(Screen.PRIVACY_TERMS) },
+                            onOpenFaq = { viewModel.openFaqPage() },
+                            onOpenTerms = { viewModel.openTermsPage() },
+                            onOpenPrivacy = { viewModel.openPrivacyPage() },
                             onWatchRewardedAd = {
                                 AdMobManager.showRewardedAd(
                                     activity = this@MainActivity,
@@ -201,6 +203,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Screen.PRIVACY_TERMS -> PrivacyTermsScreen(
+                            initialTab = uiState.legalInitialTab,
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
                     }

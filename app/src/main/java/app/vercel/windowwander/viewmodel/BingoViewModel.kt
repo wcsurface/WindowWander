@@ -55,7 +55,8 @@ data class BingoUiState(
     val showBingoCelebration: Boolean = false,
     val showAccountPrompt: Boolean = false,
     val isLoggedIn: Boolean = false,
-    val canUndo: Boolean = false
+    val canUndo: Boolean = false,
+    val legalInitialTab: Int = 0
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
@@ -97,6 +98,18 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 multiplayerRoom = if (screen == Screen.HOME) null else it.multiplayerRoom
             )
         }
+    }
+
+    fun openFaqPage() {
+        _uiState.update { it.copy(currentScreen = Screen.PRIVACY_TERMS, legalInitialTab = 0) }
+    }
+
+    fun openTermsPage() {
+        _uiState.update { it.copy(currentScreen = Screen.PRIVACY_TERMS, legalInitialTab = 1) }
+    }
+
+    fun openPrivacyPage() {
+        _uiState.update { it.copy(currentScreen = Screen.PRIVACY_TERMS, legalInitialTab = 2) }
     }
 
     fun selectDeck(deck: Deck) {

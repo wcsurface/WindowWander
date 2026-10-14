@@ -1020,8 +1020,15 @@ class Router {
         </div>
 
         <!-- ORANGE PILL SAFETY BANNER -->
-        <div class="safety-banner-pill" style="margin-bottom:16px;">
+        <div class="safety-banner-pill" style="margin-bottom:12px;">
           Passengers Play. Drivers Drive.
+        </div>
+
+        <!-- THREE FOOTER BUTTONS: FAQ - T&C - PRIVACY DIRECTLY BELOW PASSENGERS PLAY -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;">
+          <button onclick="router.legalTab=0;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">❓ FAQ</button>
+          <button onclick="router.legalTab=1;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">📜 T&C</button>
+          <button onclick="router.legalTab=2;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">🔒 Privacy</button>
         </div>
 
         <!-- IN-CAR PLAY MODAL -->
@@ -1424,6 +1431,47 @@ class Router {
         <div class="card">
           <h4>Passenger Safety Reminder</h4>
           <p style="font-size:12px;color:#94A3B8;margin-top:6px;">Always play from passenger seats. Drivers keep full attention on the road.</p>
+        </div>
+      `;
+    } else if (this.currentScreen === 'terms') {
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
+          <h2 style="font-weight:900;">${this.legalTab===0 ? '❓ FAQ & Guide' : this.legalTab===1 ? '📜 Terms & Conditions' : '🔒 Privacy Policy'}</h2>
+          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#0F172A;padding:4px;border-radius:14px;margin-bottom:16px;">
+          <button onclick="router.legalTab=0;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===0?'#FBBF24':'transparent'};color:${this.legalTab===0?'#0F172A':'white'};">❓ FAQ</button>
+          <button onclick="router.legalTab=1;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===1?'#FBBF24':'transparent'};color:${this.legalTab===1?'#0F172A':'white'};">📜 T&C</button>
+          <button onclick="router.legalTab=2;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===2?'#FBBF24':'transparent'};color:${this.legalTab===2?'#0F172A':'white'};">🔒 Privacy</button>
+        </div>
+
+        <div class="card">
+          ${this.legalTab === 0 ? `
+            <h3 style="color:#FBBF24;margin-bottom:12px;">Frequently Asked Questions</h3>
+            <p style="font-weight:900;color:white;margin-bottom:2px;">Q: How do I play Road Trip Bingo?</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Look out the car window! As you spot roadside items shown on your 5x5 Bingo card (like a Red Truck or Speed Limit Sign), tap the tile to complete it. Get 5 completed tiles in a row for a BINGO!</p>
+
+            <p style="font-weight:900;color:white;margin-bottom:2px;">Q: How does local In-Car Multiplayer work?</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">One passenger taps 'Start a Game (Host)' to generate a 4-letter room code (e.g. ROAD). Other passengers tap 'Join a Game' and enter the code to play together!</p>
+
+            <p style="font-weight:900;color:white;margin-bottom:2px;">Q: How do Daily Limits work?</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Players get 2 free games every day. You can watch a quick video to unlock additional games. Resets every midnight!</p>
+          ` : this.legalTab === 1 ? `
+            <h3 style="color:#FBBF24;margin-bottom:12px;">Terms & Conditions</h3>
+            <p style="font-weight:900;color:white;margin-bottom:2px;">1. Passenger Safety Disclaimer</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Road Trip Bingo is strictly an entertainment application for vehicle PASSENGERS. Drivers must never operate or interact with this app while driving.</p>
+
+            <p style="font-weight:900;color:white;margin-bottom:2px;">2. Free-to-Play Terms</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Road Trip Bingo is free to play and supported by optional Google AdMob test ads.</p>
+          ` : `
+            <h3 style="color:#FBBF24;margin-bottom:12px;">Privacy Policy</h3>
+            <p style="font-weight:900;color:white;margin-bottom:2px;">1. Data Protection</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">We do not track continuous background GPS, record driver location history, or transmit vehicle telemetry.</p>
+
+            <p style="font-weight:900;color:white;margin-bottom:2px;">2. Storage & Accounts</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Your game progress is stored locally on your device. Creating an account enables secure cloud backup.</p>
+          `}
         </div>
       `;
     }

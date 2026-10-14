@@ -89,7 +89,9 @@ fun HomeScreen(
     onOpenShop: () -> Unit,
     onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenPrivacy: () -> Unit,
+    onOpenFaq: () -> Unit = {},
+    onOpenTerms: () -> Unit = {},
+    onOpenPrivacy: () -> Unit = {},
     onWatchRewardedAd: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -255,6 +257,60 @@ fun HomeScreen(
                         textAlign = TextAlign.Center,
                         letterSpacing = 0.5.sp
                     )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // THREE FOOTER BUTTONS: FAQ - T&C - PRIVACY DIRECTLY BELOW PASSENGERS PLAY
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 1. FAQ BUTTON
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .shadow(4.dp, RoundedCornerShape(14.dp))
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF0F172A))
+                            .border(1.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                            .clickable { onOpenFaq() }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("❓ FAQ", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    }
+
+                    // 2. T&C BUTTON
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .shadow(4.dp, RoundedCornerShape(14.dp))
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF0F172A))
+                            .border(1.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                            .clickable { onOpenTerms() }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("📜 T&C", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    }
+
+                    // 3. PRIVACY BUTTON
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .shadow(4.dp, RoundedCornerShape(14.dp))
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF0F172A))
+                            .border(1.5.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                            .clickable { onOpenPrivacy() }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("🔒 Privacy", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
