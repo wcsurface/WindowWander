@@ -179,10 +179,10 @@ main {
   background: linear-gradient(90deg, #F97316, #EA580C);
   border: 2px solid rgba(255,255,255,0.8);
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   text-align: center;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 17px;
   color: white;
   box-shadow: 0 6px 16px rgba(0,0,0,0.3);
 }

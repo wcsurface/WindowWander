@@ -249,10 +249,11 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "Passengers Play. Drivers Drive.",
-                        fontSize = 15.5.sp,
+                        fontSize = 18.5.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp
                     )
                 }
 
