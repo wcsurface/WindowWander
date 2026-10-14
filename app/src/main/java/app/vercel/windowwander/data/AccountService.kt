@@ -334,6 +334,41 @@ object AccountService {
         }
     }
 
+    suspend fun joinOnlineMatchmakingOnRailway(nickname: String, deckId: String): RoomResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$vercelBaseUrl/api/rooms")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.connectTimeout = 4000
+            conn.readTimeout = 4000
+            conn.doOutput = true
+
+            val body = JSONObject().apply {
+                put("action", "matchmaking")
+                put("nickname", nickname)
+                put("deckId", deckId)
+            }
+
+            conn.outputStream.use { os ->
+                os.write(body.toString().toByteArray())
+            }
+
+            val statusCode = conn.responseCode
+            val stream = if (statusCode in 200..299) conn.inputStream else conn.errorStream
+            val responseStr = stream.bufferedReader().use { it.readText() }
+            val json = JSONObject(responseStr)
+
+            if (json.optBoolean("success", false)) {
+                parseRoomJson(json.getJSONObject("room"))
+            } else {
+                RoomResult(success = false, error = "Matchmaking failed")
+            }
+        } catch (e: Exception) {
+            RoomResult(success = false, error = e.message)
+        }
+    }
+
     suspend fun updateRoomSettingsOnRailway(code: String, deckId: String, gameMode: String): RoomResult = withContext(Dispatchers.IO) {
         try {
             val url = URL("$vercelBaseUrl/api/rooms")

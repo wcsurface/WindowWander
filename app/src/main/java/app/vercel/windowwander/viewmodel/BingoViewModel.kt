@@ -55,7 +55,9 @@ data class BingoUiState(
     val showBingoCelebration: Boolean = false,
     val showAccountPrompt: Boolean = false,
     val isLoggedIn: Boolean = false,
-    val canUndo: Boolean = false
+    val canUndo: Boolean = false,
+    val capturedPhotosMap: Map<Int, String> = emptyMap(),
+    val aiVerificationMessage: String? = null
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
@@ -177,7 +179,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 playerProfile = updatedProfile,
                 showBingoCelebration = false,
                 showAccountPrompt = false,
-                canUndo = false
+                canUndo = false,
+                capturedPhotosMap = emptyMap(),
+                aiVerificationMessage = null
             )
         }
     }
@@ -285,7 +289,12 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun dismissCelebration() {
-        _uiState.update { it.copy(showBingoCelebration = false) }
+        _uiState.update {
+            it.copy(
+                showBingoCelebration = false,
+                multiplayerRoom = if (it.currentScreen == Screen.HOME || it.winResult.hasWon) null else it.multiplayerRoom
+            )
+        }
     }
 
     fun handleGoogleSignIn() {
@@ -328,6 +337,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
 
+        // Start polling IMMEDIATELY
+        startLiveRoomSync(localRoom.roomCode)
+
         viewModelScope.launch {
             val res = AccountService.createRoomOnRailway(localRoom.roomCode, hostNickname, deckId)
             if (res.success) {
@@ -337,7 +349,6 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 )
                 _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
             }
-            startLiveRoomSync(localRoom.roomCode)
         }
     }
 
@@ -364,6 +375,9 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
 
+        // Start polling IMMEDIATELY so passenger never misses host launch!
+        startLiveRoomSync(cleanCode)
+
         viewModelScope.launch {
             val res = AccountService.joinRoomOnRailway(cleanCode, playerNickname)
             if (res.success) {
@@ -373,18 +387,19 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 )
                 _uiState.update { it.copy(multiplayerRoom = railwayRoom) }
             }
-            startLiveRoomSync(cleanCode)
         }
     }
 
     private fun startLiveRoomSync(roomCode: String) {
+        val targetCode = roomCode.uppercase().trim()
+
         viewModelScope.launch {
             while (true) {
-                val currentRoomCode = _uiState.value.multiplayerRoom?.roomCode
-                if (currentRoomCode != roomCode) break
+                val currentRoomCode = _uiState.value.multiplayerRoom?.roomCode?.uppercase()?.trim()
+                if (currentRoomCode != targetCode && _uiState.value.multiplayerRoom != null) break
 
                 try {
-                    val res = AccountService.getRoomFromRailway(roomCode)
+                    val res = AccountService.getRoomFromRailway(targetCode)
                     if (res.success && res.players.isNotEmpty()) {
                         val syncedDeck = DeckRepository.DECKS.find { it.id == res.deckId } ?: _uiState.value.selectedDeck
                         val syncedGameMode = GameMode.values().firstOrNull { it.name == res.gameMode || it.displayName == res.gameMode } ?: _uiState.value.gameMode
@@ -400,16 +415,17 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                             ) ?: state.multiplayerRoom
 
                             val someoneWon = res.hasWinner && !res.winnerNickname.isNullOrBlank()
+                            val inActiveGameScreen = state.currentScreen == Screen.BINGO_GAME || state.currentScreen == Screen.MULTIPLAYER_LOBBY
 
                             state.copy(
                                 selectedDeck = syncedDeck,
                                 gameMode = syncedGameMode,
                                 multiplayerRoom = updatedRoom,
-                                showBingoCelebration = state.showBingoCelebration || someoneWon
+                                showBingoCelebration = (state.showBingoCelebration || someoneWon) && inActiveGameScreen
                             )
                         }
 
-                        // AUTO-LAUNCH PASSENGERS INTO GAME WHEN HOST LAUNCHES!
+                        // AUTO-LAUNCH PASSENGERS INTO BINGO GAME SCREEN WHEN HOST TAP LAUNCH!
                         if (_uiState.value.currentScreen == Screen.MULTIPLAYER_LOBBY && res.isStarted) {
                             startNewGame(
                                 deck = syncedDeck,
@@ -429,12 +445,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 } catch (e: Exception) {}
 
-                delay(600) // FAST 600MS POLL DELAY FOR INSTANT PRE-GAME LOBBY SETTINGS SYNC
+                delay(600) // FAST 600MS POLL DELAY FOR INSTANT PRE-GAME LOBBY SETTINGS SYNC & GAME LAUNCH
             }
         }
     }
 
     fun startOnlineMatchmaking(deck: Deck = _uiState.value.selectedDeck) {
+        val nickname = _uiState.value.playerProfile.nickname
+
         _uiState.update {
             it.copy(
                 selectedDeck = deck,
@@ -444,14 +462,22 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         viewModelScope.launch {
-            delay(2000)
-            val opponents = listOf("Alex (Passenger)", "Jordan (RV Traveler)", "Taylor (Backseat)", "Morgan (Roadie)")
-            val foundName = opponents.random()
-            _uiState.update { it.copy(opponentFoundName = foundName) }
+            val res = AccountService.joinOnlineMatchmakingOnRailway(nickname, deck.id)
+            if (res.success && res.roomCode.isNotBlank()) {
+                val roomObj = MultiplayerRoom(
+                    roomCode = res.roomCode,
+                    hostId = "host_online",
+                    deckId = deck.id,
+                    region = deck.region,
+                    gameMode = _uiState.value.gameMode,
+                    players = res.players,
+                    isStarted = res.isStarted
+                )
+                _uiState.update { it.copy(multiplayerRoom = roomObj) }
 
-            delay(1200)
-            _uiState.update { it.copy(isSearchingOpponent = false) }
-            startNewGame(deck = deck)
+                // Single unified sync loop handles matchmaking poll and game launch!
+                startLiveRoomSync(res.roomCode)
+            }
         }
     }
 
