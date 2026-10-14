@@ -55,9 +55,7 @@ data class BingoUiState(
     val showBingoCelebration: Boolean = false,
     val showAccountPrompt: Boolean = false,
     val isLoggedIn: Boolean = false,
-    val canUndo: Boolean = false,
-    val capturedPhotosMap: Map<Int, String> = emptyMap(),
-    val aiVerificationMessage: String? = null
+    val canUndo: Boolean = false
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
@@ -91,7 +89,14 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun navigateTo(screen: Screen) {
-        _uiState.update { it.copy(currentScreen = screen) }
+        _uiState.update {
+            it.copy(
+                currentScreen = screen,
+                showBingoCelebration = if (screen == Screen.HOME) false else it.showBingoCelebration,
+                showAccountPrompt = if (screen == Screen.HOME) false else it.showAccountPrompt,
+                multiplayerRoom = if (screen == Screen.HOME) null else it.multiplayerRoom
+            )
+        }
     }
 
     fun selectDeck(deck: Deck) {
@@ -179,9 +184,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 playerProfile = updatedProfile,
                 showBingoCelebration = false,
                 showAccountPrompt = false,
-                canUndo = false,
-                capturedPhotosMap = emptyMap(),
-                aiVerificationMessage = null
+                canUndo = false
             )
         }
     }
@@ -190,6 +193,12 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         val roomCode = _uiState.value.multiplayerRoom?.roomCode ?: return
         val deck = _uiState.value.selectedDeck
         val gameMode = _uiState.value.gameMode
+
+        _uiState.update {
+            it.copy(
+                multiplayerRoom = it.multiplayerRoom?.copy(isStarted = true)
+            )
+        }
 
         viewModelScope.launch {
             AccountService.launchGameOnRailway(roomCode, deck.id, gameMode.name)
@@ -409,7 +418,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                                 deckId = res.deckId,
                                 gameMode = syncedGameMode,
                                 players = res.players,
-                                isStarted = res.isStarted,
+                                isStarted = res.isStarted || state.multiplayerRoom?.isStarted == true,
                                 isFinished = res.hasWinner,
                                 winnerNickname = res.winnerNickname
                             ) ?: state.multiplayerRoom
@@ -425,22 +434,12 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                             )
                         }
 
-                        // AUTO-LAUNCH PASSENGERS INTO BINGO GAME SCREEN WHEN HOST TAP LAUNCH!
+                        // AUTO-LAUNCH PASSENGERS / HOST INTO BINGO GAME SCREEN WHEN ROOM IS STARTED!
                         if (_uiState.value.currentScreen == Screen.MULTIPLAYER_LOBBY && res.isStarted) {
                             startNewGame(
                                 deck = syncedDeck,
                                 gameMode = syncedGameMode
                             )
-                        }
-
-                        // AUTO-RETURN PASSENGERS TO LOBBY WHEN HOST STARTS NEXT ROUND!
-                        if (_uiState.value.currentScreen == Screen.BINGO_GAME && !res.isStarted && !res.hasWinner) {
-                            _uiState.update {
-                                it.copy(
-                                    currentScreen = Screen.MULTIPLAYER_LOBBY,
-                                    showBingoCelebration = false
-                                )
-                            }
                         }
                     }
                 } catch (e: Exception) {}
