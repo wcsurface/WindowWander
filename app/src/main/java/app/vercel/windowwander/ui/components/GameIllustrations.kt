@@ -384,8 +384,8 @@ fun CartoonRoadSignCard(
     subtitle: String,
     icon: String,
     badgeText: String? = null,
-    titleFontSize: Int = 16,
-    subtitleFontSize: Int = 11,
+    titleFontSize: Float = 18f,
+    subtitleFontSize: Float = 12.5f,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     signColor: Color = Color(0xFF15803D)

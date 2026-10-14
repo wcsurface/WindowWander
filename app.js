@@ -969,22 +969,22 @@ class Router {
 
         <!-- TWO CARTOON ROAD SIGN CARDS -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <!-- PROFILE CARD -->
-          <div class="road-sign-card sign-blue" onclick="router.navigate('stats')" style="cursor:pointer;">
+          <!-- PROFILE CARD (18PX TITLE & 12.5PX SUBTITLE) -->
+          <div class="road-sign-card sign-teal" onclick="router.navigate('stats')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">👤</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:10px;">Profile</div>
-            <div style="font-size:11px;color:#E2E8F0;">Stats & Badges</div>
+            <div style="font-weight:900;font-size:18px;margin-top:10px;">Profile</div>
+            <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">Stats & Badges</div>
           </div>
 
-          <!-- DECKS CARD -->
+          <!-- DECKS CARD (18PX TITLE & 12.5PX SUBTITLE) -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
             </div>
-            <div style="font-weight:900;font-size:16px;margin-top:10px;">Decks</div>
-            <div style="font-size:11px;color:#E2E8F0;">8 Decks!</div>
+            <div style="font-weight:900;font-size:18px;margin-top:10px;">Decks</div>
+            <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">8 Decks!</div>
           </div>
         </div>
 

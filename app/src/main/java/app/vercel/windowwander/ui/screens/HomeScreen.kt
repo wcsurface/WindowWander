@@ -170,25 +170,29 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    // PROFILE ROAD SIGN
+                    // PROFILE ROAD SIGN (TEAL GREEN COLOR WITH 18SP TITLE & 12.5SP SUBTITLE)
                     CartoonRoadSignCard(
                         title = "Profile",
                         subtitle = "Stats & Badges",
                         icon = "👤",
                         badgeText = null,
+                        titleFontSize = 18f,
+                        subtitleFontSize = 12.5f,
                         onClick = onOpenStats,
                         modifier = Modifier
                             .weight(1f)
                             .height(130.dp),
-                        signColor = Color(0xFF2563EB)
+                        signColor = Color(0xFF0D9488)
                     )
 
-                    // DECKS ROAD SIGN
+                    // DECKS ROAD SIGN (18SP TITLE & 12.5SP SUBTITLE MATCHING LEADERBOARD)
                     CartoonRoadSignCard(
                         title = "Decks",
                         subtitle = "8 Decks!",
                         icon = "🎴",
                         badgeText = null,
+                        titleFontSize = 18f,
+                        subtitleFontSize = 12.5f,
                         onClick = onChooseDeck,
                         modifier = Modifier
                             .weight(1f)
@@ -205,8 +209,8 @@ fun HomeScreen(
                     subtitle = "Points & Items Found Rankings",
                     icon = "",
                     badgeText = "RANKS",
-                    titleFontSize = 18,
-                    subtitleFontSize = 12,
+                    titleFontSize = 18f,
+                    subtitleFontSize = 12f,
                     onClick = onOpenLeaderboard,
                     modifier = Modifier
                         .fillMaxWidth()
