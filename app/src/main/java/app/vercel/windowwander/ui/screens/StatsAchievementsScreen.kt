@@ -70,7 +70,7 @@ fun StatsAchievementsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "🏆 Stats & Badges",
+                    text = "🏆 Profile",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White
