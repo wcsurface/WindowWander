@@ -16,14 +16,10 @@ class UserPreferences(context: Context) {
         val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         val savedDate = prefs.getString("last_play_date", "") ?: ""
 
-        val (todayGames, bonusGames) = if (savedDate == todayStr) {
-            Pair(
-                prefs.getInt("daily_games_played", 0),
-                prefs.getInt("bonus_games_unlocked", 0)
-            )
+        val todayGames = if (savedDate == todayStr) {
+            prefs.getInt("daily_games_played", 0)
         } else {
-            // Daily reset at midnight!
-            Pair(0, 0)
+            0
         }
 
         val badgeString = prefs.getString("earned_badges", "first_ride") ?: "first_ride"
@@ -46,7 +42,6 @@ class UserPreferences(context: Context) {
             streakDays = prefs.getInt("streak_days", 1),
             earnedBadges = badgeList,
             dailyGamesPlayedToday = todayGames,
-            bonusGamesUnlockedToday = bonusGames,
             lastPlayDate = todayStr
         )
     }
@@ -78,7 +73,6 @@ class UserPreferences(context: Context) {
             .putInt("streak_days", profile.streakDays)
             .putString("earned_badges", profile.earnedBadges.joinToString(","))
             .putInt("daily_games_played", profile.dailyGamesPlayedToday)
-            .putInt("bonus_games_unlocked", profile.bonusGamesUnlockedToday)
             .putString("last_play_date", todayStr)
             // BACK UP USER DATA SPECIFICALLY BY NICKNAME
             .putInt("xp_${profile.nickname}", profile.xp)

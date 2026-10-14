@@ -661,14 +661,12 @@ class Router {
     }
   }
 
-  maxDailyGames() { return 2 + this.bonusGamesUnlocked; }
-  hasReachedDailyLimit() { return this.dailyGamesPlayed >= this.maxDailyGames(); }
+  maxDailyGames() { return 2; }
+  hasReachedDailyLimit() { return this.dailyGamesPlayed >= 2; }
 
   watchRewardedAd() {
     this.dailyGamesPlayed = 0;
-    this.bonusGamesUnlocked += 2;
     localStorage.setItem('daily_games_played', '0');
-    localStorage.setItem('bonus_games_unlocked', this.bonusGamesUnlocked.toString());
     this.showDailyLimitModal = false;
     this.render();
   }

@@ -309,8 +309,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     fun unlockBonusGamesFromAd() {
         val currentProfile = _uiState.value.playerProfile
         val updatedProfile = currentProfile.copy(
-            dailyGamesPlayedToday = 0,
-            bonusGamesUnlockedToday = currentProfile.bonusGamesUnlockedToday + 2
+            dailyGamesPlayedToday = 0
         )
         preferences.saveProfile(updatedProfile)
         _uiState.update { it.copy(playerProfile = updatedProfile) }
