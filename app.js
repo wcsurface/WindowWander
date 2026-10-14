@@ -1387,8 +1387,7 @@ class Router {
               <span class="pill-badge-yellow">${d.audience}</span>
             </div>
             <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">${d.count} Distinct Roadside Prompts</p>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11px;color:#94A3B8;">🎯 ${d.count} Prompts • Medium</span>
+            <div style="display:flex;justify-content:flex-end;align-items:center;">
               <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY DECK ▶</button>
             </div>
           </div>

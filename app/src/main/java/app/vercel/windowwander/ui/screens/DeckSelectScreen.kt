@@ -149,16 +149,9 @@ fun DeckSelectScreen(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "🎯 ${deck.prompts.size} Prompts • ${deck.difficulty}",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.White.copy(alpha = 0.6f)
-                            )
-
                             Button(
                                 onClick = { onSelectDeckAndPlay(deck) },
                                 colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
