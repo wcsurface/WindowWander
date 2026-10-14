@@ -1463,7 +1463,7 @@ class Router {
             <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Road Trip Bingo is strictly an entertainment application for vehicle PASSENGERS. Drivers must never operate or interact with this app while driving.</p>
 
             <p style="font-weight:900;color:white;margin-bottom:2px;">2. Free-to-Play Terms</p>
-            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Road Trip Bingo is free to play and supported by optional Google AdMob test ads.</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Road Trip Bingo is free to play and supported by optional rewarded video ads. Watching video ads unlocks additional daily games.</p>
           ` : `
             <h3 style="color:#FBBF24;margin-bottom:12px;">Privacy Policy</h3>
             <p style="font-weight:900;color:white;margin-bottom:2px;">1. Data Protection</p>
@@ -1471,6 +1471,9 @@ class Router {
 
             <p style="font-weight:900;color:white;margin-bottom:2px;">2. Storage & Accounts</p>
             <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Your game progress is stored locally on your device. Creating an account enables secure cloud backup.</p>
+
+            <p style="font-weight:900;color:white;margin-bottom:2px;">3. Contact Us</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">For questions, feedback, or support, contact us at roadtripbingo@gmail.com.</p>
           `}
         </div>
       `;

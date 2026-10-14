@@ -209,7 +209,7 @@ fun PrivacyTermsScreen(
 
                         LegalSection(
                             title = "3. Free-to-Play & Advertising Terms",
-                            content = "Road Trip Bingo is free to play and supported by optional Google AdMob test ads. Watching optional video ads unlocks additional daily game rounds."
+                            content = "Road Trip Bingo is free to play and supported by optional rewarded video ads. Watching optional video ads unlocks additional daily game rounds."
                         )
 
                         LegalSection(
@@ -235,12 +235,12 @@ fun PrivacyTermsScreen(
 
                         LegalSection(
                             title = "3. Advertising & Analytics",
-                            content = "Optional rewarded video ads are served via Google AdMob SDK. AdMob may collect anonymous device identifiers in accordance with Google's Privacy Policy to serve test ads."
+                            content = "Optional rewarded video ads are served to unlock extra daily game rounds. Advertising partners may process anonymous device signals in accordance with standard mobile privacy guidelines."
                         )
 
                         LegalSection(
                             title = "4. Contact Us",
-                            content = "For questions or data deletion requests, contact us at support@windowwander.vercel.app."
+                            content = "For questions, feedback, or support, contact us at roadtripbingo@gmail.com."
                         )
                     }
                 }
