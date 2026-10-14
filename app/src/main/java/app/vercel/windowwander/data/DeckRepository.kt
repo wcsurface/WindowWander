@@ -403,7 +403,7 @@ object DeckRepository {
         Deck(
             id = "deck_a",
             title = "Classic Road Trip",
-            description = "42 Classic roadside items for families & kids",
+            description = "Classic roadside items for families & kids",
             coverIcon = "🚗",
             audience = "Families & Kids",
             difficulty = "Medium",
@@ -414,7 +414,7 @@ object DeckRepository {
         Deck(
             id = "deck_b",
             title = "Weird Road Trip",
-            description = "42 Hilarious & bizarre roadside sights for teens & adults",
+            description = "Hilarious & bizarre roadside sights for teens & adults",
             coverIcon = "🤪",
             audience = "Teens & Adults",
             difficulty = "Medium",
@@ -425,7 +425,7 @@ object DeckRepository {
         Deck(
             id = "deck_c",
             title = "Mountain West & Rockies",
-            description = "42 Mountain pass & alpine scenery sights",
+            description = "Mountain pass & alpine scenery sights",
             coverIcon = "🏔️",
             audience = "Everyone",
             difficulty = "Medium",
@@ -436,7 +436,7 @@ object DeckRepository {
         Deck(
             id = "deck_d",
             title = "Desert & Southwest",
-            description = "42 Cacti, canyons, and southwestern landmarks",
+            description = "Cacti, canyons, and southwestern landmarks",
             coverIcon = "🌵",
             audience = "Everyone",
             difficulty = "Medium",
@@ -447,7 +447,7 @@ object DeckRepository {
         Deck(
             id = "deck_e",
             title = "Northeast & Mid-Atlantic",
-            description = "42 Coastal lighthouses, autumn forests, and bridges",
+            description = "Coastal lighthouses, autumn forests, and bridges",
             coverIcon = "🌉",
             audience = "Everyone",
             difficulty = "Medium",
@@ -458,7 +458,7 @@ object DeckRepository {
         Deck(
             id = "deck_f",
             title = "The South",
-            description = "42 Deep south landmarks, swamps, and country stores",
+            description = "Deep south landmarks, swamps, and country stores",
             coverIcon = "🌳",
             audience = "Everyone",
             difficulty = "Medium",
@@ -469,7 +469,7 @@ object DeckRepository {
         Deck(
             id = "deck_g",
             title = "West Coast",
-            description = "42 Coastal Highway 1, surf spots, and redwoods",
+            description = "Coastal Highway 1, surf spots, and redwoods",
             coverIcon = "🏄",
             audience = "Everyone",
             difficulty = "Medium",
@@ -481,7 +481,7 @@ object DeckRepository {
             id = "deck_h",
             title = "Heart of the Country",
             audience = "Everyone",
-            description = "42 Cornfields, silos, and heartland landmarks",
+            description = "Cornfields, silos, and heartland landmarks",
             coverIcon = "🌽",
             difficulty = "Medium",
             isFree = true,
