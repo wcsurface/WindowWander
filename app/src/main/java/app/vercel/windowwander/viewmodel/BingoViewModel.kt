@@ -127,7 +127,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     fun loginUser(username: String, pass: String) {
         viewModelScope.launch {
             val result = AccountService.login(username, pass)
-            val loadedProfile = result.profile ?: _uiState.value.playerProfile.copy(nickname = username)
+            val loadedProfile = result.profile ?: preferences.getProfileForUser(username) ?: PlayerProfile(nickname = username)
             preferences.saveProfile(loadedProfile)
             preferences.setLoggedIn(true)
             _uiState.update {

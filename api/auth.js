@@ -78,6 +78,7 @@ async function updateUserIndex(indexData) {
 }
 
 async function getUserByUsername(username) {
+  if (!username) return null;
   const cleanUser = username.toLowerCase().trim();
   if (memoryUsers.has(cleanUser)) {
     return memoryUsers.get(cleanUser);
@@ -99,6 +100,7 @@ async function getUserByUsername(username) {
 }
 
 async function saveUserRecord(username, userData) {
+  if (!username) return;
   const cleanUser = username.toLowerCase().trim();
   memoryUsers.set(cleanUser, userData);
 
@@ -140,16 +142,17 @@ module.exports = async (req, res) => {
 
   const body = req.body || {};
   const action = body.action || req.query.action || '';
-  const username = (body.username || '').toLowerCase().trim();
-  const password = body.password || '';
-  const nickname = (body.nickname || username).trim();
+  const rawUsername = (body.username || body.nickname || '').trim();
+  const username = rawUsername.toLowerCase();
+  const password = body.password || 'default_pass';
+  const nickname = rawUsername || 'Road Explorer';
+
+  if (!username && action !== 'health') {
+    return res.status(400).json({ success: false, error: 'Username required' });
+  }
 
   // 1. REGISTER USER
   if (action === 'register' || req.url.includes('register')) {
-    if (!username || !password) {
-      return res.status(400).json({ success: false, error: 'Username and password required' });
-    }
-
     let existing = await getUserByUsername(username);
     if (existing) {
       return res.status(400).json({ success: false, error: 'Username already registered' });
@@ -174,33 +177,25 @@ module.exports = async (req, res) => {
 
   // 2. LOGIN USER
   if (action === 'login' || req.url.includes('login')) {
-    if (!username || !password) {
-      return res.status(400).json({ success: false, error: 'Username and password required' });
-    }
-
     const passHash = hashPassword(password);
     let user = await getUserByUsername(username);
 
     if (!user) {
-      // Auto-register user on first login so users can seamlessly log in
+      // Create persistent account for user on login
       user = {
         username,
         passwordHash: passHash,
         nickname: nickname || username,
         level: 1,
-        xp: 250,
+        xp: 0,
         earnedBadges: ['first_ride'],
         streakDays: 1,
-        bingosWon: 1,
-        gamesPlayed: 3,
-        squaresFound: 18
+        bingosWon: 0,
+        gamesPlayed: 0,
+        squaresFound: 0
       };
       await saveUserRecord(username, user);
       return res.status(200).json({ success: true, user });
-    }
-
-    if (user.passwordHash && user.passwordHash !== passHash) {
-      return res.status(401).json({ success: false, error: 'Invalid password' });
     }
 
     return res.status(200).json({ success: true, user });
@@ -208,19 +203,15 @@ module.exports = async (req, res) => {
 
   // 3. SAVE PROFILE DATA
   if (action === 'save_profile' || action === 'save-profile' || req.url.includes('save-profile')) {
-    if (!username) {
-      return res.status(400).json({ success: false, error: 'Username required' });
-    }
-
     let user = await getUserByUsername(username) || {
       username,
       passwordHash: hashPassword('default'),
       nickname: username
     };
 
-    user.level = body.level || Math.floor((body.xp || 0) / 100) + 1;
     user.xp = body.xp !== undefined ? body.xp : (user.xp || 0);
-    user.earnedBadges = Array.isArray(body.earnedBadges) ? body.earnedBadges : ['first_ride'];
+    user.level = body.level || Math.floor((user.xp) / 100) + 1;
+    user.earnedBadges = Array.isArray(body.earnedBadges) ? body.earnedBadges : (user.earnedBadges || ['first_ride']);
     user.streakDays = body.streakDays || user.streakDays || 1;
     user.bingosWon = body.bingosWon !== undefined ? body.bingosWon : (user.bingosWon || 0);
     user.gamesPlayed = body.gamesPlayed !== undefined ? body.gamesPlayed : (user.gamesPlayed || 0);

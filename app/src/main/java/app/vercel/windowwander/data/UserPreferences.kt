@@ -46,23 +46,29 @@ class UserPreferences(context: Context) {
         )
     }
 
-    fun getProfileForUser(username: String): PlayerProfile {
-        val savedXp = prefs.getInt("xp_$username", -1)
+    fun getProfileForUser(username: String): PlayerProfile? {
+        val cleanKey = username.lowercase().trim()
+        val savedXp = prefs.getInt("xp_$cleanKey", -1)
         if (savedXp != -1) {
+            val badgeString = prefs.getString("earned_badges_$cleanKey", "first_ride") ?: "first_ride"
+            val badgeList = badgeString.split(",").filter { it.isNotBlank() }
             return PlayerProfile(
-                nickname = username,
+                nickname = prefs.getString("nickname_$cleanKey", username) ?: username,
                 xp = savedXp,
-                bingosWon = prefs.getInt("bingos_$username", 0),
-                squaresFound = prefs.getInt("squares_$username", 0),
-                gamesPlayed = prefs.getInt("games_$username", 0)
+                bingosWon = prefs.getInt("bingos_$cleanKey", 0),
+                squaresFound = prefs.getInt("squares_$cleanKey", 0),
+                gamesPlayed = prefs.getInt("games_$cleanKey", 0),
+                earnedBadges = badgeList
             )
         }
-        return getProfile()
+        return null
     }
 
     fun saveProfile(profile: PlayerProfile) {
         val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-        prefs.edit()
+        val cleanKey = profile.nickname.lowercase().trim()
+
+        val editor = prefs.edit()
             .putString("player_id", profile.id)
             .putString("nickname", profile.nickname)
             .putString("avatar_id", profile.avatarId)
@@ -74,12 +80,17 @@ class UserPreferences(context: Context) {
             .putString("earned_badges", profile.earnedBadges.joinToString(","))
             .putInt("daily_games_played", profile.dailyGamesPlayedToday)
             .putString("last_play_date", todayStr)
-            // BACK UP USER DATA SPECIFICALLY BY NICKNAME
-            .putInt("xp_${profile.nickname}", profile.xp)
-            .putInt("bingos_${profile.nickname}", profile.bingosWon)
-            .putInt("squares_${profile.nickname}", profile.squaresFound)
-            .putInt("games_${profile.nickname}", profile.gamesPlayed)
-            .apply()
+
+        if (cleanKey.isNotBlank() && !cleanKey.startsWith("road explorer")) {
+            editor.putString("nickname_$cleanKey", profile.nickname)
+                .putInt("xp_$cleanKey", profile.xp)
+                .putInt("bingos_$cleanKey", profile.bingosWon)
+                .putInt("squares_$cleanKey", profile.squaresFound)
+                .putInt("games_$cleanKey", profile.gamesPlayed)
+                .putString("earned_badges_$cleanKey", profile.earnedBadges.joinToString(","))
+        }
+
+        editor.apply()
     }
 
     fun isLoggedIn(): Boolean = prefs.getBoolean("is_logged_in", false)
