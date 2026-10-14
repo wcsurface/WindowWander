@@ -1079,7 +1079,7 @@ class Router {
 
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:16px;">
-          <h2 style="font-weight:900;color:white;">🚗 In-Car Multiplayer</h2>
+          <h2 style="font-weight:900;color:white;">🚗 Road Trip Bingo!</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
 

@@ -96,7 +96,7 @@ fun MultiplayerScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🚗 In-Car Multiplayer",
+                text = "🚗 Road Trip Bingo!",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White
