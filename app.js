@@ -665,7 +665,9 @@ class Router {
   hasReachedDailyLimit() { return this.dailyGamesPlayed >= this.maxDailyGames(); }
 
   watchRewardedAd() {
+    this.dailyGamesPlayed = 0;
     this.bonusGamesUnlocked += 2;
+    localStorage.setItem('daily_games_played', '0');
     localStorage.setItem('bonus_games_unlocked', this.bonusGamesUnlocked.toString());
     this.showDailyLimitModal = false;
     this.render();

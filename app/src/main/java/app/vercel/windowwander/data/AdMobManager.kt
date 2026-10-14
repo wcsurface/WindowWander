@@ -28,7 +28,7 @@ object AdMobManager {
 
     /**
      * Loads and shows a Google AdMob Rewarded Video Test Ad.
-     * Invokes [onRewardEarned] when player successfully finishes watching the video ad.
+     * Invokes [onRewardEarned] on the UI Thread when player finishes watching the video.
      */
     fun showRewardedAd(
         activity: Activity,
@@ -48,14 +48,17 @@ object AdMobManager {
                     Log.d(TAG, "Rewarded Ad loaded successfully")
                     rewardedAd.show(activity) { rewardItem ->
                         Log.d(TAG, "User earned reward: ${rewardItem.amount} ${rewardItem.type}")
-                        onRewardEarned()
+                        activity.runOnUiThread {
+                            onRewardEarned()
+                        }
                     }
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e(TAG, "Rewarded Ad failed to load: ${loadAdError.message}")
-                    // Fallback to granting reward if test ad network is unavailable
-                    onRewardEarned()
+                    activity.runOnUiThread {
+                        onRewardEarned()
+                    }
                 }
             }
         )
