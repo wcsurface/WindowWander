@@ -122,4 +122,15 @@ class UserPreferences(context: Context) {
 
     fun isDarkMode(): Boolean = prefs.getBoolean("dark_mode", false)
     fun setDarkMode(enabled: Boolean) = prefs.edit().putBoolean("dark_mode", enabled).apply()
+
+    fun getUnlockedDecks(): Set<String> {
+        val saved = prefs.getString("unlocked_decks", "deck_a,deck_b,deck_c,deck_d,deck_e,deck_f,deck_g,deck_h") ?: ""
+        return saved.split(",").filter { it.isNotBlank() }.toSet()
+    }
+
+    fun unlockDeck(deckId: String) {
+        val current = getUnlockedDecks()
+        val updated = current + deckId
+        prefs.edit().putString("unlocked_decks", updated.joinToString(",")).apply()
+    }
 }

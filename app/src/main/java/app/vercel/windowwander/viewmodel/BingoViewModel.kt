@@ -57,7 +57,8 @@ data class BingoUiState(
     val showAccountPrompt: Boolean = false,
     val isLoggedIn: Boolean = false,
     val canUndo: Boolean = false,
-    val legalInitialTab: Int = 0
+    val legalInitialTab: Int = 0,
+    val unlockedDeckIds: Set<String> = setOf("deck_a", "deck_b", "deck_c", "deck_d", "deck_e", "deck_f", "deck_g", "deck_h")
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
@@ -86,9 +87,16 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 hapticsEnabled = preferences.isHapticsEnabled(),
                 confirmTapEnabled = preferences.isConfirmTapEnabled(),
                 kidsModeEasy = preferences.isKidsModeEasy(),
-                darkMode = preferences.isDarkMode()
+                darkMode = preferences.isDarkMode(),
+                unlockedDeckIds = preferences.getUnlockedDecks()
             )
         }
+    }
+
+    fun purchaseDeck(deckId: String) {
+        preferences.unlockDeck(deckId)
+        val updatedUnlocked = preferences.getUnlockedDecks()
+        _uiState.update { it.copy(unlockedDeckIds = updatedUnlocked) }
     }
 
     fun navigateTo(screen: Screen) {

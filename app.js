@@ -650,6 +650,7 @@ class Router {
     this.showDailyLimitModal = false;
     this.dailyGamesPlayed = parseInt(localStorage.getItem('daily_games_played') || '0', 10);
     this.bonusGamesUnlocked = parseInt(localStorage.getItem('bonus_games_unlocked') || '0', 10);
+    this.unlockedDecks = JSON.parse(localStorage.getItem('unlocked_decks') || '["deck_a","deck_b","deck_c","deck_d","deck_e","deck_f","deck_g","deck_h"]');
     this.lastPlayDate = localStorage.getItem('last_play_date') || '';
     const todayStr = new Date().toISOString().split('T')[0];
     if (this.lastPlayDate !== todayStr) {
@@ -660,6 +661,14 @@ class Router {
       localStorage.setItem('bonus_games_unlocked', '0');
       localStorage.setItem('last_play_date', todayStr);
     }
+  }
+
+  unlockDeck(deckId) {
+    if (!this.unlockedDecks.includes(deckId)) {
+      this.unlockedDecks.push(deckId);
+      localStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
+    }
+    this.render();
   }
 
   maxDailyGames() { return 2; }
@@ -1234,24 +1243,19 @@ class Router {
                 <span style="font-size:12px;color:#CBD5E1;">30 Festive holiday sights & winter trees</span>
               </div>
             </div>
-            <span class="sign-badge" style="background:#F97316;color:white;font-size:13px;padding:5px 10px;">$0.99</span>
+            <span class="sign-badge" style="background:${this.unlockedDecks.includes('deck_holiday') ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${this.unlockedDecks.includes('deck_holiday') ? 'UNLOCKED' : '$0.99'}</span>
           </div>
-          <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
-            🛒 UNLOCK DECK ($0.99) ▶
-          </button>
+          ${this.unlockedDecks.includes('deck_holiday') ? `
+            <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
+              ✓ UNLOCKED & READY TO PLAY ▶
+            </button>
+          ` : `
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.unlockDeck('deck_holiday')">
+              🛒 UNLOCK DECK ($0.99) ▶
+            </button>
+          `}
         </div>
-
-        <!-- LARGE PROMINENT ROAD SIGN STYLE UNDER CONSTRUCTION CARD -->
-        <div class="road-sign-card" style="background:linear-gradient(180deg, #D97706, #B45309, #78350F);padding:28px;margin-bottom:16px;text-align:center;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <span style="font-size:38px;">🏪</span>
-            <span class="sign-badge" style="background:#F97316;color:white;font-size:12px;padding:4px 10px;">MORE SOON</span>
-          </div>
-          <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 SHOP MARKETPLACE 🚧</h2>
-          <p style="font-size:14px;font-weight:800;color:#FEF3C7;line-height:1.5;">
-            Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and regional avatars!
-          </p>
-        </div>
+      `;
       `;
     } else if (this.currentScreen === 'leaderboard') {
       const level = Math.floor(this.stats.xp / 100) + 1;
@@ -1423,18 +1427,25 @@ class Router {
           <h2 style="font-weight:900;">🎴 Decks</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
-        ${DECKS.map(d => `
-          <div class="card" style="background:${d.bg};margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <strong style="font-size:16px;color:white;">${d.icon} ${d.title}</strong>
-              <span class="pill-badge-yellow">${d.audience}</span>
+        ${DECKS.map(d => {
+          const isUnlocked = !d.price || this.unlockedDecks.includes(d.id);
+          return `
+            <div class="card" style="background:${d.bg};margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <strong style="font-size:16px;color:white;">${d.icon} ${d.title}</strong>
+                <span class="pill-badge-yellow">${d.audience}</span>
+              </div>
+              <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">Distinct Roadside Prompts</p>
+              <div style="display:flex;justify-content:flex-end;align-items:center;">
+                ${isUnlocked ? `
+                  <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY DECK ▶</button>
+                ` : `
+                  <button class="btn btn-yellow" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;color:#0F172A;font-weight:900;" onclick="router.navigate('shop')">🔒 $0.99 IN SHOP</button>
+                `}
+              </div>
             </div>
-            <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">Distinct Roadside Prompts</p>
-            <div style="display:flex;justify-content:flex-end;align-items:center;">
-              <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY DECK ▶</button>
-            </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       `;
     } else if (this.currentScreen === 'stats') {
       main.innerHTML = `

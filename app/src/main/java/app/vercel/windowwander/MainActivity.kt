@@ -89,10 +89,12 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Screen.DECK_SELECT -> DeckSelectScreen(
+                            unlockedDeckIds = uiState.unlockedDeckIds,
                             onSelectDeckAndPlay = { deck ->
                                 viewModel.selectDeck(deck)
                                 viewModel.createLocalQuickPlayRoom()
                             },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
                             onBackToHome = { viewModel.navigateTo(Screen.HOME) }
                         )
 
@@ -151,7 +153,13 @@ class MainActivity : ComponentActivity() {
 
                         Screen.SHOP -> ShopScreen(
                             xp = uiState.playerProfile.xp,
+                            unlockedDeckIds = uiState.unlockedDeckIds,
                             isLoggedIn = uiState.isLoggedIn,
+                            onUnlockDeck = { deckId -> viewModel.purchaseDeck(deckId) },
+                            onSelectDeckAndPlay = { deck ->
+                                viewModel.selectDeck(deck)
+                                viewModel.createLocalQuickPlayRoom()
+                            },
                             onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
                             onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
                             onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },

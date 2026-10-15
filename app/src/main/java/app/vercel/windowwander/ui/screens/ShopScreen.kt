@@ -26,18 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
+import app.vercel.windowwander.data.DeckRepository
+import app.vercel.windowwander.model.Deck
 import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.components.MainHomeBackground
+import app.vercel.windowwander.ui.theme.CompletedGreen
 import app.vercel.windowwander.ui.theme.DeepNavy
 import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.SunnyYellow
@@ -52,7 +53,10 @@ import coil.request.ImageRequest
 @Composable
 fun ShopScreen(
     xp: Int = 250,
+    unlockedDeckIds: Set<String> = emptySet(),
     isLoggedIn: Boolean = false,
+    onUnlockDeck: (String) -> Unit = {},
+    onSelectDeckAndPlay: (Deck) -> Unit = {},
     onNavigateHome: () -> Unit,
     onNavigateLogin: () -> Unit,
     onNavigateShop: () -> Unit,
@@ -73,6 +77,9 @@ fun ShopScreen(
             }
             .build()
     }
+
+    val holidayDeck = DeckRepository.DECKS.find { it.id == "deck_holiday" }
+    val isHolidayUnlocked = "deck_holiday" in unlockedDeckIds
 
     MainHomeBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -169,12 +176,12 @@ fun ShopScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(VividOrange)
+                                    .background(if (isHolidayUnlocked) CompletedGreen else VividOrange)
                                     .padding(horizontal = 10.dp, vertical = 5.dp)
                             ) {
                                 Text(
-                                    text = "$0.99",
-                                    fontSize = 13.sp,
+                                    text = if (isHolidayUnlocked) "UNLOCKED" else "$0.99",
+                                    fontSize = 12.sp,
                                     fontWeight = FontWeight.Black,
                                     color = Color.White
                                 )
@@ -183,89 +190,31 @@ fun ShopScreen(
 
                         Spacer(modifier = Modifier.height(14.dp))
 
-                        BeveledGameButton(
-                            text = "🛒 UNLOCK DECK ($0.99) ▶",
-                            onClick = { /* Purchase / unlock Deck */ },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            buttonColor = SunnyYellow,
-                            bevelColor = GoldWinner,
-                            textColor = DeepNavy,
-                            fontSize = 15
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // PROMINENT LARGE ROAD SIGN UNDER CONSTRUCTION CARD
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(16.dp, RoundedCornerShape(26.dp))
-                        .clip(RoundedCornerShape(26.dp))
-                        .background(Color(0xFF0F172A))
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(26.dp))
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(Color(0xFFD97706), Color(0xFFB45309), Color(0xFF78350F))
-                                )
+                        if (isHolidayUnlocked) {
+                            BeveledGameButton(
+                                text = "✓ UNLOCKED & READY TO PLAY ▶",
+                                onClick = {
+                                    holidayDeck?.let { onSelectDeckAndPlay(it) }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = CompletedGreen,
+                                bevelColor = Color(0xFF047857),
+                                textColor = Color.White,
+                                fontSize = 15
                             )
-                            .border(3.dp, Color.White.copy(alpha = 0.9f), RoundedCornerShape(26.dp))
-                            .padding(28.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = "🏪", fontSize = 42.sp)
-
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(VividOrange)
-                                        .border(1.5.dp, Color.White, RoundedCornerShape(10.dp))
-                                        .padding(horizontal = 12.dp, vertical = 5.dp)
-                                ) {
-                                    Text(
-                                        text = "MORE SOON",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = Color.White
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(18.dp))
-
-                            Text(
-                                text = "🚧 SHOP MARKETPLACE 🚧",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White,
-                                textAlign = TextAlign.Center
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            Text(
-                                text = "Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and regional avatars!",
-                                fontSize = 13.5.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFEF3C7),
-                                textAlign = TextAlign.Center,
-                                lineHeight = 19.sp
+                        } else {
+                            BeveledGameButton(
+                                text = "🛒 UNLOCK DECK ($0.99) ▶",
+                                onClick = { onUnlockDeck("deck_holiday") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = SunnyYellow,
+                                bevelColor = GoldWinner,
+                                textColor = DeepNavy,
+                                fontSize = 15
                             )
                         }
                     }
