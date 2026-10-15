@@ -1010,6 +1010,7 @@ fun BingoTileView(
                         text = "FREE",
                         fontSize = 13.5.sp,
                         fontWeight = FontWeight.Black,
+                        letterSpacing = 1.2.sp,
                         color = Color.White,
                         style = TextStyle(
                             shadow = Shadow(
@@ -1027,7 +1028,8 @@ fun BingoTileView(
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    lineHeight = (fontSizeSp * 1.15f).sp,
+                    lineHeight = (fontSizeSp * 1.22f).sp,
+                    letterSpacing = 0.8.sp,
                     maxLines = 3,
                     softWrap = false,
                     style = TextStyle(
