@@ -22,6 +22,9 @@ android {
 
     buildTypes {
         release {
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             optimization {
                 enable = false
             }
