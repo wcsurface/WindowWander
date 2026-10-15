@@ -82,7 +82,7 @@ const MOUNTAIN_WEST_PROMPTS = [
   "Ranch Gate Structure",
   "Cattle",
   "Log Cabin Lodge",
-  "Snowplow Parked or Active",
+  "Snowplow",
   "Gondola or Chairlift",
   "Elevation Sign",
   "Jerky Sign",

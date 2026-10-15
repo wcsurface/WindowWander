@@ -134,7 +134,7 @@ object DeckRepository {
         p("c17", "Ranch Gate", "Large timber or iron archway gate over driveway", "structures", false, Region.MOUNTAIN_WEST),
         p("c18", "Cattle", "Cows", "structures", false, Region.MOUNTAIN_WEST),
         p("c19", "Log Cabin Lodge", "Log construction building or resort", "structures", false, Region.MOUNTAIN_WEST),
-        p("c20", "A Snowplow", "Highway department heavy snowplow truck", "equipment", false, Region.MOUNTAIN_WEST),
+        p("c20", "Snowplow", "Highway department heavy snowplow truck", "equipment", false, Region.MOUNTAIN_WEST),
         p("c21", "Gondola or Chairlift", "Gondola or chairlift towers visible in distance", "structures", false, Region.MOUNTAIN_WEST),
         p("c22", "Elevation Sign", "Elevation Sign", "signs", false, Region.MOUNTAIN_WEST),
         p("c23", "Jerky Sign", "A sign for jerky sales", "signs", false, Region.MOUNTAIN_WEST),
