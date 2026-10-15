@@ -659,6 +659,39 @@ class BingoWebEngine {
   }
 }
 
+class SafeStorage {
+  static store = {};
+
+  static getItem(key, defaultValue = '') {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const val = window.localStorage.getItem(key);
+        return val !== null ? val : defaultValue;
+      }
+    } catch(e) {}
+    return this.store[key] !== undefined ? this.store[key] : defaultValue;
+  }
+
+  static setItem(key, value) {
+    const strVal = String(value);
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(key, strVal);
+      }
+    } catch(e) {}
+    this.store[key] = strVal;
+  }
+
+  static removeItem(key) {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(key);
+      }
+    } catch(e) {}
+    delete this.store[key];
+  }
+}
+
 class Router {
   constructor() {
     this.currentScreen = 'home';
@@ -675,39 +708,39 @@ class Router {
     this.leaderboardTab = 0;
     this.showAccountModal = false;
     this.isLoggedIn = false;
-    this.userNickname = localStorage.getItem('bingo_nickname') || ('Road Explorer ' + Math.floor(100 + Math.random() * 900));
-    if (!localStorage.getItem('bingo_nickname')) {
-      localStorage.setItem('bingo_nickname', this.userNickname);
+    this.userNickname = SafeStorage.getItem('bingo_nickname') || ('Road Explorer ' + Math.floor(100 + Math.random() * 900));
+    if (!SafeStorage.getItem('bingo_nickname')) {
+      SafeStorage.setItem('bingo_nickname', this.userNickname);
     }
-    this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0,"items":0}');
+    this.stats = JSON.parse(SafeStorage.getItem('bingo_stats', '{"xp":0,"games":0,"bingos":0,"items":0}'));
     this.activeRoom = null;
     this.syncTimer = null;
     this.legalTab = 0;
     this.showDailyLimitModal = false;
-    this.dailyGamesPlayed = parseInt(localStorage.getItem('daily_games_played') || '0', 10);
-    this.bonusGamesUnlocked = parseInt(localStorage.getItem('bonus_games_unlocked') || '0', 10);
-    this.isRoadWarrior = localStorage.getItem('is_road_warrior') === 'true';
-    this.isRoadWarriorPlus = localStorage.getItem('is_road_warrior_plus') === 'true';
-    this.unlockedDecks = JSON.parse(localStorage.getItem('unlocked_decks') || '["deck_a","deck_b","deck_c","deck_d","deck_e","deck_f","deck_g","deck_h"]');
+    this.dailyGamesPlayed = parseInt(SafeStorage.getItem('daily_games_played', '0'), 10);
+    this.bonusGamesUnlocked = parseInt(SafeStorage.getItem('bonus_games_unlocked', '0'), 10);
+    this.isRoadWarrior = SafeStorage.getItem('is_road_warrior') === 'true';
+    this.isRoadWarriorPlus = SafeStorage.getItem('is_road_warrior_plus') === 'true';
+    this.unlockedDecks = JSON.parse(SafeStorage.getItem('unlocked_decks', '["deck_a","deck_b","deck_c","deck_d","deck_e","deck_f","deck_g","deck_h"]'));
     if (this.isRoadWarriorPlus) {
       this.unlockedDecks = DECKS.map(d => d.id);
     }
-    this.lastPlayDate = localStorage.getItem('last_play_date') || '';
+    this.lastPlayDate = SafeStorage.getItem('last_play_date', '');
     const todayStr = new Date().toISOString().split('T')[0];
     if (this.lastPlayDate !== todayStr) {
       this.dailyGamesPlayed = 0;
       this.bonusGamesUnlocked = 0;
       this.lastPlayDate = todayStr;
-      localStorage.setItem('daily_games_played', '0');
-      localStorage.setItem('bonus_games_unlocked', '0');
-      localStorage.setItem('last_play_date', todayStr);
+      SafeStorage.setItem('daily_games_played', '0');
+      SafeStorage.setItem('bonus_games_unlocked', '0');
+      SafeStorage.setItem('last_play_date', todayStr);
     }
   }
 
   unlockDeck(deckId) {
     if (!this.unlockedDecks.includes(deckId)) {
       this.unlockedDecks.push(deckId);
-      localStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
+      SafeStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
     }
     this.render();
   }
@@ -720,21 +753,21 @@ class Router {
 
   purchaseRoadWarrior() {
     this.isRoadWarrior = true;
-    localStorage.setItem('is_road_warrior', 'true');
+    SafeStorage.setItem('is_road_warrior', 'true');
     this.render();
   }
 
   purchaseRoadWarriorPlus() {
     this.isRoadWarriorPlus = true;
-    localStorage.setItem('is_road_warrior_plus', 'true');
+    SafeStorage.setItem('is_road_warrior_plus', 'true');
     this.unlockedDecks = DECKS.map(d => d.id);
-    localStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
+    SafeStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
     this.render();
   }
 
   watchRewardedAd() {
     this.dailyGamesPlayed = 0;
-    localStorage.setItem('daily_games_played', '0');
+    SafeStorage.setItem('daily_games_played', '0');
     this.showDailyLimitModal = false;
     this.render();
   }
@@ -967,12 +1000,12 @@ class Router {
   logoutUser() {
     this.isLoggedIn = false;
     this.userNickname = 'Road Explorer ' + Math.floor(100 + Math.random() * 900);
-    localStorage.removeItem('bingo_nickname');
+    SafeStorage.removeItem('bingo_nickname');
     this.navigate('home');
   }
 
   saveStats() {
-    localStorage.setItem('bingo_stats', JSON.stringify(this.stats));
+    SafeStorage.setItem('bingo_stats', JSON.stringify(this.stats));
     if (this.isLoggedIn && this.userNickname) {
       const calculatedLevel = Math.floor((this.stats.xp || 0) / 100) + 1;
       RailwayAuthService.saveProfile(
@@ -1579,15 +1612,15 @@ class Router {
         <div class="card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <span style="font-weight:800;color:white;">Sound Effects</span>
-            <input type="checkbox" ${this.soundEnabled !== false ? 'checked' : ''} onchange="router.soundEnabled=this.checked;localStorage.setItem('bingo_sound',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.soundEnabled !== false ? 'checked' : ''} onchange="router.soundEnabled=this.checked;SafeStorage.setItem('bingo_sound',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <span style="font-weight:800;color:white;">Background Music</span>
-            <input type="checkbox" ${this.musicEnabled !== false ? 'checked' : ''} onchange="router.musicEnabled=this.checked;localStorage.setItem('bingo_music',this.checked);BackgroundMusicEngine.syncState(router.currentScreen);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.musicEnabled !== false ? 'checked' : ''} onchange="router.musicEnabled=this.checked;SafeStorage.setItem('bingo_music',this.checked);BackgroundMusicEngine.syncState(router.currentScreen);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-weight:800;color:white;">Haptic Vibrations</span>
-            <input type="checkbox" ${this.hapticsEnabled !== false ? 'checked' : ''} onchange="router.hapticsEnabled=this.checked;localStorage.setItem('bingo_haptics',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.hapticsEnabled !== false ? 'checked' : ''} onchange="router.hapticsEnabled=this.checked;SafeStorage.setItem('bingo_haptics',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
         </div>
 
