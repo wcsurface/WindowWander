@@ -1383,7 +1383,6 @@ class Router {
           `}
         </div>
       `;
-      `;
     } else if (this.currentScreen === 'leaderboard') {
       const level = Math.floor(this.stats.xp / 100) + 1;
       const pointsList = [
