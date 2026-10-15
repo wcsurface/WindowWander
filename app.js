@@ -1635,7 +1635,8 @@ class Router {
 }
 
 const router = new Router();
-window.addEventListener('DOMContentLoaded', () => {
+
+function initApp() {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   const privacyParam = params.get('privacy') || params.get('tab') || params.get('screen');
@@ -1646,10 +1647,16 @@ window.addEventListener('DOMContentLoaded', () => {
     if (pStr.includes('faq')) router.legalTab = 0;
     if (pStr.includes('term') || pStr.includes('tc')) router.legalTab = 1;
     router.currentScreen = 'terms';
-    router.render();
   } else if (roomParam) {
     router.joinCarRoom(roomParam);
-  } else {
-    router.render();
+    return;
   }
-});
+
+  router.render();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
