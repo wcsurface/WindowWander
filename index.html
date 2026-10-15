@@ -9,45 +9,107 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=203">
+  <link rel="stylesheet" href="style.css?v=204">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
-<body>
-  <div id="app">
-    <!-- MAIN CONTAINER -->
+<body class="main-home-theme">
+  <div id="app" class="main-home-theme">
+    <!-- MAIN CONTAINER WITH STATIC PRE-RENDERED HOME LOBBY FOR INSTANT FIRST PAINT -->
     <main id="main-content">
-      <!-- Dynamic content rendered by app.js -->
+      <div class="user-header">
+        <div class="profile-badge" onclick="if(window.router)router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;">
+            <div style="font-weight:900;font-size:13.5px;color:white;line-height:1.2;">Road Explorer</div>
+            <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">⭐ 0 XP • Lvl 1</div>
+          </div>
+        </div>
+        <div class="currency-pill" onclick="if(window.router){router.showDailyLimitModal=true;router.render();}" style="cursor:pointer;border-color:#FBBF24;background:#0F172A;">
+          🎮 0/2 Today
+        </div>
+      </div>
+
+      <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
+      <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
+        <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+      </div>
+
+      <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
+      <button class="btn btn-mockup-play" onclick="if(window.router&&router.hasReachedDailyLimit()){router.showDailyLimitModal=true;}else if(window.router){router.showInCarModal=true;}if(window.router)router.render();" style="margin-bottom:18px;">
+        ⚡ PLAY NOW ▶
+      </button>
+
+      <!-- TWO CARTOON ROAD SIGN CARDS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <!-- PROFILE CARD -->
+        <div class="road-sign-card sign-teal" onclick="if(window.router)router.navigate('stats')" style="cursor:pointer;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:26px;">👤</span>
+          </div>
+          <div style="font-weight:900;font-size:18px;margin-top:10px;">Profile</div>
+          <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">Stats & Badges</div>
+        </div>
+
+        <!-- CARDS ROAD SIGN -->
+        <div class="road-sign-card sign-teal" onclick="if(window.router)router.navigate('decks')" style="cursor:pointer;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:26px;">🎴</span>
+          </div>
+          <div style="font-weight:900;font-size:18px;margin-top:10px;">Cards</div>
+          <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">8 Cards!</div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD BUTTON -->
+      <div class="road-sign-card" onclick="if(window.router)router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;padding:12px 18px;height:68px;min-height:68px;display:flex;align-items:flex-start;justify-content:space-between;">
+        <div style="text-align:left;">
+          <div style="font-weight:900;font-size:18px;color:white;line-height:1.2;">🏆 LEADERBOARD</div>
+          <div style="font-size:12px;color:#E2E8F0;font-weight:700;">Points & Items Found Rankings</div>
+        </div>
+        <span class="sign-badge" style="background:#FBBF24;color:#0F172A;align-self:flex-start;">RANKS</span>
+      </div>
+
+      <!-- ORANGE PILL SAFETY BANNER -->
+      <div class="safety-banner-pill" style="margin-bottom:12px;">
+        Passengers Play. Drivers Drive.
+      </div>
+
+      <!-- THREE FOOTER BUTTONS: FAQ - T&C - PRIVACY -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;">
+        <button onclick="if(window.router){router.legalTab=0;router.navigate('terms');}" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">❓ FAQ</button>
+        <button onclick="if(window.router){router.legalTab=1;router.navigate('terms');}" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">📜 T&C</button>
+        <button onclick="if(window.router){router.legalTab=2;router.navigate('terms');}" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">🔒 Privacy</button>
+      </div>
     </main>
 
-    <!-- FLOATING 3D GRADIENT PILL NAVIGATION BAR (SET 6) -->
+    <!-- FLOATING 3D GRADIENT PILL NAVIGATION BAR -->
     <footer class="app-footer">
-      <button id="nav-home" class="active" onclick="router.navigate('home')">
+      <button id="nav-home" class="active" onclick="if(window.router)router.navigate('home')">
         <span class="nav-icon-wrapper active"><img src="nav_home_icon.png" alt="Home" class="nav-icon-img nav-car-icon" /></span>
         <span>Home</span>
       </button>
-      <button id="nav-login" onclick="router.navigate('login')">
+      <button id="nav-login" onclick="if(window.router)router.navigate('login')">
         <span class="nav-icon-wrapper"><img src="nav_login_icon.png" alt="Log In" class="nav-icon-img" /></span>
         <span id="nav-login-label">Log In</span>
       </button>
-      <button id="nav-shop" onclick="router.navigate('shop')">
+      <button id="nav-shop" onclick="if(window.router)router.navigate('shop')">
         <span class="nav-icon-wrapper"><img src="nav_shop_icon.png" alt="Shop" class="nav-icon-img" /></span>
         <span>Shop</span>
       </button>
-      <button id="nav-settings" onclick="router.navigate('settings')">
+      <button id="nav-settings" onclick="if(window.router)router.navigate('settings')">
         <span class="nav-icon-wrapper"><img src="nav_settings_icon.png" alt="Settings" class="nav-icon-img" /></span>
         <span>Settings</span>
       </button>
     </footer>
   </div>
 
-  <script src="app.js?v=203"></script>
+  <script src="app.js?v=204"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         if (window.caches) {
           caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))));
         }
-        navigator.serviceWorker.register('sw.js?v=203').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=204').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
