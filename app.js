@@ -1050,7 +1050,7 @@ class Router {
 
         <!-- CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND -->
         <div style="width:100%;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
-          <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
+          <img src="road_trip_bingo_logo.png" alt="Road Trip Bingo Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
         <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
