@@ -1672,6 +1672,38 @@ class Router {
           `}
         </div>
       `;
+    } else if (this.currentScreen === 'delete_account') {
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
+          <h2 style="font-weight:900;color:white;">🗑️ Account & Data Deletion</h2>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
+        </div>
+
+        <div class="card" style="padding:22px;">
+          <h3 style="color:#FBBF24;margin-bottom:10px;">Road Trip Bingo Account & Data Deletion</h3>
+          <p style="font-size:13px;color:#CBD5E1;line-height:1.5;margin-bottom:16px;">
+            Road Trip Bingo respects your privacy and data ownership. You can request the permanent deletion of your player account and all associated saved progress at any time.
+          </p>
+
+          <h4 style="color:white;margin-bottom:6px;">📋 How to Request Account Deletion:</h4>
+          <p style="font-size:12.5px;color:#CBD5E1;line-height:1.5;margin-bottom:14px;">
+            1. Send an email to <strong>roadtripbingo@gmail.com</strong> with the subject line <strong>"Account Deletion Request"</strong>.<br>
+            2. Include your registered <strong>Username</strong> or registered <strong>Email Address</strong> in the message body.
+          </p>
+
+          <h4 style="color:white;margin-bottom:6px;">🔒 Types of Data Deleted:</h4>
+          <p style="font-size:12.5px;color:#CBD5E1;line-height:1.5;margin-bottom:14px;">
+            • Account login credentials and username.<br>
+            • Player progress (XP, level, earned badges, lifetime bingo wins).<br>
+            • Cloud backup records and saved multiplayer room history.
+          </p>
+
+          <h4 style="color:white;margin-bottom:6px;">⏱️ Retention & Processing Time:</h4>
+          <p style="font-size:12.5px;color:#CBD5E1;line-height:1.5;">
+            Upon receiving your request, all account credentials and cloud backup data will be permanently purged within <strong>3 business days</strong>.
+          </p>
+        </div>
+      `;
     }
   }
 }
@@ -1729,8 +1761,11 @@ function initApp() {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   const privacyParam = params.get('privacy') || params.get('tab') || params.get('screen');
+  const deleteParam = params.get('delete_account') || params.get('delete_data');
 
-  if (privacyParam) {
+  if (deleteParam) {
+    router.currentScreen = 'delete_account';
+  } else if (privacyParam) {
     router.legalTab = 2; // Privacy tab by default
     const pStr = privacyParam.toString().toLowerCase();
     if (pStr.includes('faq')) router.legalTab = 0;
