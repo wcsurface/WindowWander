@@ -1,0 +1,254 @@
+package com.roadtripbingo.app
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.roadtripbingo.app.data.AdMobManager
+import com.roadtripbingo.app.data.BackgroundMusicManager
+import com.roadtripbingo.app.ui.screens.BingoGameScreen
+import com.roadtripbingo.app.ui.screens.DeckSelectScreen
+import com.roadtripbingo.app.ui.screens.HomeScreen
+import com.roadtripbingo.app.ui.screens.LeaderboardScreen
+import com.roadtripbingo.app.ui.screens.LoginScreen
+import com.roadtripbingo.app.ui.screens.MultiplayerScreen
+import com.roadtripbingo.app.ui.screens.PrivacyTermsScreen
+import com.roadtripbingo.app.ui.screens.SettingsScreen
+import com.roadtripbingo.app.ui.screens.ShopScreen
+import com.roadtripbingo.app.ui.screens.StatsAchievementsScreen
+import com.roadtripbingo.app.ui.theme.WindowWanderTheme
+import com.roadtripbingo.app.viewmodel.BingoViewModel
+import com.roadtripbingo.app.viewmodel.Screen
+
+class MainActivity : ComponentActivity() {
+
+    private val viewModel: BingoViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enableImmersiveStickyMode()
+        AdMobManager.initialize(this)
+
+        setContent {
+            val uiState by viewModel.uiState.collectAsState()
+
+            // BACKGROUND MUSIC SYNC ACROSS SCREENS
+            LaunchedEffect(uiState.currentScreen, uiState.musicEnabled) {
+                BackgroundMusicManager.syncMusicState(
+                    context = this@MainActivity,
+                    currentScreen = uiState.currentScreen,
+                    soundEnabled = uiState.musicEnabled
+                )
+            }
+
+            WindowWanderTheme(darkTheme = uiState.darkMode) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    when (uiState.currentScreen) {
+                        Screen.HOME -> HomeScreen(
+                            profile = uiState.playerProfile,
+                            selectedRegion = uiState.selectedRegion,
+                            selectedDeck = uiState.selectedDeck,
+                            isSearchingOpponent = uiState.isSearchingOpponent,
+                            opponentFoundName = uiState.opponentFoundName,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onQuickPlay = { viewModel.startNewGame() },
+                            onPlayInCarHost = { viewModel.createLocalQuickPlayRoomFromHome() },
+                            onPlayInCarJoin = { code -> viewModel.joinMultiplayerRoom(code) },
+                            onStartOnlineMatchmaking = { deck -> viewModel.startOnlineMatchmaking(deck) },
+                            onCancelMatchmaking = { viewModel.cancelMatchmaking() },
+                            onChooseDeck = { viewModel.navigateTo(Screen.DECK_SELECT) },
+                            onOpenLeaderboard = { viewModel.navigateTo(Screen.LEADERBOARD) },
+                            onOpenLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onOpenShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onOpenStats = { viewModel.navigateTo(Screen.STATS) },
+                            onOpenSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onOpenFaq = { viewModel.openFaqPage() },
+                            onOpenTerms = { viewModel.openTermsPage() },
+                            onOpenPrivacy = { viewModel.openPrivacyPage() },
+                            onWatchRewardedAd = {
+                                AdMobManager.showRewardedAd(
+                                    activity = this@MainActivity,
+                                    onRewardEarned = { viewModel.unlockBonusGamesFromAd() },
+                                    onAdFailed = {}
+                                )
+                            }
+                        )
+
+                        Screen.DECK_SELECT -> DeckSelectScreen(
+                            unlockedDeckIds = uiState.unlockedDeckIds,
+                            onSelectDeckAndPlay = { deck ->
+                                viewModel.selectDeck(deck)
+                                viewModel.createLocalQuickPlayRoom()
+                            },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.BINGO_GAME -> BingoGameScreen(
+                            deck = uiState.selectedDeck,
+                            tiles = uiState.currentBoard,
+                            winResult = uiState.winResult,
+                            gameMode = uiState.gameMode,
+                            canUndo = uiState.canUndo,
+                            showCelebration = uiState.showBingoCelebration,
+                            showAccountPrompt = uiState.showAccountPrompt,
+                            soundEnabled = uiState.soundEnabled,
+                            hapticsEnabled = uiState.hapticsEnabled,
+                            hasReachedDailyLimit = uiState.playerProfile.hasReachedDailyLimit,
+                            multiplayerRoom = uiState.multiplayerRoom,
+                            currentUserNickname = uiState.playerProfile.nickname,
+                            onTapTile = { index -> viewModel.tapTile(index) },
+                            onUndo = { viewModel.undoLastTap() },
+                            onNewGame = { viewModel.startNewGame() },
+                            onNextRound = { viewModel.startNextRound() },
+                            onDismissCelebration = { viewModel.dismissCelebration() },
+                            onGoogleSignIn = { viewModel.handleGoogleSignIn() },
+                            onDismissAccountPrompt = { viewModel.dismissAccountPrompt() },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) },
+                            onWatchRewardedAd = {
+                                AdMobManager.showRewardedAd(
+                                    activity = this@MainActivity,
+                                    onRewardEarned = { viewModel.unlockBonusGamesFromAd() },
+                                    onAdFailed = {}
+                                )
+                            }
+                        )
+
+                        Screen.MULTIPLAYER_LOBBY -> MultiplayerScreen(
+                            room = uiState.multiplayerRoom,
+                            selectedDeck = uiState.selectedDeck,
+                            selectedGameMode = uiState.gameMode,
+                            currentUserNickname = uiState.playerProfile.nickname,
+                            unlockedDeckIds = uiState.unlockedDeckIds,
+                            onSelectDeck = { deck -> viewModel.selectDeck(deck) },
+                            onSelectGameMode = { gameMode -> viewModel.selectGameMode(gameMode) },
+                            onCreateRoom = { viewModel.createLocalQuickPlayRoom() },
+                            onJoinRoom = { code -> viewModel.joinMultiplayerRoom(code) },
+                            onStartGame = { viewModel.launchGameByHost() },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.LEADERBOARD -> LeaderboardScreen(
+                            profile = uiState.playerProfile,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.SHOP -> ShopScreen(
+                            xp = uiState.playerProfile.xp,
+                            isRoadWarriorUnlocked = uiState.playerProfile.isRoadWarriorUnlocked,
+                            isRoadWarriorPlusUnlocked = uiState.playerProfile.isRoadWarriorPlusUnlocked,
+                            unlockedDeckIds = uiState.unlockedDeckIds,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onPurchaseRoadWarrior = { viewModel.purchaseRoadWarrior() },
+                            onPurchaseRoadWarriorPlus = { viewModel.purchaseRoadWarriorPlus() },
+                            onUnlockDeck = { deckId -> viewModel.purchaseDeck(deckId) },
+                            onSelectDeckAndPlay = { deck ->
+                                viewModel.selectDeck(deck)
+                                viewModel.createLocalQuickPlayRoom()
+                            },
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.LOGIN -> LoginScreen(
+                            profile = uiState.playerProfile,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onLoginSubmit = { user, pass -> viewModel.loginUser(user, pass) },
+                            onLogOut = { viewModel.logoutUser() },
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) }
+                        )
+
+                        Screen.STATS -> StatsAchievementsScreen(
+                            profile = uiState.playerProfile,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.SETTINGS -> SettingsScreen(
+                            currentNickname = uiState.playerProfile.nickname,
+                            selectedRegion = uiState.selectedRegion,
+                            soundEnabled = uiState.soundEnabled,
+                            musicEnabled = uiState.musicEnabled,
+                            hapticsEnabled = uiState.hapticsEnabled,
+                            darkMode = uiState.darkMode,
+                            isLoggedIn = uiState.isLoggedIn,
+                            onUpdateNickname = { name -> viewModel.updateProfile(nickname = name, avatarId = uiState.playerProfile.avatarId) },
+                            onSelectRegion = { region -> viewModel.setRegion(region) },
+                            onToggleSound = { enabled -> viewModel.toggleSound(enabled) },
+                            onToggleMusic = { enabled -> viewModel.toggleMusic(enabled) },
+                            onToggleHaptics = { enabled -> viewModel.toggleHaptics(enabled) },
+                            onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
+                            onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
+                            onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
+                            onNavigateSettings = { viewModel.navigateTo(Screen.SETTINGS) },
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+
+                        Screen.PRIVACY_TERMS -> PrivacyTermsScreen(
+                            initialTab = uiState.legalInitialTab,
+                            onBackToHome = { viewModel.navigateTo(Screen.HOME) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BackgroundMusicManager.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BackgroundMusicManager.syncMusicState(this, viewModel.uiState.value.currentScreen, viewModel.uiState.value.musicEnabled)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BackgroundMusicManager.stopAndRelease()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            enableImmersiveStickyMode()
+        }
+    }
+
+    private fun enableImmersiveStickyMode() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+    }
+}

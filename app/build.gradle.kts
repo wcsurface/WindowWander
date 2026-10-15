@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "app.vercel.windowwander"
+    namespace = "com.roadtripbingo.app"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "app.vercel.windowwander"
+        applicationId = "com.roadtripbingo.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
