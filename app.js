@@ -587,9 +587,43 @@ class RailwayAuthService {
   }
 }
 
+const HOLIDAY_PROMPTS = [
+  "Inflatable Holiday Character",
+  "Tree on Car",
+  "Lights On House",
+  "Nativity Scene Display",
+  "Delivery Truck",
+  "Giant Lit Tree",
+  "Vehicle With Lights",
+  "Holiday Sale Sign",
+  "Santa Hat Driver",
+  "Open Christmas Sign",
+  "Car with Wreath",
+  "Red Pickup Truck",
+  "Decorated Street Light",
+  "Car Roof Luggage",
+  "Giant Light Star",
+  "Airplane or Jet",
+  "Shopping Center",
+  "A Menorah",
+  "Holiday Event Sign",
+  "Vehicle with Antlers",
+  "Church",
+  "Frozen Lake",
+  "Chimney Smoke",
+  "Wrapped Gifts",
+  "Green Car",
+  "Coffee Shop",
+  "Tree Sale Sign",
+  "Snowplow",
+  "Snow",
+  "Yellow Traffic Sign"
+];
+
 class BingoWebEngine {
   static generateBoard(deckId = 'deck_c') {
     let prompts = MOUNTAIN_WEST_PROMPTS;
+    if (deckId === 'deck_holiday') prompts = HOLIDAY_PROMPTS;
     if (deckId === 'deck_b') prompts = WEIRD_PROMPTS;
     if (deckId === 'deck_d') prompts = DESERT_SOUTHWEST_PROMPTS;
     if (deckId === 'deck_e') prompts = NORTHEAST_PROMPTS;
@@ -829,6 +863,11 @@ class Router {
         const res = await RailwayAuthService.getRoom(code);
         if (res.success && res.room) {
           this.activeRoom = res.room;
+
+          if (res.room.deckId) {
+            const syncedDeck = DECKS.find(d => d.id === res.room.deckId);
+            if (syncedDeck) this.selectedDeck = syncedDeck;
+          }
 
           // AUTO-LAUNCH JOINED PASSENGERS WHEN HOST LAUNCHES!
           if (this.currentScreen === 'multiplayer' && res.room.isStarted) {
