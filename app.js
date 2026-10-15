@@ -465,11 +465,9 @@ class AudioEngine {
 }
 
 class RailwayAuthService {
-  static baseUrl = "https://windowwander-production.up.railway.app";
-
   static async register(username, password, nickname) {
     try {
-      const res = await fetch(`${this.baseUrl}/api/auth/register`, {
+      const res = await fetch('/api/auth?action=register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, nickname: nickname || username })
@@ -482,7 +480,7 @@ class RailwayAuthService {
 
   static async login(username, password) {
     try {
-      const res = await fetch(`${this.baseUrl}/api/auth/login`, {
+      const res = await fetch('/api/auth?action=login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -495,7 +493,7 @@ class RailwayAuthService {
 
   static async saveProfile(username, level, xp, earnedBadges, streakDays, bingosWon, gamesPlayed, squaresFound) {
     try {
-      await fetch(`${this.baseUrl}/api/auth/save-profile`, {
+      await fetch('/api/auth?action=save_profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -514,7 +512,7 @@ class RailwayAuthService {
 
   static async getLeaderboard() {
     try {
-      const res = await fetch(`${this.baseUrl}/api/auth/leaderboard`);
+      const res = await fetch('/api/auth?action=leaderboard');
       return await res.json();
     } catch(err) {
       return { success: false };
