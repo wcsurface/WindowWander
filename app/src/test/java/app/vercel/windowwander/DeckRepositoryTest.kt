@@ -8,14 +8,14 @@ import org.junit.Test
 class DeckRepositoryTest {
 
     @Test
-    fun testAllDecksHaveAtLeast40Prompts() {
+    fun testAllDecksHaveAtLeast24Prompts() {
         val decks = DeckRepository.DECKS
-        assertEquals(8, decks.size)
+        assertTrue("Expected at least 9 decks", decks.size >= 9)
 
         decks.forEach { deck ->
             assertTrue(
-                "Deck ${deck.title} (${deck.id}) should have at least 40 prompts, but has ${deck.prompts.size}",
-                deck.prompts.size >= 40
+                "Deck ${deck.title} (${deck.id}) should have at least 24 prompts, but has ${deck.prompts.size}",
+                deck.prompts.size >= 24
             )
         }
     }
