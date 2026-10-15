@@ -42,6 +42,8 @@ class UserPreferences(context: Context) {
             streakDays = prefs.getInt("streak_days", 1),
             earnedBadges = badgeList,
             dailyGamesPlayedToday = todayGames,
+            isRoadWarriorUnlocked = prefs.getBoolean("is_road_warrior", false),
+            isRoadWarriorPlusUnlocked = prefs.getBoolean("is_road_warrior_plus", false),
             lastPlayDate = todayStr
         )
     }
@@ -79,6 +81,8 @@ class UserPreferences(context: Context) {
             .putInt("streak_days", profile.streakDays)
             .putString("earned_badges", profile.earnedBadges.joinToString(","))
             .putInt("daily_games_played", profile.dailyGamesPlayedToday)
+            .putBoolean("is_road_warrior", profile.isRoadWarriorUnlocked)
+            .putBoolean("is_road_warrior_plus", profile.isRoadWarriorPlusUnlocked)
             .putString("last_play_date", todayStr)
 
         if (cleanKey.isNotBlank() && !cleanKey.startsWith("road explorer")) {
@@ -124,6 +128,10 @@ class UserPreferences(context: Context) {
     fun setDarkMode(enabled: Boolean) = prefs.edit().putBoolean("dark_mode", enabled).apply()
 
     fun getUnlockedDecks(): Set<String> {
+        val isPlus = prefs.getBoolean("is_road_warrior_plus", false)
+        if (isPlus) {
+            return DeckRepository.DECKS.map { it.id }.toSet()
+        }
         val saved = prefs.getString("unlocked_decks", "deck_a,deck_b,deck_c,deck_d,deck_e,deck_f,deck_g,deck_h") ?: ""
         return saved.split(",").filter { it.isNotBlank() }.toSet()
     }

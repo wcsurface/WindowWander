@@ -15,12 +15,15 @@ data class PlayerProfile(
     val streakDays: Int = 1,
     val earnedBadges: List<String> = listOf("first_ride"),
     val dailyGamesPlayedToday: Int = 0,
+    val isRoadWarriorUnlocked: Boolean = false,
+    val isRoadWarriorPlusUnlocked: Boolean = false,
     val lastPlayDate: String = ""
 ) {
     val level: Int get() = (xp / 100) + 1
     val xpInCurrentLevel: Int get() = xp % 100
-    val maxDailyGamesAllowed: Int get() = 2
-    val hasReachedDailyLimit: Boolean get() = dailyGamesPlayedToday >= 2
+    val hasUnlimitedGames: Boolean get() = isRoadWarriorUnlocked || isRoadWarriorPlusUnlocked
+    val maxDailyGamesAllowed: Int get() = if (hasUnlimitedGames) 999999 else 2
+    val hasReachedDailyLimit: Boolean get() = !hasUnlimitedGames && dailyGamesPlayedToday >= 2
 
     companion object {
         fun getTodayDateString(): String {

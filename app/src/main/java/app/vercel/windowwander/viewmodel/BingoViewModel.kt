@@ -99,6 +99,26 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(unlockedDeckIds = updatedUnlocked) }
     }
 
+    fun purchaseRoadWarrior() {
+        val currentProfile = _uiState.value.playerProfile
+        val updatedProfile = currentProfile.copy(isRoadWarriorUnlocked = true)
+        preferences.saveProfile(updatedProfile)
+        _uiState.update { it.copy(playerProfile = updatedProfile) }
+    }
+
+    fun purchaseRoadWarriorPlus() {
+        val currentProfile = _uiState.value.playerProfile
+        val updatedProfile = currentProfile.copy(isRoadWarriorPlusUnlocked = true)
+        preferences.saveProfile(updatedProfile)
+        val allDecks = preferences.getUnlockedDecks()
+        _uiState.update {
+            it.copy(
+                playerProfile = updatedProfile,
+                unlockedDeckIds = allDecks
+            )
+        }
+    }
+
     fun navigateTo(screen: Screen) {
         _uiState.update {
             it.copy(

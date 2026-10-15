@@ -53,8 +53,12 @@ import coil.request.ImageRequest
 @Composable
 fun ShopScreen(
     xp: Int = 250,
+    isRoadWarriorUnlocked: Boolean = false,
+    isRoadWarriorPlusUnlocked: Boolean = false,
     unlockedDeckIds: Set<String> = emptySet(),
     isLoggedIn: Boolean = false,
+    onPurchaseRoadWarrior: () -> Unit = {},
+    onPurchaseRoadWarriorPlus: () -> Unit = {},
     onUnlockDeck: (String) -> Unit = {},
     onSelectDeckAndPlay: (Deck) -> Unit = {},
     onNavigateHome: () -> Unit,
@@ -79,7 +83,7 @@ fun ShopScreen(
     }
 
     val holidayDeck = DeckRepository.DECKS.find { it.id == "deck_holiday" }
-    val isHolidayUnlocked = "deck_holiday" in unlockedDeckIds
+    val isHolidayUnlocked = "deck_holiday" in unlockedDeckIds || isRoadWarriorPlusUnlocked
 
     MainHomeBackground {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -142,7 +146,163 @@ fun ShopScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // FEATURED ITEM: HOLIDAY ROAD TRIP DECK ($0.99)
+                // ITEM 1: ROAD WARRIOR UPGRADE ($1.99)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                    shape = RoundedCornerShape(24.dp),
+                    border = BorderStroke(2.5.dp, SunnyYellow)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = "🛡️", fontSize = 32.sp)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "Road Warrior Upgrade",
+                                        fontSize = 17.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Unlimited Daily Games + No Ads",
+                                        fontSize = 12.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(if (isRoadWarriorUnlocked || isRoadWarriorPlusUnlocked) CompletedGreen else VividOrange)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Text(
+                                    text = if (isRoadWarriorUnlocked || isRoadWarriorPlusUnlocked) "ACTIVE" else "$1.99",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        if (isRoadWarriorUnlocked || isRoadWarriorPlusUnlocked) {
+                            BeveledGameButton(
+                                text = "✓ UNLIMITED GAMES & NO ADS ACTIVE",
+                                onClick = {},
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = CompletedGreen,
+                                bevelColor = Color(0xFF047857),
+                                textColor = Color.White,
+                                fontSize = 14
+                            )
+                        } else {
+                            BeveledGameButton(
+                                text = "🛒 UNLOCK ROAD WARRIOR ($1.99) ▶",
+                                onClick = onPurchaseRoadWarrior,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = SunnyYellow,
+                                bevelColor = GoldWinner,
+                                textColor = DeepNavy,
+                                fontSize = 15
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // ITEM 2: ROAD WARRIOR PLUS ($3.99)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                    shape = RoundedCornerShape(24.dp),
+                    border = BorderStroke(2.5.dp, GoldWinner)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = "👑", fontSize = 32.sp)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "Road Warrior Plus",
+                                        fontSize = 17.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = SunnyYellow
+                                    )
+                                    Text(
+                                        text = "Unlimited Games + No Ads + All Decks!",
+                                        fontSize = 12.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(if (isRoadWarriorPlusUnlocked) CompletedGreen else VividOrange)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Text(
+                                    text = if (isRoadWarriorPlusUnlocked) "ACTIVE" else "$3.99",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        if (isRoadWarriorPlusUnlocked) {
+                            BeveledGameButton(
+                                text = "✓ ALL DECKS & UNLIMITED GAMES ACTIVE",
+                                onClick = {},
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = CompletedGreen,
+                                bevelColor = Color(0xFF047857),
+                                textColor = Color.White,
+                                fontSize = 14
+                            )
+                        } else {
+                            BeveledGameButton(
+                                text = "👑 UNLOCK ROAD WARRIOR PLUS ($3.99) ▶",
+                                onClick = onPurchaseRoadWarriorPlus,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = SunnyYellow,
+                                bevelColor = GoldWinner,
+                                textColor = DeepNavy,
+                                fontSize = 15
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // ITEM 3: HOLIDAY ROAD TRIP DECK ($0.99)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
@@ -161,7 +321,7 @@ fun ShopScreen(
                                 Column {
                                     Text(
                                         text = "Holiday Road Trip Deck",
-                                        fontSize = 18.sp,
+                                        fontSize = 17.sp,
                                         fontWeight = FontWeight.Black,
                                         color = Color.White
                                     )

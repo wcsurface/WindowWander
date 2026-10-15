@@ -153,8 +153,12 @@ class MainActivity : ComponentActivity() {
 
                         Screen.SHOP -> ShopScreen(
                             xp = uiState.playerProfile.xp,
+                            isRoadWarriorUnlocked = uiState.playerProfile.isRoadWarriorUnlocked,
+                            isRoadWarriorPlusUnlocked = uiState.playerProfile.isRoadWarriorPlusUnlocked,
                             unlockedDeckIds = uiState.unlockedDeckIds,
                             isLoggedIn = uiState.isLoggedIn,
+                            onPurchaseRoadWarrior = { viewModel.purchaseRoadWarrior() },
+                            onPurchaseRoadWarriorPlus = { viewModel.purchaseRoadWarriorPlus() },
                             onUnlockDeck = { deckId -> viewModel.purchaseDeck(deckId) },
                             onSelectDeckAndPlay = { deck ->
                                 viewModel.selectDeck(deck)

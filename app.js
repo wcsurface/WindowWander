@@ -672,7 +672,24 @@ class Router {
   }
 
   maxDailyGames() { return 2; }
-  hasReachedDailyLimit() { return this.dailyGamesPlayed >= 2; }
+  hasReachedDailyLimit() {
+    if (this.isRoadWarrior || this.isRoadWarriorPlus) return false;
+    return this.dailyGamesPlayed >= 2;
+  }
+
+  purchaseRoadWarrior() {
+    this.isRoadWarrior = true;
+    localStorage.setItem('is_road_warrior', 'true');
+    this.render();
+  }
+
+  purchaseRoadWarriorPlus() {
+    this.isRoadWarriorPlus = true;
+    localStorage.setItem('is_road_warrior_plus', 'true');
+    this.unlockedDecks = DECKS.map(d => d.id);
+    localStorage.setItem('unlocked_decks', JSON.stringify(this.unlockedDecks));
+    this.render();
+  }
 
   watchRewardedAd() {
     this.dailyGamesPlayed = 0;
@@ -1234,7 +1251,53 @@ class Router {
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- FEATURED ITEM: HOLIDAY ROAD TRIP DECK ($0.99) -->
+        <!-- ITEM 1: ROAD WARRIOR UPGRADE ($1.99) -->
+        <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:32px;">🛡️</span>
+              <div>
+                <strong style="font-size:17px;color:white;display:block;">Road Warrior Upgrade</strong>
+                <span style="font-size:12px;color:#CBD5E1;">Unlimited Daily Games + No Ads</span>
+              </div>
+            </div>
+            <span class="sign-badge" style="background:${(this.isRoadWarrior || this.isRoadWarriorPlus) ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${(this.isRoadWarrior || this.isRoadWarriorPlus) ? 'ACTIVE' : '$1.99'}</span>
+          </div>
+          ${(this.isRoadWarrior || this.isRoadWarriorPlus) ? `
+            <button class="btn btn-teal" style="min-height:48px;font-size:14px;width:100%;">
+              ✓ UNLIMITED GAMES & NO ADS ACTIVE
+            </button>
+          ` : `
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarrior()">
+              🛒 UNLOCK ROAD WARRIOR ($1.99) ▶
+            </button>
+          `}
+        </div>
+
+        <!-- ITEM 2: ROAD WARRIOR PLUS ($3.99) -->
+        <div class="card" style="background:#0F172A;border:2px solid #F59E0B;padding:20px;margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:32px;">👑</span>
+              <div>
+                <strong style="font-size:17px;color:#FBBF24;display:block;">Road Warrior Plus</strong>
+                <span style="font-size:12px;color:#CBD5E1;">Unlimited Games + No Ads + All Decks!</span>
+              </div>
+            </div>
+            <span class="sign-badge" style="background:${this.isRoadWarriorPlus ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${this.isRoadWarriorPlus ? 'ACTIVE' : '$3.99'}</span>
+          </div>
+          ${this.isRoadWarriorPlus ? `
+            <button class="btn btn-teal" style="min-height:48px;font-size:14px;width:100%;">
+              ✓ ALL DECKS & UNLIMITED GAMES ACTIVE
+            </button>
+          ` : `
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarriorPlus()">
+              👑 UNLOCK ROAD WARRIOR PLUS ($3.99) ▶
+            </button>
+          `}
+        </div>
+
+        <!-- ITEM 3: HOLIDAY ROAD TRIP DECK ($0.99) -->
         <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:18px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -1244,9 +1307,9 @@ class Router {
                 <span style="font-size:12px;color:#CBD5E1;">Festive sights & winter lights</span>
               </div>
             </div>
-            <span class="sign-badge" style="background:${this.unlockedDecks.includes('deck_holiday') ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${this.unlockedDecks.includes('deck_holiday') ? 'UNLOCKED' : '$0.99'}</span>
+            <span class="sign-badge" style="background:${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? 'UNLOCKED' : '$0.99'}</span>
           </div>
-          ${this.unlockedDecks.includes('deck_holiday') ? `
+          ${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? `
             <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
               ✓ UNLOCKED & READY TO PLAY ▶
             </button>
