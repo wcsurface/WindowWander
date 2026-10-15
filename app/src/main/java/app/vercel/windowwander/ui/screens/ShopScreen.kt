@@ -166,7 +166,7 @@ fun ShopScreen(
                                         color = Color.White
                                     )
                                     Text(
-                                        text = "30 Festive holiday sights & winter trees",
+                                        text = "Festive sights & winter lights",
                                         fontSize = 12.sp,
                                         color = Color.White.copy(alpha = 0.8f)
                                     )

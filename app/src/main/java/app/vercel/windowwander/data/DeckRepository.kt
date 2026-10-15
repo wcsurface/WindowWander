@@ -527,7 +527,7 @@ object DeckRepository {
         Deck(
             id = "deck_holiday",
             title = "Holiday Road Trip",
-            description = "Festive holiday lights, trees, and winter sights",
+            description = "Festive sights & winter lights",
             coverIcon = "🎄",
             audience = "Everyone",
             difficulty = "Medium",

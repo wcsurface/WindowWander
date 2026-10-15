@@ -1240,7 +1240,7 @@ class Router {
               <span style="font-size:32px;">🎄</span>
               <div>
                 <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Deck</strong>
-                <span style="font-size:12px;color:#CBD5E1;">30 Festive holiday sights & winter trees</span>
+                <span style="font-size:12px;color:#CBD5E1;">Festive sights & winter lights</span>
               </div>
             </div>
             <span class="sign-badge" style="background:${this.unlockedDecks.includes('deck_holiday') ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${this.unlockedDecks.includes('deck_holiday') ? 'UNLOCKED' : '$0.99'}</span>
