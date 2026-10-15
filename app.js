@@ -1680,7 +1680,53 @@ class Router {
 window.router = new Router();
 const router = window.router;
 
+function setupGlobalClickDelegation() {
+  document.addEventListener('click', (e) => {
+    if (!window.router) return;
+
+    // 1. Check data-nav attribute
+    const navBtn = e.target.closest('[data-nav]');
+    if (navBtn) {
+      e.preventDefault();
+      const screen = navBtn.getAttribute('data-nav');
+      window.router.navigate(screen);
+      return;
+    }
+
+    // 2. Check data-legal-tab attribute
+    const legalBtn = e.target.closest('[data-legal-tab]');
+    if (legalBtn) {
+      e.preventDefault();
+      const tabIdx = parseInt(legalBtn.getAttribute('data-legal-tab'), 10);
+      window.router.legalTab = tabIdx;
+      window.router.navigate('terms');
+      return;
+    }
+
+    // 3. Check data-action attribute
+    const actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+      e.preventDefault();
+      const action = actionBtn.getAttribute('data-action');
+      if (action === 'play-now') {
+        if (window.router.hasReachedDailyLimit()) {
+          window.router.showDailyLimitModal = true;
+        } else {
+          window.router.showInCarModal = true;
+        }
+        window.router.render();
+      } else if (action === 'daily-limit-modal') {
+        window.router.showDailyLimitModal = true;
+        window.router.render();
+      }
+      return;
+    }
+  });
+}
+
 function initApp() {
+  setupGlobalClickDelegation();
+
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   const privacyParam = params.get('privacy') || params.get('tab') || params.get('screen');
