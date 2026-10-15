@@ -1077,14 +1077,14 @@ class Router {
       main.innerHTML = `
         <div class="user-header">
           <!-- USERNAME ON LINE 1, ⭐ [XP] XP • Lvl [LEVEL] ON LINE 2 BELOW USERNAME -->
-          <div class="profile-badge" onclick="router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
+          <div class="profile-badge" onclick="window.router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
             <div style="display:flex;flex-direction:column;align-items:flex-start;">
               <div style="font-weight:900;font-size:13.5px;color:white;line-height:1.2;">${this.userNickname}</div>
               <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">⭐ ${userXp} XP • Lvl ${level}</div>
             </div>
           </div>
           <!-- DAILY GAMES COUNTER (0/2 TODAY) OR REWARD AD UNLOCK BUTTON -->
-          <div class="currency-pill" onclick="router.showDailyLimitModal=true;router.render();" style="cursor:pointer;border-color:#FBBF24;background:${this.hasReachedDailyLimit() ? '#C2410C' : '#0F172A'};">
+          <div class="currency-pill" onclick="window.router.showDailyLimitModal=true;window.router.render();" style="cursor:pointer;border-color:#FBBF24;background:${this.hasReachedDailyLimit() ? '#C2410C' : '#0F172A'};">
             ${this.hasReachedDailyLimit() ? '🎬 Unlock Games' : '🎮 ' + this.dailyGamesPlayed + '/' + this.maxDailyGames() + ' Today'}
           </div>
         </div>
@@ -1095,14 +1095,14 @@ class Router {
         </div>
 
         <!-- ⚡ PLAY NOW ▶ LARGE CREAM CAPSULE BUTTON -->
-        <button class="btn btn-mockup-play" onclick="if(router.hasReachedDailyLimit()){router.showDailyLimitModal=true;}else{router.showInCarModal=true;}router.render();" style="margin-bottom:18px;">
+        <button class="btn btn-mockup-play" onclick="if(window.router.hasReachedDailyLimit()){window.router.showDailyLimitModal=true;}else{window.router.showInCarModal=true;}window.router.render();" style="margin-bottom:18px;">
           ⚡ PLAY NOW ▶
         </button>
 
         <!-- TWO CARTOON ROAD SIGN CARDS -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
           <!-- PROFILE CARD (18PX TITLE & 12.5PX SUBTITLE) -->
-          <div class="road-sign-card sign-teal" onclick="router.navigate('stats')" style="cursor:pointer;">
+          <div class="road-sign-card sign-teal" onclick="window.router.navigate('stats')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">👤</span>
             </div>
@@ -1111,7 +1111,7 @@ class Router {
           </div>
 
           <!-- CARDS ROAD SIGN (18PX TITLE & 12.5PX SUBTITLE) -->
-          <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
+          <div class="road-sign-card sign-teal" onclick="window.router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
             </div>
@@ -1121,7 +1121,7 @@ class Router {
         </div>
 
         <!-- LEADERBOARD BUTTON BETWEEN MULTIPLAYER/DECK AND SAFETY BANNER (EXACT SAME 68PX HEIGHT AS PLAY NOW, TOP LEFT TROPHY & TEXT) -->
-        <div class="road-sign-card" onclick="router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;padding:12px 18px;height:68px;min-height:68px;display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="road-sign-card" onclick="window.router.navigate('leaderboard')" style="cursor:pointer;background:linear-gradient(180deg, #1D4ED8, #1E3A8A);margin-bottom:16px;padding:12px 18px;height:68px;min-height:68px;display:flex;align-items:flex-start;justify-content:space-between;">
           <div style="text-align:left;">
             <div style="font-weight:900;font-size:18px;color:white;line-height:1.2;">🏆 LEADERBOARD</div>
             <div style="font-size:12px;color:#E2E8F0;font-weight:700;">Points & Items Found Rankings</div>
@@ -1136,9 +1136,9 @@ class Router {
 
         <!-- THREE FOOTER BUTTONS: FAQ - T&C - PRIVACY DIRECTLY BELOW PASSENGERS PLAY -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;">
-          <button onclick="router.legalTab=0;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">❓ FAQ</button>
-          <button onclick="router.legalTab=1;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">📜 T&C</button>
-          <button onclick="router.legalTab=2;router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">🔒 Privacy</button>
+          <button onclick="window.router.legalTab=0;window.router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">❓ FAQ</button>
+          <button onclick="window.router.legalTab=1;window.router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">📜 T&C</button>
+          <button onclick="window.router.legalTab=2;window.router.navigate('terms');" style="height:36px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.3);background:#0F172A;color:white;font-weight:900;font-size:12px;cursor:pointer;">🔒 Privacy</button>
         </div>
 
         <!-- IN-CAR PLAY MODAL -->
