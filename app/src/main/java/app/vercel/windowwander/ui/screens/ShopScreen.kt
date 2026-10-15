@@ -146,7 +146,87 @@ fun ShopScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // ITEM 1: ROAD WARRIOR UPGRADE ($1.99)
+                // ITEM 1 (TOP FEATURED): HOLIDAY ROAD TRIP DECK ($0.99)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                    shape = RoundedCornerShape(24.dp),
+                    border = BorderStroke(2.5.dp, SunnyYellow)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = "🎄", fontSize = 32.sp)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "Holiday Road Trip Deck",
+                                        fontSize = 17.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Festive sights & winter lights",
+                                        fontSize = 12.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(if (isHolidayUnlocked) CompletedGreen else VividOrange)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Text(
+                                    text = if (isHolidayUnlocked) "UNLOCKED" else "$0.99",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        if (isHolidayUnlocked) {
+                            BeveledGameButton(
+                                text = "✓ UNLOCKED & READY TO PLAY ▶",
+                                onClick = {
+                                    holidayDeck?.let { onSelectDeckAndPlay(it) }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = CompletedGreen,
+                                bevelColor = Color(0xFF047857),
+                                textColor = Color.White,
+                                fontSize = 15
+                            )
+                        } else {
+                            BeveledGameButton(
+                                text = "🛒 UNLOCK DECK ($0.99) ▶",
+                                onClick = { onUnlockDeck("deck_holiday") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                buttonColor = SunnyYellow,
+                                bevelColor = GoldWinner,
+                                textColor = DeepNavy,
+                                fontSize = 15
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // ITEM 2: ROAD WARRIOR UPGRADE ($1.99)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
@@ -224,7 +304,7 @@ fun ShopScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // ITEM 2: ROAD WARRIOR PLUS ($3.99)
+                // ITEM 3: ROAD WARRIOR PLUS ($3.99)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
@@ -288,86 +368,6 @@ fun ShopScreen(
                             BeveledGameButton(
                                 text = "👑 UNLOCK ROAD WARRIOR PLUS ($3.99) ▶",
                                 onClick = onPurchaseRoadWarriorPlus,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
-                                buttonColor = SunnyYellow,
-                                bevelColor = GoldWinner,
-                                textColor = DeepNavy,
-                                fontSize = 15
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // ITEM 3: HOLIDAY ROAD TRIP DECK ($0.99)
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                    shape = RoundedCornerShape(24.dp),
-                    border = BorderStroke(2.5.dp, SunnyYellow)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "🎄", fontSize = 32.sp)
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column {
-                                    Text(
-                                        text = "Holiday Road Trip Deck",
-                                        fontSize = 17.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = Color.White
-                                    )
-                                    Text(
-                                        text = "Festive sights & winter lights",
-                                        fontSize = 12.sp,
-                                        color = Color.White.copy(alpha = 0.8f)
-                                    )
-                                }
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(if (isHolidayUnlocked) CompletedGreen else VividOrange)
-                                    .padding(horizontal = 10.dp, vertical = 5.dp)
-                            ) {
-                                Text(
-                                    text = if (isHolidayUnlocked) "UNLOCKED" else "$0.99",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = Color.White
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        if (isHolidayUnlocked) {
-                            BeveledGameButton(
-                                text = "✓ UNLOCKED & READY TO PLAY ▶",
-                                onClick = {
-                                    holidayDeck?.let { onSelectDeckAndPlay(it) }
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
-                                buttonColor = CompletedGreen,
-                                bevelColor = Color(0xFF047857),
-                                textColor = Color.White,
-                                fontSize = 15
-                            )
-                        } else {
-                            BeveledGameButton(
-                                text = "🛒 UNLOCK DECK ($0.99) ▶",
-                                onClick = { onUnlockDeck("deck_holiday") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp),

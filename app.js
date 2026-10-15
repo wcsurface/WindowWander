@@ -1251,7 +1251,30 @@ class Router {
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- ITEM 1: ROAD WARRIOR UPGRADE ($1.99) -->
+        <!-- ITEM 1 (TOP FEATURED): HOLIDAY ROAD TRIP DECK ($0.99) -->
+        <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:32px;">🎄</span>
+              <div>
+                <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Deck</strong>
+                <span style="font-size:12px;color:#CBD5E1;">Festive sights & winter lights</span>
+              </div>
+            </div>
+            <span class="sign-badge" style="background:${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? 'UNLOCKED' : '$0.99'}</span>
+          </div>
+          ${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? `
+            <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
+              ✓ UNLOCKED & READY TO PLAY ▶
+            </button>
+          ` : `
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.unlockDeck('deck_holiday')">
+              🛒 UNLOCK DECK ($0.99) ▶
+            </button>
+          `}
+        </div>
+
+        <!-- ITEM 2: ROAD WARRIOR UPGRADE ($1.99) -->
         <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:16px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -1274,8 +1297,8 @@ class Router {
           `}
         </div>
 
-        <!-- ITEM 2: ROAD WARRIOR PLUS ($3.99) -->
-        <div class="card" style="background:#0F172A;border:2px solid #F59E0B;padding:20px;margin-bottom:16px;">
+        <!-- ITEM 3: ROAD WARRIOR PLUS ($3.99) -->
+        <div class="card" style="background:#0F172A;border:2px solid #F59E0B;padding:20px;margin-bottom:18px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="font-size:32px;">👑</span>
@@ -1293,29 +1316,6 @@ class Router {
           ` : `
             <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarriorPlus()">
               👑 UNLOCK ROAD WARRIOR PLUS ($3.99) ▶
-            </button>
-          `}
-        </div>
-
-        <!-- ITEM 3: HOLIDAY ROAD TRIP DECK ($0.99) -->
-        <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:18px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-size:32px;">🎄</span>
-              <div>
-                <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Deck</strong>
-                <span style="font-size:12px;color:#CBD5E1;">Festive sights & winter lights</span>
-              </div>
-            </div>
-            <span class="sign-badge" style="background:${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? 'UNLOCKED' : '$0.99'}</span>
-          </div>
-          ${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? `
-            <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
-              ✓ UNLOCKED & READY TO PLAY ▶
-            </button>
-          ` : `
-            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.unlockDeck('deck_holiday')">
-              🛒 UNLOCK DECK ($0.99) ▶
             </button>
           `}
         </div>
