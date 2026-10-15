@@ -8,7 +8,8 @@ const DECKS = [
   { id: 'deck_e', title: 'Northeast & Mid-Atlantic', audience: 'Everyone', count: 42, icon: '🌉', bg: 'linear-gradient(135deg, #3B82F6, #1E293B)' },
   { id: 'deck_f', title: 'The South', audience: 'Everyone', count: 42, icon: '🌳', bg: 'linear-gradient(135deg, #10B981, #1E293B)' },
   { id: 'deck_g', title: 'West Coast', audience: 'Everyone', count: 42, icon: '🏄', bg: 'linear-gradient(135deg, #14B8A6, #1E293B)' },
-  { id: 'deck_h', title: 'Heart of the Country', audience: 'Everyone', count: 42, icon: '🌽', bg: 'linear-gradient(135deg, #EAB308, #1E293B)' }
+  { id: 'deck_h', title: 'Heart of the Country', audience: 'Everyone', count: 42, icon: '🌽', bg: 'linear-gradient(135deg, #EAB308, #1E293B)' },
+  { id: 'deck_holiday', title: 'Holiday Road Trip', audience: 'Everyone', count: 30, icon: '🎄', bg: 'linear-gradient(135deg, #DC2626, #1E293B)', price: '$0.99' }
 ];
 
 const GAME_MODES = [
@@ -1223,16 +1224,32 @@ class Router {
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
+        <!-- FEATURED ITEM: HOLIDAY ROAD TRIP DECK ($0.99) -->
+        <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:32px;">🎄</span>
+              <div>
+                <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Deck</strong>
+                <span style="font-size:12px;color:#CBD5E1;">30 Festive holiday sights & winter trees</span>
+              </div>
+            </div>
+            <span class="sign-badge" style="background:#F97316;color:white;font-size:13px;padding:5px 10px;">$0.99</span>
+          </div>
+          <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
+            🛒 UNLOCK DECK ($0.99) ▶
+          </button>
+        </div>
+
         <!-- LARGE PROMINENT ROAD SIGN STYLE UNDER CONSTRUCTION CARD -->
         <div class="road-sign-card" style="background:linear-gradient(180deg, #D97706, #B45309, #78350F);padding:28px;margin-bottom:16px;text-align:center;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <span style="font-size:38px;">🏪</span>
-            <span class="sign-badge" style="background:#F97316;color:white;font-size:12px;padding:4px 10px;">COMING SOON</span>
+            <span class="sign-badge" style="background:#F97316;color:white;font-size:12px;padding:4px 10px;">MORE SOON</span>
           </div>
-          <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 UNDER CONSTRUCTION 🚧</h2>
+          <h2 style="font-weight:900;font-size:22px;color:white;margin-bottom:10px;">🚧 SHOP MARKETPLACE 🚧</h2>
           <p style="font-size:14px;font-weight:800;color:#FEF3C7;line-height:1.5;">
-            The Shop is opening soon!<br>
-            Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and avatars!
+            Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and regional avatars!
           </p>
         </div>
       `;

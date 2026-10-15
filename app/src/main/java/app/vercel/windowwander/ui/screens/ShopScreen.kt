@@ -1,6 +1,7 @@
 package app.vercel.windowwander.ui.screens
 
 import android.os.Build
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,8 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.windowwander.R
+import app.vercel.windowwander.ui.components.BeveledGameButton
 import app.vercel.windowwander.ui.components.GradientPillNavigationBar
 import app.vercel.windowwander.ui.components.MainHomeBackground
+import app.vercel.windowwander.ui.theme.DeepNavy
+import app.vercel.windowwander.ui.theme.GoldWinner
 import app.vercel.windowwander.ui.theme.SunnyYellow
 import app.vercel.windowwander.ui.theme.SunnyYellowLight
 import app.vercel.windowwander.ui.theme.VividOrange
@@ -126,7 +133,71 @@ fun ShopScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // FEATURED ITEM: HOLIDAY ROAD TRIP DECK ($0.99)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                    shape = RoundedCornerShape(24.dp),
+                    border = BorderStroke(2.5.dp, SunnyYellow)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = "🎄", fontSize = 32.sp)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = "Holiday Road Trip Deck",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "30 Festive holiday sights & winter trees",
+                                        fontSize = 12.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(VividOrange)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Text(
+                                    text = "$0.99",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        BeveledGameButton(
+                            text = "🛒 UNLOCK DECK ($0.99) ▶",
+                            onClick = { /* Purchase / unlock Deck */ },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            buttonColor = SunnyYellow,
+                            bevelColor = GoldWinner,
+                            textColor = DeepNavy,
+                            fontSize = 15
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
 
                 // PROMINENT LARGE ROAD SIGN UNDER CONSTRUCTION CARD
                 Box(
@@ -168,7 +239,7 @@ fun ShopScreen(
                                         .padding(horizontal = 12.dp, vertical = 5.dp)
                                 ) {
                                     Text(
-                                        text = "COMING SOON",
+                                        text = "MORE SOON",
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Black,
                                         color = Color.White
@@ -179,8 +250,8 @@ fun ShopScreen(
                             Spacer(modifier = Modifier.height(18.dp))
 
                             Text(
-                                text = "🚧 UNDER CONSTRUCTION 🚧",
-                                fontSize = 22.sp,
+                                text = "🚧 SHOP MARKETPLACE 🚧",
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color.White,
                                 textAlign = TextAlign.Center
@@ -189,21 +260,21 @@ fun ShopScreen(
                             Spacer(modifier = Modifier.height(10.dp))
 
                             Text(
-                                text = "The Shop is opening soon!\nKeep earning XP on your road trips to unlock custom skins, tile stamps, and vehicle avatars!",
-                                fontSize = 14.sp,
+                                text = "Keep earning XP on your road trips to unlock custom vehicle skins, tile stamps, and regional avatars!",
+                                fontSize = 13.5.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFEF3C7),
                                 textAlign = TextAlign.Center,
-                                lineHeight = 20.sp
+                                lineHeight = 19.sp
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // FLOATING GRADIENT PILL 3D NAVIGATION BAR AT THE BOTTOM LIKE MAIN LOBBY
+            // FLOATING GRADIENT PILL 3D NAVIGATION BAR
             GradientPillNavigationBar(
                 currentScreenName = "shop",
                 isLoggedIn = isLoggedIn,

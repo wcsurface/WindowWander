@@ -399,6 +399,42 @@ object DeckRepository {
         p("mw42", "Sports Team Sticker", "Sports team sticker on a car", "signs", false, Region.MIDWEST)
     )
 
+    // -------------------------------------------------------------
+    // DECK HOLIDAY: HOLIDAY ROAD TRIP ($0.99 IN SHOP)
+    // -------------------------------------------------------------
+    val DECK_HOLIDAY_PROMPTS = listOf(
+        p("h1", "Inflatable Holiday Character", "Giant lawn inflatable mascot or character", "holiday"),
+        p("h2", "Tree on Car", "Christmas tree strapped to vehicle roof", "holiday"),
+        p("h3", "Lights On House", "House decorated with holiday lights", "holiday"),
+        p("h4", "Nativity Scene Display", "Lawn or church nativity scene", "holiday"),
+        p("h5", "Delivery Truck", "Package delivery truck out for holiday deliveries", "holiday"),
+        p("h6", "Giant Lit Tree", "Massive illuminated outdoor town Christmas tree", "holiday"),
+        p("h7", "Vehicle With Lights", "Car decorated with Christmas lights", "holiday"),
+        p("h8", "Holiday Sale Sign", "Storefront or billboard advertising holiday sales", "holiday"),
+        p("h9", "Santa Hat Driver", "Driver wearing a festive red Santa hat", "holiday"),
+        p("h10", "Open Christmas Sign", "Store or diner open on Christmas", "holiday"),
+        p("h11", "Car with Wreath", "Vehicle with a green wreath on grill or back", "holiday"),
+        p("h12", "Red Pickup Truck", "Classic red pickup truck", "holiday"),
+        p("h13", "Decorated Street Light", "Street light with garlands or wreaths", "holiday"),
+        p("h14", "Car Roof Luggage", "Car loaded with holiday luggage on roof", "holiday"),
+        p("h15", "Giant Light Star", "Illuminated holiday star display", "holiday"),
+        p("h16", "Airplane or Jet", "Plane flying overhead during holiday travel", "holiday"),
+        p("h17", "Shopping Center", "Bustling holiday shopping plaza or mall", "holiday"),
+        p("h18", "A Menorah", "Menorah display in window or public park", "holiday"),
+        p("h19", "Holiday Event Sign", "Banner or sign for winter festival or parade", "holiday"),
+        p("h20", "Vehicle with Antlers", "Car with reindeer antlers and red nose", "holiday"),
+        p("h21", "Church", "Church decorated for the holidays", "holiday"),
+        p("h22", "Frozen Lake", "Ice covered lake or pond along road", "holiday"),
+        p("h23", "Chimney Smoke", "Smoke rising from house chimney", "holiday"),
+        p("h24", "Wrapped Gifts", "Gifts visible in car or store window", "holiday"),
+        p("h25", "Green Car", "Festive green car", "holiday"),
+        p("h26", "Coffee Shop", "Coffee shop selling warm holiday drinks", "holiday"),
+        p("h27", "Tree Sale Sign", "Christmas tree lot or tree farm sign", "holiday"),
+        p("h28", "Snowplow", "Snowplow clearing winter roads", "holiday"),
+        p("h29", "Snow", "Snow on ground, trees, or road", "holiday"),
+        p("h30", "Yellow Traffic Sign", "Diamond warning sign", "holiday")
+    )
+
     val DECKS = listOf(
         Deck(
             id = "deck_a",
@@ -487,6 +523,18 @@ object DeckRepository {
             isFree = true,
             region = Region.MIDWEST,
             prompts = DECK_H_PROMPTS
+        ),
+        Deck(
+            id = "deck_holiday",
+            title = "Holiday Road Trip",
+            description = "Festive holiday lights, trees, and winter sights",
+            coverIcon = "🎄",
+            audience = "Everyone",
+            difficulty = "Medium",
+            isFree = false,
+            price = "$0.99",
+            region = Region.UNIVERSAL,
+            prompts = DECK_HOLIDAY_PROMPTS
         )
     )
 }
