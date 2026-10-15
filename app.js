@@ -1009,7 +1009,7 @@ class Router {
       setTheme('leaderboard-theme');
     } else if (this.currentScreen === 'stats') {
       setTheme('stats-theme');
-    } else if (['home', 'login', 'shop'].includes(this.currentScreen)) {
+    } else if (['home', 'login', 'shop', 'terms'].includes(this.currentScreen)) {
       setTheme('main-home-theme');
     } else if (this.currentScreen === 'game') {
       setTheme('deck-game-theme');
@@ -1642,8 +1642,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const roomParam = params.get('room');
   const privacyParam = params.get('privacy') || params.get('tab') || params.get('screen');
 
-  if (privacyParam && (privacyParam.toLowerCase().includes('privacy') || privacyParam === 'terms')) {
-    router.legalTab = 2; // Privacy tab
+  if (privacyParam) {
+    router.legalTab = 2; // Privacy tab by default
+    const pStr = privacyParam.toString().toLowerCase();
+    if (pStr.includes('faq')) router.legalTab = 0;
+    if (pStr.includes('term') || pStr.includes('tc')) router.legalTab = 1;
     router.currentScreen = 'terms';
     router.render();
   } else if (roomParam) {
