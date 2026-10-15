@@ -241,6 +241,7 @@ fun ScenicHighwayBackground(
     content: @Composable () -> Unit
 ) {
     val bgResId = when {
+        deckId == "deck_holiday" -> R.drawable.bg_holiday
         deckId == "deck_a" -> R.drawable.bg_classic_roadtrip
         deckId == "deck_b" -> R.drawable.bg_weird_roadtrip
         deckId == "deck_c" || region == Region.MOUNTAIN_WEST -> R.drawable.bg_rocky_mountains

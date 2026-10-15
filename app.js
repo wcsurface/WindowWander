@@ -972,6 +972,7 @@ class Router {
       document.body.classList.remove('main-home-theme');
       document.body.classList.add('deck-game-theme');
       const deckMap = {
+        'deck_holiday': 'bg_holiday.jpg',
         'deck_a': 'bg_classic_roadtrip.jpg',
         'deck_b': 'bg_weird_roadtrip.jpg',
         'deck_c': 'bg_rocky_mountains.jpg',

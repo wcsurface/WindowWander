@@ -1,9 +1,9 @@
-const CACHE_NAME = 'road-trip-bingo-v170';
+const CACHE_NAME = 'road-trip-bingo-v171';
 const ASSETS = [
   '/',
   'index.html',
-  'style.css?v=170',
-  'app.js?v=170',
+  'style.css?v=171',
+  'app.js?v=171',
   'manifest.json',
   'road_trip_bingo_animated_logo.gif',
   'nav_home_icon.png',
@@ -19,7 +19,8 @@ const ASSETS = [
   'bg_northeast.jpg',
   'bg_south.jpg',
   'bg_west_coast.jpg',
-  'bg_heartland.jpg'
+  'bg_heartland.jpg',
+  'bg_holiday.jpg'
 ];
 
 self.addEventListener('install', (event) => {
