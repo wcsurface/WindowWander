@@ -1,9 +1,9 @@
-const CACHE_NAME = 'road-trip-bingo-v182';
+const CACHE_NAME = 'road-trip-bingo-v200';
 const ASSETS = [
   '/',
   'index.html',
-  'style.css?v=182',
-  'app.js?v=182',
+  'style.css?v=200',
+  'app.js?v=200',
   'manifest.json',
   'road_trip_bingo_logo.png',
   'nav_home_icon.png',
@@ -34,20 +34,25 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
+        keys.map((key) => caches.delete(key))
       );
     }).then(() => self.clients.claim())
   );
 });
 
+// NETWORK-FIRST FETCH STRATEGY (ALWAYS FECHES FRESH ASSETS FROM VERCEL)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).then((networkResponse) => {
+      if (networkResponse && networkResponse.status === 200) {
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
+      }
+      return networkResponse;
+    }).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
