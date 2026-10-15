@@ -133,6 +133,7 @@ class MainActivity : ComponentActivity() {
                             selectedDeck = uiState.selectedDeck,
                             selectedGameMode = uiState.gameMode,
                             currentUserNickname = uiState.playerProfile.nickname,
+                            unlockedDeckIds = uiState.unlockedDeckIds,
                             onSelectDeck = { deck -> viewModel.selectDeck(deck) },
                             onSelectGameMode = { gameMode -> viewModel.selectGameMode(gameMode) },
                             onCreateRoom = { viewModel.createLocalQuickPlayRoom() },

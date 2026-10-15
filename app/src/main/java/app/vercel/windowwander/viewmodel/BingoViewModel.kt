@@ -143,6 +143,8 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun selectDeck(deck: Deck) {
+        val isUnlocked = deck.isFree || deck.id in _uiState.value.unlockedDeckIds
+        if (!isUnlocked) return
         _uiState.update { it.copy(selectedDeck = deck) }
         updateRoomSettings(deck = deck)
     }
