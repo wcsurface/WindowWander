@@ -995,38 +995,24 @@ class Router {
     }
 
     // SETTINGS PAGE HAS DEDICATED DOODLE BACKGROUND THEME
+    const appContainer = document.getElementById('app');
+    const setTheme = (themeClass) => {
+      document.body.className = themeClass;
+      if (appContainer) appContainer.className = themeClass;
+      document.body.style.backgroundImage = '';
+      if (appContainer) appContainer.style.backgroundImage = '';
+    };
+
     if (this.currentScreen === 'settings') {
-      document.body.classList.add('settings-theme');
-      document.body.classList.remove('leaderboard-theme');
-      document.body.classList.remove('stats-theme');
-      document.body.classList.remove('main-home-theme');
-      document.body.classList.remove('deck-game-theme');
-      document.body.style.backgroundImage = '';
+      setTheme('settings-theme');
     } else if (this.currentScreen === 'leaderboard') {
-      document.body.classList.add('leaderboard-theme');
-      document.body.classList.remove('settings-theme');
-      document.body.classList.remove('stats-theme');
-      document.body.classList.remove('main-home-theme');
-      document.body.classList.remove('deck-game-theme');
-      document.body.style.backgroundImage = '';
+      setTheme('leaderboard-theme');
     } else if (this.currentScreen === 'stats') {
-      document.body.classList.add('stats-theme');
-      document.body.classList.remove('settings-theme');
-      document.body.classList.remove('leaderboard-theme');
-      document.body.classList.remove('main-home-theme');
-      document.body.classList.remove('deck-game-theme');
-      document.body.style.backgroundImage = '';
+      setTheme('stats-theme');
     } else if (['home', 'login', 'shop'].includes(this.currentScreen)) {
-      document.body.classList.remove('settings-theme');
-      document.body.classList.remove('leaderboard-theme');
-      document.body.classList.add('main-home-theme');
-      document.body.classList.remove('deck-game-theme');
-      document.body.style.backgroundImage = '';
+      setTheme('main-home-theme');
     } else if (this.currentScreen === 'game') {
-      document.body.classList.remove('settings-theme');
-      document.body.classList.remove('leaderboard-theme');
-      document.body.classList.remove('main-home-theme');
-      document.body.classList.add('deck-game-theme');
+      setTheme('deck-game-theme');
       const deckMap = {
         'deck_holiday': 'bg_holiday.jpg',
         'deck_a': 'bg_classic_roadtrip.jpg',
@@ -1040,12 +1026,9 @@ class Router {
       };
       const bgImg = deckMap[this.selectedDeck.id] || 'bg_classic_roadtrip.jpg';
       document.body.style.backgroundImage = `url('${bgImg}')`;
+      if (appContainer) appContainer.style.backgroundImage = `url('${bgImg}')`;
     } else {
-      document.body.classList.remove('settings-theme');
-      document.body.classList.remove('leaderboard-theme');
-      document.body.classList.remove('main-home-theme');
-      document.body.classList.remove('deck-game-theme');
-      document.body.style.backgroundImage = '';
+      setTheme('');
     }
 
     if (this.currentScreen === 'home') {
