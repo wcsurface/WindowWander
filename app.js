@@ -671,6 +671,25 @@ class Router {
     this.render();
   }
 
+  checkNicknameInput(val) {
+    const btn = document.getElementById('save-nickname-btn');
+    if (btn) {
+      const hasChanged = val.trim() !== '' && val.trim() !== this.userNickname;
+      btn.disabled = !hasChanged;
+      btn.style.opacity = hasChanged ? '1' : '0.35';
+      btn.style.cursor = hasChanged ? 'pointer' : 'not-allowed';
+    }
+  }
+
+  saveNicknameFromInput() {
+    const input = document.getElementById('nickname-settings-input');
+    if (input && input.value.trim() !== '' && input.value.trim() !== this.userNickname) {
+      this.userNickname = input.value.trim();
+      localStorage.setItem('bingo_nickname', this.userNickname);
+      this.render();
+    }
+  }
+
   navigate(screen) {
     this.currentScreen = screen;
     BackgroundMusicEngine.syncState(screen);
@@ -1428,6 +1447,13 @@ class Router {
           <h2 style="font-weight:900;">⚙️ Settings</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <h4 style="margin-bottom:8px;">Player Nickname</h4>
+          <input id="nickname-settings-input" type="text" value="${this.userNickname}" oninput="router.checkNicknameInput(this.value)" style="width:100%;height:44px;border-radius:12px;background:#0F172A;border:2px solid #FBBF24;color:white;padding:0 12px;font-size:14px;font-weight:800;margin-bottom:10px;" />
+          <button id="save-nickname-btn" class="btn btn-orange" style="width:auto;min-height:38px;padding:0 16px;font-size:13px;opacity:0.35;cursor:not-allowed;" disabled onclick="router.saveNicknameFromInput()">Save Nickname</button>
+        </div>
+
         <div class="card">
           <h4>Passenger Safety Reminder</h4>
           <p style="font-size:12px;color:#94A3B8;margin-top:6px;">Always play from passenger seats. Drivers keep full attention on the road.</p>

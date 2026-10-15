@@ -153,9 +153,17 @@ fun SettingsScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
+                    val hasNicknameChanged = nicknameInput.trim() != currentNickname.trim() && nicknameInput.isNotBlank()
+
                     Button(
-                        onClick = { onUpdateNickname(nicknameInput) },
-                        colors = ButtonDefaults.buttonColors(containerColor = VividOrange),
+                        onClick = { if (hasNicknameChanged) onUpdateNickname(nicknameInput.trim()) },
+                        enabled = hasNicknameChanged,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = VividOrange,
+                            disabledContainerColor = VividOrange.copy(alpha = 0.35f),
+                            contentColor = Color.White,
+                            disabledContentColor = Color.White.copy(alpha = 0.4f)
+                        ),
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(text = "Save Nickname", fontWeight = FontWeight.Bold)
