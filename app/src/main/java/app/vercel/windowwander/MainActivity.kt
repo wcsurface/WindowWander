@@ -44,11 +44,11 @@ class MainActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
 
             // BACKGROUND MUSIC SYNC ACROSS SCREENS
-            LaunchedEffect(uiState.currentScreen, uiState.soundEnabled) {
+            LaunchedEffect(uiState.currentScreen, uiState.musicEnabled) {
                 BackgroundMusicManager.syncMusicState(
                     context = this@MainActivity,
                     currentScreen = uiState.currentScreen,
-                    soundEnabled = uiState.soundEnabled
+                    soundEnabled = uiState.musicEnabled
                 )
             }
 
@@ -184,17 +184,15 @@ class MainActivity : ComponentActivity() {
                             currentNickname = uiState.playerProfile.nickname,
                             selectedRegion = uiState.selectedRegion,
                             soundEnabled = uiState.soundEnabled,
+                            musicEnabled = uiState.musicEnabled,
                             hapticsEnabled = uiState.hapticsEnabled,
-                            confirmTapEnabled = uiState.confirmTapEnabled,
-                            kidsModeEasy = uiState.kidsModeEasy,
                             darkMode = uiState.darkMode,
                             isLoggedIn = uiState.isLoggedIn,
                             onUpdateNickname = { name -> viewModel.updateProfile(nickname = name, avatarId = uiState.playerProfile.avatarId) },
                             onSelectRegion = { region -> viewModel.setRegion(region) },
                             onToggleSound = { enabled -> viewModel.toggleSound(enabled) },
+                            onToggleMusic = { enabled -> viewModel.toggleMusic(enabled) },
                             onToggleHaptics = { enabled -> viewModel.toggleHaptics(enabled) },
-                            onToggleConfirmTap = { enabled -> viewModel.toggleConfirmTap(enabled) },
-                            onToggleKidsMode = { enabled -> viewModel.toggleKidsMode(enabled) },
                             onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
                             onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },
                             onNavigateShop = { viewModel.navigateTo(Screen.SHOP) },
@@ -219,7 +217,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        BackgroundMusicManager.syncMusicState(this, viewModel.uiState.value.currentScreen, viewModel.uiState.value.soundEnabled)
+        BackgroundMusicManager.syncMusicState(this, viewModel.uiState.value.currentScreen, viewModel.uiState.value.musicEnabled)
     }
 
     override fun onDestroy() {

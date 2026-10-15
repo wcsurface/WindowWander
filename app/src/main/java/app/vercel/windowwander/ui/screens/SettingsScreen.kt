@@ -55,17 +55,15 @@ fun SettingsScreen(
     currentNickname: String,
     selectedRegion: Region,
     soundEnabled: Boolean,
+    musicEnabled: Boolean = true,
     hapticsEnabled: Boolean,
-    confirmTapEnabled: Boolean,
-    kidsModeEasy: Boolean,
     darkMode: Boolean,
     isLoggedIn: Boolean = false,
     onUpdateNickname: (String) -> Unit,
     onSelectRegion: (Region) -> Unit,
     onToggleSound: (Boolean) -> Unit,
+    onToggleMusic: (Boolean) -> Unit = {},
     onToggleHaptics: (Boolean) -> Unit,
-    onToggleConfirmTap: (Boolean) -> Unit,
-    onToggleKidsMode: (Boolean) -> Unit,
     onNavigateHome: () -> Unit = {},
     onNavigateLogin: () -> Unit = {},
     onNavigateShop: () -> Unit = {},
@@ -95,7 +93,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 104.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 38.dp, bottom = 104.dp)
         ) {
             // TOP HEADER
             Row(
@@ -250,36 +248,23 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Text(text = "Background Music", fontWeight = FontWeight.Medium, color = Color.White)
+                        Switch(
+                            checked = musicEnabled,
+                            onCheckedChange = onToggleMusic,
+                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(text = "Haptic Vibrations", fontWeight = FontWeight.Medium, color = Color.White)
                         Switch(
                             checked = hapticsEnabled,
                             onCheckedChange = onToggleHaptics,
-                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Confirm Tap Selections", fontWeight = FontWeight.Medium, color = Color.White)
-                        Switch(
-                            checked = confirmTapEnabled,
-                            onCheckedChange = onToggleConfirmTap,
-                            colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Easier Kids Mode", fontWeight = FontWeight.Medium, color = Color.White)
-                        Switch(
-                            checked = kidsModeEasy,
-                            onCheckedChange = onToggleKidsMode,
                             colors = SwitchDefaults.colors(checkedThumbColor = SunnyYellow)
                         )
                     }

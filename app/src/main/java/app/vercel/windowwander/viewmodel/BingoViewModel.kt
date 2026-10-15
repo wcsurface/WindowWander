@@ -48,6 +48,7 @@ data class BingoUiState(
     val isSearchingOpponent: Boolean = false,
     val opponentFoundName: String? = null,
     val soundEnabled: Boolean = true,
+    val musicEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val confirmTapEnabled: Boolean = false,
     val kidsModeEasy: Boolean = false,
@@ -81,6 +82,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 isLoggedIn = loggedIn,
                 selectedRegion = preferences.getSelectedRegion(),
                 soundEnabled = preferences.isSoundEnabled(),
+                musicEnabled = preferences.isMusicEnabled(),
                 hapticsEnabled = preferences.isHapticsEnabled(),
                 confirmTapEnabled = preferences.isConfirmTapEnabled(),
                 kidsModeEasy = preferences.isKidsModeEasy(),
@@ -519,6 +521,11 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     fun toggleSound(enabled: Boolean) {
         preferences.setSoundEnabled(enabled)
         _uiState.update { it.copy(soundEnabled = enabled) }
+    }
+
+    fun toggleMusic(enabled: Boolean) {
+        preferences.setMusicEnabled(enabled)
+        _uiState.update { it.copy(musicEnabled = enabled) }
     }
 
     fun toggleHaptics(enabled: Boolean) {

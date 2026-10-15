@@ -1454,6 +1454,21 @@ class Router {
           <button id="save-nickname-btn" class="btn btn-orange" style="width:auto;min-height:38px;padding:0 16px;font-size:13px;opacity:0.35;cursor:not-allowed;" disabled onclick="router.saveNicknameFromInput()">Save Nickname</button>
         </div>
 
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="font-weight:800;color:white;">Sound Effects</span>
+            <input type="checkbox" ${this.soundEnabled !== false ? 'checked' : ''} onchange="router.soundEnabled=this.checked;localStorage.setItem('bingo_sound',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="font-weight:800;color:white;">Background Music</span>
+            <input type="checkbox" ${this.musicEnabled !== false ? 'checked' : ''} onchange="router.musicEnabled=this.checked;localStorage.setItem('bingo_music',this.checked);BackgroundMusicEngine.syncState(router.currentScreen);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:800;color:white;">Haptic Vibrations</span>
+            <input type="checkbox" ${this.hapticsEnabled !== false ? 'checked' : ''} onchange="router.hapticsEnabled=this.checked;localStorage.setItem('bingo_haptics',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+          </div>
+        </div>
+
         <div class="card">
           <h4>Passenger Safety Reminder</h4>
           <p style="font-size:12px;color:#94A3B8;margin-top:6px;">Always play from passenger seats. Drivers keep full attention on the road.</p>

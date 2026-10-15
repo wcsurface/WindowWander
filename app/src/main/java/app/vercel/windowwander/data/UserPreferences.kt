@@ -108,6 +108,9 @@ class UserPreferences(context: Context) {
     fun isSoundEnabled(): Boolean = prefs.getBoolean("sound_enabled", true)
     fun setSoundEnabled(enabled: Boolean) = prefs.edit().putBoolean("sound_enabled", enabled).apply()
 
+    fun isMusicEnabled(): Boolean = prefs.getBoolean("music_enabled", true)
+    fun setMusicEnabled(enabled: Boolean) = prefs.edit().putBoolean("music_enabled", enabled).apply()
+
     fun isHapticsEnabled(): Boolean = prefs.getBoolean("haptics_enabled", true)
     fun setHapticsEnabled(enabled: Boolean) = prefs.edit().putBoolean("haptics_enabled", enabled).apply()
 
