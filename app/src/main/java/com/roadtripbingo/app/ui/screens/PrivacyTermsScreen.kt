@@ -240,7 +240,7 @@ fun PrivacyTermsScreen(
 
                         LegalSection(
                             title = "4. Contact Us",
-                            content = "For questions, feedback, or support, contact us at roadtripbingo@gmail.com."
+                            content = "For questions, feedback, or support, contact us at roadtripbingogame@gmail.com."
                         )
                     }
                 }

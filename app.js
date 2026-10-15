@@ -1668,7 +1668,7 @@ class Router {
             <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">Your game progress is stored locally on your device. Creating an account enables secure cloud backup.</p>
 
             <p style="font-weight:900;color:white;margin-bottom:2px;">3. Contact Us</p>
-            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">For questions, feedback, or support, contact us at roadtripbingo@gmail.com.</p>
+            <p style="font-size:12.5px;color:#CBD5E1;margin-bottom:12px;">For questions, feedback, or support, contact us at roadtripbingogame@gmail.com.</p>
           `}
         </div>
       `;
@@ -1687,7 +1687,7 @@ class Router {
 
           <h4 style="color:white;margin-bottom:6px;">📋 How to Request Account Deletion:</h4>
           <p style="font-size:12.5px;color:#CBD5E1;line-height:1.5;margin-bottom:14px;">
-            1. Send an email to <strong>roadtripbingo@gmail.com</strong> with the subject line <strong>"Account Deletion Request"</strong>.<br>
+            1. Send an email to <strong>roadtripbingogame@gmail.com</strong> with the subject line <strong>"Account Deletion Request"</strong>.<br>
             2. Include your registered <strong>Username</strong> or registered <strong>Email Address</strong> in the message body.
           </p>
 

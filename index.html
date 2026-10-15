@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=210">
+  <link rel="stylesheet" href="style.css?v=211">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body class="main-home-theme">
@@ -102,14 +102,14 @@
     </footer>
   </div>
 
-  <script src="app.js?v=210"></script>
+  <script src="app.js?v=211"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         if (window.caches) {
           caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))));
         }
-        navigator.serviceWorker.register('sw.js?v=210').catch(err => console.log('SW Registration failed:', err));
+        navigator.serviceWorker.register('sw.js?v=211').catch(err => console.log('SW Registration failed:', err));
       });
     }
   </script>
