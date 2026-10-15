@@ -1677,7 +1677,8 @@ class Router {
   }
 }
 
-const router = new Router();
+window.router = new Router();
+const router = window.router;
 
 function initApp() {
   const params = new URLSearchParams(window.location.search);
