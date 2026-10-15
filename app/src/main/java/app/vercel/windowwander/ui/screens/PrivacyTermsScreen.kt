@@ -177,8 +177,8 @@ fun PrivacyTermsScreen(
                         )
 
                         FaqItem(
-                            q = "What are Regional Decks?",
-                            a = "Road Trip Bingo includes regional decks specifically tailored to different parts of America, including Mountain West, Desert Southwest, Northeast, The South, West Coast, and Heart of the Country!"
+                            q = "What are Regional Cards?",
+                            a = "Road Trip Bingo includes regional cards specifically tailored to different parts of America, including Mountain West, Desert Southwest, Northeast, The South, West Coast, and Heart of the Country!"
                         )
 
                         FaqItem(

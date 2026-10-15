@@ -164,7 +164,7 @@ fun ShopScreen(
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Column {
                                     Text(
-                                        text = "Holiday Road Trip Deck",
+                                        text = "Holiday Road Trip Card",
                                         fontSize = 17.sp,
                                         fontWeight = FontWeight.Black,
                                         color = Color.White
@@ -210,7 +210,7 @@ fun ShopScreen(
                             )
                         } else {
                             BeveledGameButton(
-                                text = "🛒 UNLOCK DECK ($0.99) ▶",
+                                text = "🛒 UNLOCK CARD ($0.99) ▶",
                                 onClick = { onUnlockDeck("deck_holiday") },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -328,7 +328,7 @@ fun ShopScreen(
                                         color = SunnyYellow
                                     )
                                     Text(
-                                        text = "Unlimited Games + No Ads + All Decks!",
+                                        text = "Unlimited Games + No Ads + All Cards!",
                                         fontSize = 12.sp,
                                         color = Color.White.copy(alpha = 0.8f)
                                     )
@@ -354,7 +354,7 @@ fun ShopScreen(
 
                         if (isRoadWarriorPlusUnlocked) {
                             BeveledGameButton(
-                                text = "✓ ALL DECKS & UNLIMITED GAMES ACTIVE",
+                                text = "✓ ALL CARDS & UNLIMITED GAMES ACTIVE",
                                 onClick = {},
                                 modifier = Modifier
                                     .fillMaxWidth()

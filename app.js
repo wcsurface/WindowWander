@@ -1047,13 +1047,13 @@ class Router {
             <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">Stats & Badges</div>
           </div>
 
-          <!-- DECKS CARD (18PX TITLE & 12.5PX SUBTITLE) -->
+          <!-- CARDS ROAD SIGN (18PX TITLE & 12.5PX SUBTITLE) -->
           <div class="road-sign-card sign-teal" onclick="router.navigate('decks')" style="cursor:pointer;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:26px;">🎴</span>
             </div>
-            <div style="font-weight:900;font-size:18px;margin-top:10px;">Decks</div>
-            <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">8 Decks!</div>
+            <div style="font-weight:900;font-size:18px;margin-top:10px;">Cards</div>
+            <div style="font-size:12.5px;color:#E2E8F0;font-weight:700;">8 Cards!</div>
           </div>
         </div>
 
@@ -1251,13 +1251,13 @@ class Router {
           <img src="road_trip_bingo_animated_logo.gif" alt="Road Trip Bingo Animated Logo" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.3));" />
         </div>
 
-        <!-- ITEM 1 (TOP FEATURED): HOLIDAY ROAD TRIP DECK ($0.99) -->
+        <!-- ITEM 1 (TOP FEATURED): HOLIDAY ROAD TRIP CARD ($0.99) -->
         <div class="card" style="background:#0F172A;border:2px solid #FBBF24;padding:20px;margin-bottom:16px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="font-size:32px;">🎄</span>
               <div>
-                <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Deck</strong>
+                <strong style="font-size:17px;color:white;display:block;">Holiday Road Trip Card</strong>
                 <span style="font-size:12px;color:#CBD5E1;">Festive sights & winter lights</span>
               </div>
             </div>
@@ -1269,7 +1269,7 @@ class Router {
             </button>
           ` : `
             <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.unlockDeck('deck_holiday')">
-              🛒 UNLOCK DECK ($0.99) ▶
+              🛒 UNLOCK CARD ($0.99) ▶
             </button>
           `}
         </div>
@@ -1304,14 +1304,14 @@ class Router {
               <span style="font-size:32px;">👑</span>
               <div>
                 <strong style="font-size:17px;color:#FBBF24;display:block;">Road Warrior Plus</strong>
-                <span style="font-size:12px;color:#CBD5E1;">Unlimited Games + No Ads + All Decks!</span>
+                <span style="font-size:12px;color:#CBD5E1;">Unlimited Games + No Ads + All Cards!</span>
               </div>
             </div>
             <span class="sign-badge" style="background:${this.isRoadWarriorPlus ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${this.isRoadWarriorPlus ? 'ACTIVE' : '$3.99'}</span>
           </div>
           ${this.isRoadWarriorPlus ? `
             <button class="btn btn-teal" style="min-height:48px;font-size:14px;width:100%;">
-              ✓ ALL DECKS & UNLIMITED GAMES ACTIVE
+              ✓ ALL CARDS & UNLIMITED GAMES ACTIVE
             </button>
           ` : `
             <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarriorPlus()">
@@ -1488,7 +1488,7 @@ class Router {
     } else if (this.currentScreen === 'decks') {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
-          <h2 style="font-weight:900;">🎴 Decks</h2>
+          <h2 style="font-weight:900;">🎴 Cards</h2>
           <button class="back-pill" onclick="router.navigate('home')">Back</button>
         </div>
         ${DECKS.map(d => {
@@ -1502,7 +1502,7 @@ class Router {
               <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">Distinct Roadside Prompts</p>
               <div style="display:flex;justify-content:flex-end;align-items:center;">
                 ${isUnlocked ? `
-                  <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY DECK ▶</button>
+                  <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY CARD ▶</button>
                 ` : `
                   <button class="btn btn-yellow" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;color:#0F172A;font-weight:900;" onclick="router.navigate('shop')">🔒 $0.99 IN SHOP</button>
                 `}

@@ -199,10 +199,10 @@ fun HomeScreen(
                         signColor = Color(0xFF0D9488)
                     )
 
-                    // DECKS ROAD SIGN (18SP TITLE & 12.5SP SUBTITLE MATCHING LEADERBOARD)
+                    // CARDS ROAD SIGN (18SP TITLE & 12.5SP SUBTITLE MATCHING LEADERBOARD)
                     CartoonRoadSignCard(
-                        title = "Decks",
-                        subtitle = "8 Decks!",
+                        title = "Cards",
+                        subtitle = "8 Cards!",
                         icon = "🎴",
                         badgeText = null,
                         titleFontSize = 18f,

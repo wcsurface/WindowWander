@@ -57,7 +57,7 @@ fun DeckSelectScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🎴 Decks",
+                text = "🎴 Cards",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White
@@ -152,7 +152,7 @@ fun DeckSelectScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(
-                                        text = "PLAY DECK ▶",
+                                        text = "PLAY CARD ▶",
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 12.sp,
                                         color = Color.White

@@ -250,10 +250,10 @@ fun MultiplayerScreen(
                             onExpandedChange = { deckDropdownExpanded = !deckDropdownExpanded }
                         ) {
                             OutlinedTextField(
-                                value = "🎴 Deck: ${hostChosenDeck.title}",
+                                value = "🎴 Card: ${hostChosenDeck.title}",
                                 onValueChange = {},
                                 readOnly = true,
-                                label = { Text("Game Deck Choice (Host Only)", color = SunnyYellow) },
+                                label = { Text("Game Card Choice (Host Only)", color = SunnyYellow) },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = deckDropdownExpanded) },
                                 modifier = Modifier.menuAnchor().fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
