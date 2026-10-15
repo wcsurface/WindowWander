@@ -1640,7 +1640,13 @@ const router = new Router();
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
-  if (roomParam) {
+  const privacyParam = params.get('privacy') || params.get('tab') || params.get('screen');
+
+  if (privacyParam && (privacyParam.toLowerCase().includes('privacy') || privacyParam === 'terms')) {
+    router.legalTab = 2; // Privacy tab
+    router.currentScreen = 'terms';
+    router.render();
+  } else if (roomParam) {
     router.joinCarRoom(roomParam);
   } else {
     router.render();
