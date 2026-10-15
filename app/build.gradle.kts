@@ -51,6 +51,9 @@ dependencies {
     // GOOGLE ADMOB ADS SDK
     implementation("com.google.android.gms:play-services-ads:23.6.0")
 
+    // GOOGLE PLAY BILLING LIBRARY FOR IN-APP PURCHASES
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
+
     // COIL FOR ANIMATED GIF RENDERING
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("io.coil-kt:coil-gif:2.6.0")
