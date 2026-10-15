@@ -1143,25 +1143,25 @@ class Router {
 
         <!-- IN-CAR PLAY MODAL -->
         ${this.showInCarModal ? `
-          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="window.router.showInCarModal=false;router.showJoinCodeInput=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 ROAD TRIP BINGO!</h2>
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Play bingo with passengers in your car!</p>
 
               ${!this.showJoinCodeInput ? `
-                <button class="btn btn-mockup-play" style="margin-bottom:12px;font-size:16px;" onclick="router.startCarRoomFromHome()">
+                <button class="btn btn-mockup-play" style="margin-bottom:12px;font-size:16px;" onclick="window.router.startCarRoomFromHome()">
                   🚗 START A GAME (HOST)
                 </button>
-                <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;font-size:16px;" onclick="router.showJoinCodeInput=true;router.render();">
+                <button class="btn btn-teal btn-beveled" style="margin-bottom:14px;font-size:16px;" onclick="window.router.showJoinCodeInput=true;router.render();">
                   📱 JOIN A GAME (CODE)
                 </button>
               ` : `
                 <p style="font-size:13px;font-weight:800;color:white;margin-bottom:8px;">Enter 4-Letter Code from Host:</p>
                 <input id="in-car-code-input" type="text" maxlength="4" placeholder="e.g. ROAD" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;margin-bottom:14px;" />
-                <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;" onclick="router.joinCarRoom(document.getElementById('in-car-code-input').value)">
+                <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;" onclick="window.router.joinCarRoom(document.getElementById('in-car-code-input').value)">
                   JOIN CAR ROOM ▶
                 </button>
-                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showJoinCodeInput=false;router.render();">
+                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="window.router.showJoinCodeInput=false;router.render();">
                   ◀ Back
                 </button>
               `}
@@ -1171,17 +1171,17 @@ class Router {
 
         <!-- DAILY GAME LIMIT / REWARDED AD PROMPT MODAL -->
         ${this.showDailyLimitModal ? `
-          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showDailyLimitModal=false;router.render();">
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="window.router.showDailyLimitModal=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🚗 DAILY GAMES LIMIT</h2>
               <p style="font-size:14px;font-weight:800;color:white;line-height:1.5;margin-bottom:18px;">
                 Want another round on this road trip?<br>
                 Watch a quick video to unlock 2 more games instantly!
               </p>
-              <button class="btn btn-orange btn-beveled" style="font-size:15px;margin-bottom:10px;" onclick="router.watchRewardedAd();">
+              <button class="btn btn-orange btn-beveled" style="font-size:15px;margin-bottom:10px;" onclick="window.router.watchRewardedAd();">
                 🎬 WATCH AD TO UNLOCK +2 GAMES ▶
               </button>
-              <button style="background:none;border:none;color:#94A3B8;font-size:13px;font-weight:700;cursor:pointer;" onclick="router.showDailyLimitModal=false;router.render();">
+              <button style="background:none;border:none;color:#94A3B8;font-size:13px;font-weight:700;cursor:pointer;" onclick="window.router.showDailyLimitModal=false;router.render();">
                 Cancel
               </button>
             </div>
@@ -1190,14 +1190,14 @@ class Router {
 
         <!-- ONLINE MULTIPLAYER MODAL OVERLAY -->
         ${this.showOnlineModal && !this.isSearchingOpponent ? `
-          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="router.showOnlineModal=false;router.render();">
+          <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:300;" onclick="window.router.showOnlineModal=false;router.render();">
             <div class="card" style="text-align:center;max-width:380px;width:100%;padding:24px;" onclick="event.stopPropagation();">
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">🌐 ONLINE MULTIPLAYER</h2>
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:16px;">Play Classic Bingo against online passengers across America!</p>
 
               <div style="margin-bottom:14px;text-align:left;">
                 <label style="font-size:11px;font-weight:900;color:#F59E0B;display:block;margin-bottom:4px;">🎴 SELECT DECK / REGION</label>
-                <select id="online-deck-select" onchange="router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
+                <select id="online-deck-select" onchange="window.router.selectedDeck=DECKS.find(d=>d.id===this.value)" style="width:100%;height:48px;border-radius:14px;background:#0F172A;color:white;border:2px solid #F59E0B;padding:0 12px;font-size:14px;font-weight:800;">
                   ${DECKS.map(d => `<option value="${d.id}" ${d.id===this.selectedDeck.id ? 'selected' : ''}>🎴 ${d.title} (${d.audience})</option>`).join('')}
                 </select>
               </div>
@@ -1206,7 +1206,7 @@ class Router {
                 🎯 Rule: Classic Bingo (Line Win)
               </div>
 
-              <button class="btn btn-orange btn-beveled" style="font-size:18px;" onclick="router.startOnlineMatchmaking()">
+              <button class="btn btn-orange btn-beveled" style="font-size:18px;" onclick="window.router.startOnlineMatchmaking()">
                 START GAME ▶
               </button>
             </div>
@@ -1221,7 +1221,7 @@ class Router {
               ${!this.opponentName ? `
                 <h2 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">SEARCHING FOR OPPONENT...</h2>
                 <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Matching with another passenger traveling in America...</p>
-                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.cancelMatchmaking()">Cancel Search</button>
+                <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="window.router.cancelMatchmaking()">Cancel Search</button>
               ` : `
                 <h2 style="font-weight:900;color:#10B981;margin-bottom:6px;">OPPONENT FOUND!</h2>
                 <p style="font-size:16px;font-weight:800;color:white;margin-bottom:6px;">Match: ${this.opponentName}</p>
@@ -1238,7 +1238,7 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">🚗 Road Trip Bingo!</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div class="card" style="text-align:center;padding:24px;">
@@ -1259,7 +1259,7 @@ class Router {
           </div>
 
           ${isHost ? `
-            <button class="btn btn-mockup-play" style="min-height:56px;font-size:18px;" onclick="router.hostLaunchGame()">
+            <button class="btn btn-mockup-play" style="min-height:56px;font-size:18px;" onclick="window.router.hostLaunchGame()">
               🚀 LAUNCH GAME NOW ▶
             </button>
           ` : `
@@ -1273,7 +1273,7 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">${this.isLoggedIn ? '👤 Account' : '🔑 Log In / Join'}</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
@@ -1288,7 +1288,7 @@ class Router {
             <input id="web-user-input" type="text" placeholder="Username / Email" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:12px;" />
             <input id="web-pass-input" type="password" placeholder="Password" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:18px;" />
 
-            <button class="btn btn-mockup-play" style="min-height:54px;font-size:18px;margin-bottom:12px;" onclick="router.loginUser(document.getElementById('web-user-input').value, document.getElementById('web-pass-input').value)">
+            <button class="btn btn-mockup-play" style="min-height:54px;font-size:18px;margin-bottom:12px;" onclick="window.router.loginUser(document.getElementById('web-user-input').value, document.getElementById('web-pass-input').value)">
               🔑 LOG IN
             </button>
           </div>
@@ -1297,7 +1297,7 @@ class Router {
             <h3 style="font-weight:900;color:#FBBF24;margin-bottom:6px;">👤 CURRENTLY LOGGED IN</h3>
             <h2 style="font-weight:900;color:white;margin-bottom:4px;font-size:24px;">${this.userNickname}</h2>
             <p style="font-size:13px;color:#FBBF24;font-weight:800;margin-bottom:16px;">Level ${Math.floor(this.stats.xp/100)+1} Explorer • ${this.stats.xp} XP</p>
-            <button class="btn btn-orange btn-beveled" style="min-height:54px;font-size:18px;" onclick="router.logoutUser()">
+            <button class="btn btn-orange btn-beveled" style="min-height:54px;font-size:18px;" onclick="window.router.logoutUser()">
               🚪 LOG OUT
             </button>
           </div>
@@ -1307,7 +1307,7 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">🏪 Shop</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:transparent;">
@@ -1327,11 +1327,11 @@ class Router {
             <span class="sign-badge" style="background:${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? '#10B981' : '#F97316'};color:white;font-size:13px;padding:5px 10px;">${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? 'UNLOCKED' : '$0.99'}</span>
           </div>
           ${(this.unlockedDecks.includes('deck_holiday') || this.isRoadWarriorPlus) ? `
-            <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
+            <button class="btn btn-teal" style="min-height:48px;font-size:15px;width:100%;" onclick="window.router.selectDeckAndPlay(DECKS.find(x=>x.id==='deck_holiday'))">
               ✓ UNLOCKED & READY TO PLAY ▶
             </button>
           ` : `
-            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.unlockDeck('deck_holiday')">
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="window.router.unlockDeck('deck_holiday')">
               🛒 UNLOCK CARD ($0.99) ▶
             </button>
           `}
@@ -1354,7 +1354,7 @@ class Router {
               ✓ UNLIMITED GAMES & NO ADS ACTIVE
             </button>
           ` : `
-            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarrior()">
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="window.router.purchaseRoadWarrior()">
               🛒 UNLOCK ROAD WARRIOR ($1.99) ▶
             </button>
           `}
@@ -1377,7 +1377,7 @@ class Router {
               ✓ ALL CARDS & UNLIMITED GAMES ACTIVE
             </button>
           ` : `
-            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="router.purchaseRoadWarriorPlus()">
+            <button class="btn btn-mockup-play" style="min-height:48px;font-size:15px;width:100%;" onclick="window.router.purchaseRoadWarriorPlus()">
               👑 UNLOCK ROAD WARRIOR PLUS ($3.99) ▶
             </button>
           `}
@@ -1399,14 +1399,14 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;color:white;">🏆 Leaderboard</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#0F172A;padding:4px;border-radius:16px;margin-bottom:16px;">
-          <button onclick="router.leaderboardTab=0;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===0 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===0 ? '#0F172A' : 'white'};">
+          <button onclick="window.router.leaderboardTab=0;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===0 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===0 ? '#0F172A' : 'white'};">
             ⭐ Total Points (XP)
           </button>
-          <button onclick="router.leaderboardTab=1;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===1 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===1 ? '#0F172A' : 'white'};">
+          <button onclick="window.router.leaderboardTab=1;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===1 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===1 ? '#0F172A' : 'white'};">
             👀 Items Found
           </button>
         </div>
@@ -1437,8 +1437,8 @@ class Router {
 
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:12px;">
-          <button class="back-pill" onclick="router.navigate('home')">◀ Exit</button>
-          <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="router.undoLastTap()">↩ Undo</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">◀ Exit</button>
+          <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="window.router.undoLastTap()">↩ Undo</button>
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#E2E8F0;margin-bottom:4px;font-weight:700;">
@@ -1461,7 +1461,7 @@ class Router {
         <div class="bingo-grid">
           ${this.board.map(t => {
             if (t.isCenter) {
-              return `<div class="tile center" onclick="router.toggleTile(${t.index}, event)">⭐<br>FREE</div>`;
+              return `<div class="tile center" onclick="window.router.toggleTile(${t.index}, event)">⭐<br>FREE</div>`;
             }
             const words = t.name.split(" ").filter(w => w.length > 0);
             const longestWordLen = Math.max(...words.map(w => w.length));
@@ -1493,7 +1493,7 @@ class Router {
             else if (maxLineLen <= 12 && lines.length === 3) fontSz = "10px";
             else fontSz = "8.5px";
 
-            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;white-space:pre-line;word-break:normal;overflow-wrap:normal;">${linesText}</span></div>`;
+            return `<div class="tile ${t.completed ? 'completed' : ''}" onclick="window.router.toggleTile(${t.index}, event)"><span style="font-size:${fontSz};line-height:1.15;white-space:pre-line;word-break:normal;overflow-wrap:normal;">${linesText}</span></div>`;
           }).join('')}
         </div>
 
@@ -1537,11 +1537,11 @@ class Router {
               <h2 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">SAVE YOUR ACHIEVEMENTS!</h2>
               <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Sign in with your account to back up your Level, XP, earned badges, and lifetime Bingo wins so you never lose your road trip progress!</p>
 
-              <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="router.navigate('login')">
+              <button class="btn btn-teal btn-beveled" style="margin-bottom:10px;font-size:15px;" onclick="window.router.navigate('login')">
                 🔑 LOG IN / REGISTER NOW
               </button>
 
-              <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="router.showAccountModal=false;router.render();">
+              <button style="background:none;border:none;color:#94A3B8;font-size:12px;font-weight:700;cursor:pointer;" onclick="window.router.showAccountModal=false;router.render();">
                 Continue as Guest (Skip)
               </button>
             </div>
@@ -1552,7 +1552,7 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;">🎴 Cards</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
         ${DECKS.map(d => {
           const isUnlocked = !d.price || this.unlockedDecks.includes(d.id);
@@ -1565,9 +1565,9 @@ class Router {
               <p style="font-size:12px;color:#CBD5E1;margin-top:6px;margin-bottom:12px;">Distinct Roadside Prompts</p>
               <div style="display:flex;justify-content:flex-end;align-items:center;">
                 ${isUnlocked ? `
-                  <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY CARD ▶</button>
+                  <button class="btn btn-orange" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;" onclick="window.router.selectDeckAndPlay(DECKS.find(x=>x.id==='${d.id}'))">PLAY CARD ▶</button>
                 ` : `
-                  <button class="btn btn-yellow" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;color:#0F172A;font-weight:900;" onclick="router.navigate('shop')">🔒 $0.99 IN SHOP</button>
+                  <button class="btn btn-yellow" style="width:auto;min-height:36px;padding:0 14px;font-size:12px;color:#0F172A;font-weight:900;" onclick="window.router.navigate('shop')">🔒 $0.99 IN SHOP</button>
                 `}
               </div>
             </div>
@@ -1578,7 +1578,7 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;">🏆 Profile</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
         <div class="card card-gradient-teal">
           <h3>Level ${Math.floor(this.stats.xp/100)+1} Explorer</h3>
@@ -1600,27 +1600,27 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h2 style="font-weight:900;">⚙️ Settings</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div class="card" style="margin-bottom:14px;">
           <h4 style="margin-bottom:8px;">Player Nickname</h4>
-          <input id="nickname-settings-input" type="text" value="${this.userNickname}" oninput="router.checkNicknameInput(this.value)" style="width:100%;height:44px;border-radius:12px;background:#0F172A;border:2px solid #FBBF24;color:white;padding:0 12px;font-size:14px;font-weight:800;margin-bottom:10px;" />
-          <button id="save-nickname-btn" class="btn btn-orange" style="width:auto;min-height:38px;padding:0 16px;font-size:13px;opacity:0.35;cursor:not-allowed;" disabled onclick="router.saveNicknameFromInput()">Save Nickname</button>
+          <input id="nickname-settings-input" type="text" value="${this.userNickname}" oninput="window.router.checkNicknameInput(this.value)" style="width:100%;height:44px;border-radius:12px;background:#0F172A;border:2px solid #FBBF24;color:white;padding:0 12px;font-size:14px;font-weight:800;margin-bottom:10px;" />
+          <button id="save-nickname-btn" class="btn btn-orange" style="width:auto;min-height:38px;padding:0 16px;font-size:13px;opacity:0.35;cursor:not-allowed;" disabled onclick="window.router.saveNicknameFromInput()">Save Nickname</button>
         </div>
 
         <div class="card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <span style="font-weight:800;color:white;">Sound Effects</span>
-            <input type="checkbox" ${this.soundEnabled !== false ? 'checked' : ''} onchange="router.soundEnabled=this.checked;SafeStorage.setItem('bingo_sound',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.soundEnabled !== false ? 'checked' : ''} onchange="window.router.soundEnabled=this.checked;SafeStorage.setItem('bingo_sound',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <span style="font-weight:800;color:white;">Background Music</span>
-            <input type="checkbox" ${this.musicEnabled !== false ? 'checked' : ''} onchange="router.musicEnabled=this.checked;SafeStorage.setItem('bingo_music',this.checked);BackgroundMusicEngine.syncState(router.currentScreen);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.musicEnabled !== false ? 'checked' : ''} onchange="window.router.musicEnabled=this.checked;SafeStorage.setItem('bingo_music',this.checked);BackgroundMusicEngine.syncState(router.currentScreen);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-weight:800;color:white;">Haptic Vibrations</span>
-            <input type="checkbox" ${this.hapticsEnabled !== false ? 'checked' : ''} onchange="router.hapticsEnabled=this.checked;SafeStorage.setItem('bingo_haptics',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
+            <input type="checkbox" ${this.hapticsEnabled !== false ? 'checked' : ''} onchange="window.router.hapticsEnabled=this.checked;SafeStorage.setItem('bingo_haptics',this.checked);router.render();" style="width:20px;height:20px;accent-color:#FBBF24;" />
           </div>
         </div>
 
@@ -1633,13 +1633,13 @@ class Router {
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
           <h2 style="font-weight:900;">${this.legalTab===0 ? '❓ FAQ & Guide' : this.legalTab===1 ? '📜 Terms & Conditions' : '🔒 Privacy Policy'}</h2>
-          <button class="back-pill" onclick="router.navigate('home')">Back</button>
+          <button class="back-pill" onclick="window.router.navigate('home')">Back</button>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#0F172A;padding:4px;border-radius:14px;margin-bottom:16px;">
-          <button onclick="router.legalTab=0;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===0?'#FBBF24':'transparent'};color:${this.legalTab===0?'#0F172A':'white'};">❓ FAQ</button>
-          <button onclick="router.legalTab=1;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===1?'#FBBF24':'transparent'};color:${this.legalTab===1?'#0F172A':'white'};">📜 T&C</button>
-          <button onclick="router.legalTab=2;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===2?'#FBBF24':'transparent'};color:${this.legalTab===2?'#0F172A':'white'};">🔒 Privacy</button>
+          <button onclick="window.router.legalTab=0;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===0?'#FBBF24':'transparent'};color:${this.legalTab===0?'#0F172A':'white'};">❓ FAQ</button>
+          <button onclick="window.router.legalTab=1;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===1?'#FBBF24':'transparent'};color:${this.legalTab===1?'#0F172A':'white'};">📜 T&C</button>
+          <button onclick="window.router.legalTab=2;router.render();" style="height:36px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer;background:${this.legalTab===2?'#FBBF24':'transparent'};color:${this.legalTab===2?'#0F172A':'white'};">🔒 Privacy</button>
         </div>
 
         <div class="card">
