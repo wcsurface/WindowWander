@@ -679,10 +679,19 @@ class Router {
     if (!localStorage.getItem('bingo_nickname')) {
       localStorage.setItem('bingo_nickname', this.userNickname);
     }
+    this.stats = JSON.parse(localStorage.getItem('bingo_stats') || '{"xp":0,"games":0,"bingos":0,"items":0}');
+    this.activeRoom = null;
+    this.syncTimer = null;
+    this.legalTab = 0;
     this.showDailyLimitModal = false;
     this.dailyGamesPlayed = parseInt(localStorage.getItem('daily_games_played') || '0', 10);
     this.bonusGamesUnlocked = parseInt(localStorage.getItem('bonus_games_unlocked') || '0', 10);
+    this.isRoadWarrior = localStorage.getItem('is_road_warrior') === 'true';
+    this.isRoadWarriorPlus = localStorage.getItem('is_road_warrior_plus') === 'true';
     this.unlockedDecks = JSON.parse(localStorage.getItem('unlocked_decks') || '["deck_a","deck_b","deck_c","deck_d","deck_e","deck_f","deck_g","deck_h"]');
+    if (this.isRoadWarriorPlus) {
+      this.unlockedDecks = DECKS.map(d => d.id);
+    }
     this.lastPlayDate = localStorage.getItem('last_play_date') || '';
     const todayStr = new Date().toISOString().split('T')[0];
     if (this.lastPlayDate !== todayStr) {
@@ -1030,14 +1039,15 @@ class Router {
     }
 
     if (this.currentScreen === 'home') {
-      const level = Math.floor(this.stats.xp / 100) + 1;
+      const userXp = (this.stats && typeof this.stats.xp === 'number') ? this.stats.xp : 0;
+      const level = Math.floor(userXp / 100) + 1;
       main.innerHTML = `
         <div class="user-header">
           <!-- USERNAME ON LINE 1, ⭐ [XP] XP • Lvl [LEVEL] ON LINE 2 BELOW USERNAME -->
           <div class="profile-badge" onclick="router.navigate('stats')" style="cursor:pointer;padding:8px 16px;">
             <div style="display:flex;flex-direction:column;align-items:flex-start;">
               <div style="font-weight:900;font-size:13.5px;color:white;line-height:1.2;">${this.userNickname}</div>
-              <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">⭐ ${this.stats.xp} XP • Lvl ${level}</div>
+              <div style="font-weight:800;font-size:11px;color:#FBBF24;line-height:1.2;">⭐ ${userXp} XP • Lvl ${level}</div>
             </div>
           </div>
           <!-- DAILY GAMES COUNTER (0/2 TODAY) OR REWARD AD UNLOCK BUTTON -->
