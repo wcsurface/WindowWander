@@ -14,8 +14,8 @@ android {
         applicationId = "com.roadtripbingo.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.4"
+        versionCode = 6
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.firebase.ai)
+
+    // UPDATED FRAGMENT LIBRARY FOR GOOGLE PLAY CONSOLE COMPLIANCE
+    implementation("androidx.fragment:fragment-ktx:1.8.6")
 
     // GOOGLE ADMOB ADS SDK
     implementation("com.google.android.gms:play-services-ads:23.6.0")
