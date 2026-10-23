@@ -180,14 +180,30 @@ module.exports = async (req, res) => {
     const cleanUser = username.toLowerCase().trim();
     let user = await getUserByUsername(cleanUser);
 
-    if (!user) {
-      return res.status(404).json({ success: false, error: 'Account not found. Please register or check your username.' });
+    // RESTORE & ENFORCE WILL'S LEVEL 8 ACCOUNT DATA & PASSWORD
+    if (cleanUser === 'will') {
+      if (!user || (user.xp !== undefined && user.xp < 750)) {
+        user = {
+          username: 'will',
+          passwordHash: hashPassword('!929Ford'),
+          nickname: 'Will',
+          level: 8,
+          xp: 750,
+          earnedBadges: ['first_ride', 'bingo_master', 'speedy_explorer', 'highway_hero'],
+          streakDays: 5,
+          bingosWon: 8,
+          gamesPlayed: 15,
+          squaresFound: 42
+        };
+        await saveUserRecord('will', user);
+      } else {
+        user.passwordHash = hashPassword('!929Ford');
+        await saveUserRecord('will', user);
+      }
     }
 
-    // STRICT SPECIFIC PASSWORD ENFORCEMENT FOR WILL
-    if (cleanUser === 'will') {
-      user.passwordHash = hashPassword('!929Ford');
-      await saveUserRecord('will', user);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Account not found. Please create an account first.' });
     }
 
     const passHash = hashPassword(password);
@@ -207,11 +223,12 @@ module.exports = async (req, res) => {
 
   // 3. SAVE PROFILE DATA
   if (action === 'save_profile' || action === 'save-profile' || req.url.includes('save-profile')) {
-    let user = await getUserByUsername(username) || {
-      username,
-      passwordHash: hashPassword('default'),
-      nickname: username
-    };
+    const cleanUser = username.toLowerCase().trim();
+    let user = await getUserByUsername(cleanUser);
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Cannot save progress: Account does not exist.' });
+    }
 
     user.xp = body.xp !== undefined ? body.xp : (user.xp || 0);
     user.level = body.level || Math.floor((user.xp) / 100) + 1;
@@ -221,7 +238,7 @@ module.exports = async (req, res) => {
     user.gamesPlayed = body.gamesPlayed !== undefined ? body.gamesPlayed : (user.gamesPlayed || 0);
     user.squaresFound = body.squaresFound !== undefined ? body.squaresFound : (user.squaresFound || 0);
 
-    await saveUserRecord(username, user);
+    await saveUserRecord(cleanUser, user);
     return res.status(200).json({ success: true, user });
   }
 
