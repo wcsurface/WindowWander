@@ -983,7 +983,8 @@ class Router {
   }
 
   async loginUser(user, pass) {
-    if (!user) return;
+    if (!user || !pass) return;
+    this.authError = null;
     const res = await RailwayAuthService.login(user, pass);
     if (res.success && res.user) {
       this.isLoggedIn = true;
@@ -993,8 +994,28 @@ class Router {
       if (res.user.gamesPlayed > 0) this.stats.games = res.user.gamesPlayed;
       if (res.user.squaresFound > 0) this.stats.items = res.user.squaresFound;
       this.saveStats();
+      this.authError = null;
+      this.navigate('home');
+    } else {
+      this.authError = res.error || "Incorrect password. Access denied.";
+      this.render();
     }
-    this.navigate('home');
+  }
+
+  async registerUser(user, pass, nick) {
+    if (!user || !pass) return;
+    this.authError = null;
+    const res = await RailwayAuthService.register(user, pass, nick);
+    if (res.success && res.user) {
+      this.isLoggedIn = true;
+      this.userNickname = res.user.nickname || nick || user;
+      this.saveStats();
+      this.authError = null;
+      this.navigate('home');
+    } else {
+      this.authError = res.error || "Registration failed";
+      this.render();
+    }
   }
 
   logoutUser() {
@@ -1284,6 +1305,12 @@ class Router {
           <div class="card" style="text-align:center;padding:24px;">
             <h3 style="font-weight:900;color:#FBBF24;margin-bottom:8px;">LOG IN TO YOUR ACCOUNT</h3>
             <p style="font-size:12px;color:#CBD5E1;margin-bottom:18px;">Enter your username and password to back up your level, XP, and bingo wins!</p>
+
+            ${this.authError ? `
+              <div style="background:#DC2626;color:white;font-weight:800;font-size:13px;padding:10px;border-radius:10px;margin-bottom:14px;text-align:center;">
+                ⚠️ ${this.authError}
+              </div>
+            ` : ''}
 
             <input id="web-user-input" type="text" placeholder="Username / Email" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:12px;" />
             <input id="web-pass-input" type="password" placeholder="Password" style="width:100%;height:48px;border-radius:12px;border:2px solid #FBBF24;background:#0F172A;color:white;font-size:16px;font-weight:800;padding:0 14px;margin-bottom:18px;" />

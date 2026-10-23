@@ -155,13 +155,13 @@ module.exports = async (req, res) => {
   if (action === 'register' || req.url.includes('register')) {
     let existing = await getUserByUsername(username);
     if (existing) {
-      return res.status(400).json({ success: false, error: 'Username already registered' });
+      return res.status(400).json({ success: false, error: 'Username is already registered. Please log in or choose a different name.' });
     }
 
     const newUser = {
       username,
       passwordHash: hashPassword(password),
-      nickname: nickname || username,
+      nickname: rawUsername || username,
       level: 1,
       xp: 0,
       earnedBadges: ['first_ride'],
@@ -177,25 +177,29 @@ module.exports = async (req, res) => {
 
   // 2. LOGIN USER
   if (action === 'login' || req.url.includes('login')) {
-    const passHash = hashPassword(password);
-    let user = await getUserByUsername(username);
+    const cleanUser = username.toLowerCase().trim();
+    let user = await getUserByUsername(cleanUser);
 
     if (!user) {
-      // Create persistent account for user on login
-      user = {
-        username,
-        passwordHash: passHash,
-        nickname: nickname || username,
-        level: 1,
-        xp: 0,
-        earnedBadges: ['first_ride'],
-        streakDays: 1,
-        bingosWon: 0,
-        gamesPlayed: 0,
-        squaresFound: 0
-      };
-      await saveUserRecord(username, user);
-      return res.status(200).json({ success: true, user });
+      return res.status(404).json({ success: false, error: 'Account not found. Please register or check your username.' });
+    }
+
+    // STRICT SPECIFIC PASSWORD ENFORCEMENT FOR WILL
+    if (cleanUser === 'will') {
+      user.passwordHash = hashPassword('!929Ford');
+      await saveUserRecord('will', user);
+    }
+
+    const passHash = hashPassword(password);
+
+    // STRICT PASSWORD VERIFICATION
+    if (user.passwordHash && user.passwordHash !== passHash) {
+      return res.status(401).json({ success: false, error: 'Incorrect password. Access denied.' });
+    }
+
+    if (!user.passwordHash) {
+      user.passwordHash = passHash;
+      await saveUserRecord(cleanUser, user);
     }
 
     return res.status(200).json({ success: true, user });

@@ -175,7 +175,9 @@ class MainActivity : ComponentActivity() {
                         Screen.LOGIN -> LoginScreen(
                             profile = uiState.playerProfile,
                             isLoggedIn = uiState.isLoggedIn,
+                            authErrorMessage = uiState.authErrorMessage,
                             onLoginSubmit = { user, pass -> viewModel.loginUser(user, pass) },
+                            onRegisterSubmit = { user, pass, nick -> viewModel.registerUser(user, pass, nick) },
                             onLogOut = { viewModel.logoutUser() },
                             onNavigateHome = { viewModel.navigateTo(Screen.HOME) },
                             onNavigateLogin = { viewModel.navigateTo(Screen.LOGIN) },

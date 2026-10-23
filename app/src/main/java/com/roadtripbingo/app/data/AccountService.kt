@@ -140,10 +140,8 @@ object AccountService {
             }
         } catch (e: Exception) {
             AuthResult(
-                success = true,
-                profile = PlayerProfile(
-                    nickname = username
-                )
+                success = false,
+                error = "Login error. Please check your password and internet connection."
             )
         }
     }
@@ -187,10 +185,8 @@ object AccountService {
             }
         } catch (e: Exception) {
             AuthResult(
-                success = true,
-                profile = PlayerProfile(
-                    nickname = nickname.ifBlank { username }
-                )
+                success = false,
+                error = "Registration error. Please check your connection."
             )
         }
     }

@@ -1,9 +1,9 @@
 package com.roadtripbingo.app.ui.screens
 
-import android.os.Build.VERSION.SDK_INT
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +37,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.roadtripbingo.app.R
@@ -60,7 +60,9 @@ import coil.request.ImageRequest
 fun LoginScreen(
     profile: PlayerProfile,
     isLoggedIn: Boolean = false,
+    authErrorMessage: String? = null,
     onLoginSubmit: (String, String) -> Unit = { _, _ -> },
+    onRegisterSubmit: (String, String, String) -> Unit = { _, _, _ -> },
     onLogOut: () -> Unit = {},
     onNavigateHome: () -> Unit = {},
     onNavigateLogin: () -> Unit = {},
@@ -78,11 +80,10 @@ fun LoginScreen(
 
     val effectiveLoggedIn = isLoggedIn || (profile.nickname.isNotBlank() && !profile.nickname.startsWith("Road Explorer"))
 
-    // COIL GIF DECODER LOADER TO PREVENT RUNTIME CRASHES ON GIF ANIMATION
     val imageLoader = remember {
         ImageLoader.Builder(context)
             .components {
-                if (SDK_INT >= 28) {
+                if (Build.VERSION.SDK_INT >= 28) {
                     add(ImageDecoderDecoder.Factory())
                 } else {
                     add(GifDecoder.Factory())
@@ -92,26 +93,12 @@ fun LoginScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // MAIN LOBBY DEDICATED DOODLE BACKGROUND ARTWORK
-        Image(
-            painter = painterResource(id = R.drawable.bg_main_home),
-            contentDescription = "Main Lobby Background Artwork",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // DARK SCRIM OVERLAY FOR HIGH CONTRAST & LEGIBILITY
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.35f))
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MidnightNavy)
                 .verticalScroll(scrollState)
-                .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 104.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 38.dp, bottom = 104.dp)
         ) {
             // TOP HEADER
             Row(
@@ -144,7 +131,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // CENTERED OFFICIAL LOGO FLOATING DIRECTLY ON MAIN LOBBY BACKGROUND
+            // CENTERED ANIMATED GIF LOGO
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -222,6 +209,26 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
+                        if (authErrorMessage != null) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Color(0xFFDC2626))
+                                    .padding(12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = authErrorMessage,
+                                    fontSize = 12.5.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+
                         AnimatedVisibility(visible = isRegisterTab) {
                             Column {
                                 OutlinedTextField(
@@ -281,7 +288,11 @@ fun LoginScreen(
                             text = if (isRegisterTab) "✨ REGISTER ACCOUNT" else "🔑 LOG IN NOW",
                             onClick = {
                                 if (usernameInput.isNotBlank() && passwordInput.isNotBlank()) {
-                                    onLoginSubmit(usernameInput, passwordInput)
+                                    if (isRegisterTab) {
+                                        onRegisterSubmit(usernameInput.trim(), passwordInput, nicknameInput.trim())
+                                    } else {
+                                        onLoginSubmit(usernameInput.trim(), passwordInput)
+                                    }
                                 }
                             },
                             modifier = Modifier
@@ -327,24 +338,24 @@ fun LoginScreen(
                         )
 
                         Text(
-                            text = "Level ${profile.level} Road Explorer • ${profile.xp} XP",
-                            fontSize = 13.sp,
+                            text = "⭐ Level ${profile.level} Explorer (${profile.xp} XP)",
+                            fontSize = 13.5.sp,
                             fontWeight = FontWeight.Bold,
                             color = SunnyYellow
                         )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                        // PROMINENT LOG OUT BUTTON
                         BeveledGameButton(
                             text = "🚪 LOG OUT",
                             onClick = onLogOut,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(56.dp),
+                                .height(52.dp),
                             buttonColor = VividOrange,
+                            bevelColor = Color(0xFFC2410C),
                             textColor = Color.White,
-                            fontSize = 18
+                            fontSize = 16
                         )
                     }
                 }

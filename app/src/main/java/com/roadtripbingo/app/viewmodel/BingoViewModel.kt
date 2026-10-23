@@ -58,7 +58,8 @@ data class BingoUiState(
     val isLoggedIn: Boolean = false,
     val canUndo: Boolean = false,
     val legalInitialTab: Int = 0,
-    val unlockedDeckIds: Set<String> = setOf("deck_a", "deck_b", "deck_c", "deck_d", "deck_e", "deck_f", "deck_g", "deck_h")
+    val unlockedDeckIds: Set<String> = setOf("deck_a", "deck_b", "deck_c", "deck_d", "deck_e", "deck_f", "deck_g", "deck_h"),
+    val authErrorMessage: String? = null
 )
 
 class BingoViewModel(application: Application) : AndroidViewModel(application) {
@@ -170,17 +171,53 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loginUser(username: String, pass: String) {
+        _uiState.update { it.copy(authErrorMessage = null) }
         viewModelScope.launch {
             val result = AccountService.login(username, pass)
-            val loadedProfile = result.profile ?: preferences.getProfileForUser(username) ?: PlayerProfile(nickname = username)
-            preferences.saveProfile(loadedProfile)
-            preferences.setLoggedIn(true)
-            _uiState.update {
-                it.copy(
-                    playerProfile = loadedProfile,
-                    isLoggedIn = true,
-                    currentScreen = Screen.HOME
-                )
+            if (result.success && result.profile != null) {
+                val loadedProfile = result.profile
+                preferences.saveProfile(loadedProfile)
+                preferences.setLoggedIn(true)
+                _uiState.update {
+                    it.copy(
+                        playerProfile = loadedProfile,
+                        isLoggedIn = true,
+                        authErrorMessage = null,
+                        currentScreen = Screen.HOME
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        authErrorMessage = result.error ?: "Incorrect password or username"
+                    )
+                }
+            }
+        }
+    }
+
+    fun registerUser(username: String, pass: String, nickname: String) {
+        _uiState.update { it.copy(authErrorMessage = null) }
+        viewModelScope.launch {
+            val result = AccountService.register(username, pass, nickname)
+            if (result.success && result.profile != null) {
+                val loadedProfile = result.profile
+                preferences.saveProfile(loadedProfile)
+                preferences.setLoggedIn(true)
+                _uiState.update {
+                    it.copy(
+                        playerProfile = loadedProfile,
+                        isLoggedIn = true,
+                        authErrorMessage = null,
+                        currentScreen = Screen.HOME
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        authErrorMessage = result.error ?: "Registration failed"
+                    )
+                }
             }
         }
     }
