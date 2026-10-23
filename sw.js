@@ -1,9 +1,9 @@
-const CACHE_NAME = 'road-trip-bingo-v213';
+const CACHE_NAME = 'road-trip-bingo-v214';
 const ASSETS = [
   '/',
   'index.html',
-  'style.css?v=213',
-  'app.js?v=213',
+  'style.css?v=214',
+  'app.js?v=214',
   'manifest.json',
   'road_trip_bingo_logo.png',
   'nav_home_icon.png',

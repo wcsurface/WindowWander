@@ -78,7 +78,7 @@ fun LoginScreen(
     var passwordInput by remember { mutableStateOf("") }
     var nicknameInput by remember { mutableStateOf("") }
 
-    val effectiveLoggedIn = isLoggedIn || (profile.nickname.isNotBlank() && !profile.nickname.startsWith("Road Explorer"))
+    val effectiveLoggedIn = isLoggedIn
 
     val imageLoader = remember {
         ImageLoader.Builder(context)

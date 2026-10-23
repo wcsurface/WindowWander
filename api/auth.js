@@ -153,13 +153,14 @@ module.exports = async (req, res) => {
 
   // 1. REGISTER USER
   if (action === 'register' || req.url.includes('register')) {
-    let existing = await getUserByUsername(username);
+    const cleanUser = username.toLowerCase().trim();
+    let existing = await getUserByUsername(cleanUser);
     if (existing) {
-      return res.status(400).json({ success: false, error: 'Username is already registered. Please log in or choose a different name.' });
+      return res.status(200).json({ success: false, error: 'Username is already taken. Only 1 account per username is allowed. Please log in instead.' });
     }
 
     const newUser = {
-      username,
+      username: cleanUser,
       passwordHash: hashPassword(password),
       nickname: rawUsername || username,
       level: 1,
@@ -171,7 +172,7 @@ module.exports = async (req, res) => {
       squaresFound: 0
     };
 
-    await saveUserRecord(username, newUser);
+    await saveUserRecord(cleanUser, newUser);
     return res.status(200).json({ success: true, user: newUser });
   }
 
@@ -203,14 +204,14 @@ module.exports = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Account not found. Please create an account first.' });
+      return res.status(200).json({ success: false, error: 'Account not found. You can only log in if you have already created an account.' });
     }
 
     const passHash = hashPassword(password);
 
     // STRICT PASSWORD VERIFICATION
     if (user.passwordHash && user.passwordHash !== passHash) {
-      return res.status(401).json({ success: false, error: 'Incorrect password. Access denied.' });
+      return res.status(200).json({ success: false, error: 'Incorrect password. Login only works with the password used at account creation.' });
     }
 
     if (!user.passwordHash) {
@@ -227,7 +228,7 @@ module.exports = async (req, res) => {
     let user = await getUserByUsername(cleanUser);
 
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Cannot save progress: Account does not exist.' });
+      return res.status(200).json({ success: false, error: 'Cannot save progress: Account does not exist.' });
     }
 
     user.xp = body.xp !== undefined ? body.xp : (user.xp || 0);
