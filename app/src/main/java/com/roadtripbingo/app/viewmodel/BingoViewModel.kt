@@ -75,8 +75,8 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadPreferences() {
-        val loadedProfile = preferences.getProfile()
-        val loggedIn = preferences.isLoggedIn() || (loadedProfile.nickname.isNotBlank() && !loadedProfile.nickname.startsWith("Road Explorer"))
+        val loggedIn = preferences.isLoggedIn()
+        val loadedProfile = if (loggedIn) preferences.getProfile() else PlayerProfile()
 
         _uiState.update {
             it.copy(
@@ -223,15 +223,15 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun logoutUser() {
-        preferences.setLoggedIn(false)
+        preferences.clearLoggedInUserCache()
         val guestNick = "Road Explorer " + Random.nextInt(100, 999)
         val guestProfile = PlayerProfile(nickname = guestNick)
-        preferences.saveProfile(guestProfile)
 
         _uiState.update {
             it.copy(
                 playerProfile = guestProfile,
                 isLoggedIn = false,
+                authErrorMessage = null,
                 currentScreen = Screen.HOME
             )
         }

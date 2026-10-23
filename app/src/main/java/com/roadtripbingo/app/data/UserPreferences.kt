@@ -100,6 +100,18 @@ class UserPreferences(context: Context) {
     fun isLoggedIn(): Boolean = prefs.getBoolean("is_logged_in", false)
     fun setLoggedIn(loggedIn: Boolean) = prefs.edit().putBoolean("is_logged_in", loggedIn).apply()
 
+    fun clearLoggedInUserCache() {
+        val defaultGuestNick = "Road Explorer " + Random.nextInt(100, 999)
+        prefs.edit()
+            .putBoolean("is_logged_in", false)
+            .putString("nickname", defaultGuestNick)
+            .putInt("xp", 0)
+            .putInt("games_played", 0)
+            .putInt("bingos_won", 0)
+            .putInt("squares_found", 0)
+            .apply()
+    }
+
     fun getSelectedRegion(): Region {
         val code = prefs.getString("selected_region_code", Region.UNIVERSAL.code) ?: Region.UNIVERSAL.code
         return Region.values().firstOrNull { it.code == code } ?: Region.UNIVERSAL

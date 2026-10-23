@@ -988,15 +988,21 @@ class Router {
     const res = await RailwayAuthService.login(user, pass);
     if (res.success && res.user) {
       this.isLoggedIn = true;
+      SafeStorage.setItem('is_logged_in', 'true');
       this.userNickname = res.user.nickname || user;
-      if (res.user.xp > 0) this.stats.xp = res.user.xp;
-      if (res.user.bingosWon > 0) this.stats.bingos = res.user.bingosWon;
-      if (res.user.gamesPlayed > 0) this.stats.games = res.user.gamesPlayed;
-      if (res.user.squaresFound > 0) this.stats.items = res.user.squaresFound;
-      this.saveStats();
+      SafeStorage.setItem('bingo_nickname', this.userNickname);
+      this.stats = {
+        xp: res.user.xp || 0,
+        bingos: res.user.bingosWon || 0,
+        games: res.user.gamesPlayed || 0,
+        items: res.user.squaresFound || 0
+      };
+      SafeStorage.setItem('bingo_stats', JSON.stringify(this.stats));
       this.authError = null;
       this.navigate('home');
     } else {
+      this.isLoggedIn = false;
+      SafeStorage.setItem('is_logged_in', 'false');
       this.authError = res.error || "Incorrect password. Access denied.";
       this.render();
     }
@@ -1008,11 +1014,16 @@ class Router {
     const res = await RailwayAuthService.register(user, pass, nick);
     if (res.success && res.user) {
       this.isLoggedIn = true;
+      SafeStorage.setItem('is_logged_in', 'true');
       this.userNickname = res.user.nickname || nick || user;
-      this.saveStats();
+      SafeStorage.setItem('bingo_nickname', this.userNickname);
+      this.stats = { xp: 0, bingos: 0, games: 0, items: 0 };
+      SafeStorage.setItem('bingo_stats', JSON.stringify(this.stats));
       this.authError = null;
       this.navigate('home');
     } else {
+      this.isLoggedIn = false;
+      SafeStorage.setItem('is_logged_in', 'false');
       this.authError = res.error || "Registration failed";
       this.render();
     }
@@ -1020,8 +1031,12 @@ class Router {
 
   logoutUser() {
     this.isLoggedIn = false;
+    SafeStorage.setItem('is_logged_in', 'false');
     this.userNickname = 'Road Explorer ' + Math.floor(100 + Math.random() * 900);
-    SafeStorage.removeItem('bingo_nickname');
+    SafeStorage.setItem('bingo_nickname', this.userNickname);
+    this.stats = { xp: 0, games: 0, bingos: 0, items: 0 };
+    SafeStorage.setItem('bingo_stats', JSON.stringify(this.stats));
+    this.authError = null;
     this.navigate('home');
   }
 
