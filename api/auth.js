@@ -245,11 +245,43 @@ module.exports = async (req, res) => {
 
   // 4. GLOBAL PUBLIC LEADERBOARD
   if (action === 'leaderboard' || req.url.includes('leaderboard')) {
-    // Seed top featured accounts into memory
-    await getUserByUsername('will');
-    await getUserByUsername('testaccount');
+    let allUsersMap = new Map();
 
-    const allUsers = Array.from(memoryUsers.values());
+    try {
+      const userIndex = await getUserIndex();
+      const usernames = Object.keys(userIndex);
+      for (const u of usernames) {
+        const userRec = await getUserByUsername(u);
+        if (userRec) {
+          allUsersMap.set(u.toLowerCase(), userRec);
+        }
+      }
+    } catch(e) {}
+
+    // Ensure Will & TestAccount top entries exist
+    const willUser = await getUserByUsername('will') || {
+      username: 'will',
+      nickname: 'Will',
+      level: 8,
+      xp: 750,
+      bingosWon: 8,
+      gamesPlayed: 15,
+      squaresFound: 42
+    };
+    allUsersMap.set('will', willUser);
+
+    const testUser = await getUserByUsername('testaccount') || {
+      username: 'testaccount',
+      nickname: 'TestAccount',
+      level: 7,
+      xp: 600,
+      bingosWon: 6,
+      gamesPlayed: 59,
+      squaresFound: 32
+    };
+    allUsersMap.set('testaccount', testUser);
+
+    const allUsers = Array.from(allUsersMap.values());
 
     const topXp = allUsers
       .map(u => ({

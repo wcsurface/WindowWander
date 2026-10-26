@@ -76,6 +76,16 @@ fun LeaderboardScreen(
         
         val currentCleanNick = profile.nickname.lowercase().trim()
 
+        val defaultFeaturedXp = listOf(
+            LeaderboardEntry(1, if (currentCleanNick == "will") "Will (You)" else "Will", "🚗", 8, 750, isCurrentUser = (currentCleanNick == "will")),
+            LeaderboardEntry(2, if (currentCleanNick == "testaccount") "TestAccount (You)" else "TestAccount", "🚗", 7, 600, isCurrentUser = (currentCleanNick == "testaccount"))
+        )
+
+        val defaultFeaturedItems = listOf(
+            LeaderboardEntry(1, if (currentCleanNick == "will") "Will (You)" else "Will", "🚗", 8, 42, isCurrentUser = (currentCleanNick == "will")),
+            LeaderboardEntry(2, if (currentCleanNick == "testaccount") "TestAccount (You)" else "TestAccount", "🚗", 7, 32, isCurrentUser = (currentCleanNick == "testaccount"))
+        )
+
         if (xpItems.isNotEmpty()) {
             val formattedXp = xpItems.mapIndexed { idx, item ->
                 val isMe = item.nickname.lowercase().trim() == currentCleanNick || item.username.lowercase().trim() == currentCleanNick
@@ -90,9 +100,7 @@ fun LeaderboardScreen(
             }
             globalXpLeaderboard = formattedXp
         } else {
-            globalXpLeaderboard = listOf(
-                LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.xp, isCurrentUser = true)
-            )
+            globalXpLeaderboard = defaultFeaturedXp
         }
 
         if (squaresItems.isNotEmpty()) {
@@ -109,9 +117,7 @@ fun LeaderboardScreen(
             }
             globalItemsLeaderboard = formattedItems
         } else {
-            globalItemsLeaderboard = listOf(
-                LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.squaresFound, isCurrentUser = true)
-            )
+            globalItemsLeaderboard = defaultFeaturedItems
         }
     }
 
