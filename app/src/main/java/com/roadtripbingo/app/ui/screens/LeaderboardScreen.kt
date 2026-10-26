@@ -68,16 +68,54 @@ fun LeaderboardScreen(
 ) {
     var selectedCategory by remember { mutableStateOf(0) } // 0 = Total Points (XP), 1 = Items Found
 
-    // REAL USER LEADERBOARD DATA (ZERO FAKE BOTS!)
-    val pointsLeaderboard = listOf(
-        LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.xp, isCurrentUser = true)
-    ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
+    var globalXpLeaderboard by remember { mutableStateOf<List<LeaderboardEntry>>(emptyList()) }
+    var globalItemsLeaderboard by remember { mutableStateOf<List<LeaderboardEntry>>(emptyList()) }
 
-    val itemsLeaderboard = listOf(
-        LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.squaresFound, isCurrentUser = true)
-    ).sortedByDescending { it.value }.mapIndexed { idx, entry -> entry.copy(rank = idx + 1) }
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val (xpItems, squaresItems) = com.roadtripbingo.app.data.AccountService.getGlobalLeaderboardOnRailway()
+        
+        val currentCleanNick = profile.nickname.lowercase().trim()
 
-    val currentList = if (selectedCategory == 0) pointsLeaderboard else itemsLeaderboard
+        if (xpItems.isNotEmpty()) {
+            val formattedXp = xpItems.mapIndexed { idx, item ->
+                val isMe = item.nickname.lowercase().trim() == currentCleanNick || item.username.lowercase().trim() == currentCleanNick
+                LeaderboardEntry(
+                    rank = idx + 1,
+                    nickname = if (isMe) "${item.nickname} (You)" else item.nickname,
+                    avatarEmoji = "🚗",
+                    level = item.level,
+                    value = item.xp,
+                    isCurrentUser = isMe
+                )
+            }
+            globalXpLeaderboard = formattedXp
+        } else {
+            globalXpLeaderboard = listOf(
+                LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.xp, isCurrentUser = true)
+            )
+        }
+
+        if (squaresItems.isNotEmpty()) {
+            val formattedItems = squaresItems.mapIndexed { idx, item ->
+                val isMe = item.nickname.lowercase().trim() == currentCleanNick || item.username.lowercase().trim() == currentCleanNick
+                LeaderboardEntry(
+                    rank = idx + 1,
+                    nickname = if (isMe) "${item.nickname} (You)" else item.nickname,
+                    avatarEmoji = "🚗",
+                    level = item.level,
+                    value = item.squaresFound,
+                    isCurrentUser = isMe
+                )
+            }
+            globalItemsLeaderboard = formattedItems
+        } else {
+            globalItemsLeaderboard = listOf(
+                LeaderboardEntry(1, "${profile.nickname} (You)", "🚗", profile.level, profile.squaresFound, isCurrentUser = true)
+            )
+        }
+    }
+
+    val currentList = if (selectedCategory == 0) globalXpLeaderboard else globalItemsLeaderboard
 
     Box(modifier = Modifier.fillMaxSize()) {
         // LEADERBOARD DEDICATED DOODLE BACKGROUND ARTWORK

@@ -147,7 +147,7 @@ module.exports = async (req, res) => {
   const password = body.password || 'default_pass';
   const nickname = rawUsername || 'Road Explorer';
 
-  if (!username && action !== 'health') {
+  if (!username && action !== 'health' && action !== 'leaderboard') {
     return res.status(400).json({ success: false, error: 'Username required' });
   }
 
@@ -241,6 +241,43 @@ module.exports = async (req, res) => {
 
     await saveUserRecord(cleanUser, user);
     return res.status(200).json({ success: true, user });
+  }
+
+  // 4. GLOBAL PUBLIC LEADERBOARD
+  if (action === 'leaderboard' || req.url.includes('leaderboard')) {
+    // Seed top featured accounts into memory
+    await getUserByUsername('will');
+    await getUserByUsername('testaccount');
+
+    const allUsers = Array.from(memoryUsers.values());
+
+    const topXp = allUsers
+      .map(u => ({
+        username: u.username,
+        nickname: u.nickname || u.username,
+        level: u.level || Math.floor((u.xp || 0) / 100) + 1,
+        xp: u.xp || 0,
+        bingosWon: u.bingosWon || 0,
+        gamesPlayed: u.gamesPlayed || 0,
+        squaresFound: u.squaresFound || 0
+      }))
+      .sort((a, b) => b.xp - a.xp || b.bingosWon - a.bingosWon)
+      .slice(0, 50);
+
+    const topItems = [...allUsers]
+      .map(u => ({
+        username: u.username,
+        nickname: u.nickname || u.username,
+        level: u.level || Math.floor((u.xp || 0) / 100) + 1,
+        xp: u.xp || 0,
+        bingosWon: u.bingosWon || 0,
+        gamesPlayed: u.gamesPlayed || 0,
+        squaresFound: u.squaresFound || 0
+      }))
+      .sort((a, b) => b.squaresFound - a.squaresFound || b.xp - a.xp)
+      .slice(0, 50);
+
+    return res.status(200).json({ success: true, leaderboard: topXp, topItems });
   }
 
   return res.status(200).json({ success: true });

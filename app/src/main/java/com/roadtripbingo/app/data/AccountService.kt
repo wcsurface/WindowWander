@@ -20,6 +20,16 @@ object AccountService {
         val error: String? = null
     )
 
+    data class LeaderboardItem(
+        val username: String,
+        val nickname: String,
+        val level: Int,
+        val xp: Int,
+        val bingosWon: Int,
+        val gamesPlayed: Int,
+        val squaresFound: Int
+    )
+
     data class RoomResult(
         val success: Boolean,
         val roomCode: String = "",
@@ -220,6 +230,66 @@ object AccountService {
         } catch (e: Exception) {
             // Ignore offline save errors
         }
+    }
+
+    suspend fun getGlobalLeaderboardOnRailway(): Pair<List<LeaderboardItem>, List<LeaderboardItem>> = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$vercelBaseUrl/api/auth?action=leaderboard")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.connectTimeout = 4000
+            conn.readTimeout = 4000
+
+            val statusCode = conn.responseCode
+            if (statusCode in 200..299) {
+                val responseStr = conn.inputStream.bufferedReader().use { it.readText() }
+                val json = JSONObject(responseStr)
+                if (json.optBoolean("success", false)) {
+                    val xpArr = json.optJSONArray("leaderboard")
+                    val itemsArr = json.optJSONArray("topItems")
+
+                    val xpList = mutableListOf<LeaderboardItem>()
+                    if (xpArr != null) {
+                        for (i in 0 until xpArr.length()) {
+                            val obj = xpArr.getJSONObject(i)
+                            xpList.add(
+                                LeaderboardItem(
+                                    username = obj.optString("username", ""),
+                                    nickname = obj.optString("nickname", "Explorer"),
+                                    level = obj.optInt("level", 1),
+                                    xp = obj.optInt("xp", 0),
+                                    bingosWon = obj.optInt("bingosWon", 0),
+                                    gamesPlayed = obj.optInt("gamesPlayed", 0),
+                                    squaresFound = obj.optInt("squaresFound", 0)
+                                )
+                            )
+                        }
+                    }
+
+                    val itemsList = mutableListOf<LeaderboardItem>()
+                    if (itemsArr != null) {
+                        for (i in 0 until itemsArr.length()) {
+                            val obj = itemsArr.getJSONObject(i)
+                            itemsList.add(
+                                LeaderboardItem(
+                                    username = obj.optString("username", ""),
+                                    nickname = obj.optString("nickname", "Explorer"),
+                                    level = obj.optInt("level", 1),
+                                    xp = obj.optInt("xp", 0),
+                                    bingosWon = obj.optInt("bingosWon", 0),
+                                    gamesPlayed = obj.optInt("gamesPlayed", 0),
+                                    squaresFound = obj.optInt("squaresFound", 0)
+                                )
+                            )
+                        }
+                    }
+
+                    return@withContext Pair(xpList, itemsList)
+                }
+            }
+        } catch (e: Exception) {}
+
+        Pair(emptyList(), emptyList())
     }
 
     // LIVE VERCEL / RAILWAY MULTIPLAYER ROOM API

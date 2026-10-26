@@ -795,7 +795,21 @@ class Router {
     this.currentScreen = screen;
     BackgroundMusicEngine.syncState(screen);
     this.updateActiveNav();
+    if (screen === 'leaderboard') {
+      this.fetchLeaderboard();
+    }
     this.render();
+  }
+
+  async fetchLeaderboard() {
+    const res = await RailwayAuthService.getLeaderboard();
+    if (res && res.success && (res.leaderboard || res.topItems)) {
+      this.cachedLeaderboard = res.leaderboard || [];
+      this.cachedTopItems = res.topItems || [];
+      if (this.currentScreen === 'leaderboard') {
+        this.render();
+      }
+    }
   }
 
   updateActiveNav() {
@@ -1426,16 +1440,24 @@ class Router {
         </div>
       `;
     } else if (this.currentScreen === 'leaderboard') {
-      const level = Math.floor(this.stats.xp / 100) + 1;
-      const pointsList = [
-        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🚗", val: this.stats.xp, isUser: true }
-      ];
+      let rawList = (this.leaderboardTab === 0 ? this.cachedLeaderboard : this.cachedTopItems) || [];
+      let currentCleanNick = this.userNickname ? this.userNickname.toLowerCase().trim() : '';
 
-      const itemsList = [
-        { rank: 1, name: `${this.userNickname} (You)`, emoji: "🚗", val: this.stats.items || 18, isUser: true }
-      ];
-
-      const activeList = this.leaderboardTab === 0 ? pointsList : itemsList;
+      let activeList = [];
+      if (rawList.length > 0) {
+        activeList = rawList.map((u, idx) => {
+          const isMe = u.nickname.toLowerCase().trim() === currentCleanNick || u.username.toLowerCase().trim() === currentCleanNick;
+          return {
+            rank: idx + 1,
+            name: isMe ? `${u.nickname} (You)` : u.nickname,
+            emoji: '🚗',
+            val: this.leaderboardTab === 0 ? u.xp : u.squaresFound,
+            isUser: isMe
+          };
+        });
+      } else {
+        activeList = [{ rank: 1, name: `${this.userNickname} (You)`, emoji: "🚗", val: this.leaderboardTab === 0 ? (this.stats.xp || 0) : (this.stats.items || 0), isUser: true }];
+      }
 
       main.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:16px;">
@@ -1444,10 +1466,10 @@ class Router {
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#0F172A;padding:4px;border-radius:16px;margin-bottom:16px;">
-          <button onclick="window.router.leaderboardTab=0;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===0 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===0 ? '#0F172A' : 'white'};">
+          <button onclick="window.router.leaderboardTab=0;window.router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===0 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===0 ? '#0F172A' : 'white'};">
             ⭐ Total Points (XP)
           </button>
-          <button onclick="window.router.leaderboardTab=1;router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===1 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===1 ? '#0F172A' : 'white'};">
+          <button onclick="window.router.leaderboardTab=1;window.router.render();" style="height:42px;border-radius:12px;border:none;font-weight:900;font-size:13px;cursor:pointer;background:${this.leaderboardTab===1 ? '#FBBF24' : 'transparent'};color:${this.leaderboardTab===1 ? '#0F172A' : 'white'};">
             👀 Items Found
           </button>
         </div>
