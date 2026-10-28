@@ -245,43 +245,41 @@ module.exports = async (req, res) => {
 
   // 4. GLOBAL PUBLIC LEADERBOARD
   if (action === 'leaderboard' || req.url.includes('leaderboard')) {
-    let allUsersMap = new Map();
-
     try {
       const userIndex = await getUserIndex();
       const usernames = Object.keys(userIndex);
-      for (const u of usernames) {
-        const userRec = await getUserByUsername(u);
-        if (userRec) {
-          allUsersMap.set(u.toLowerCase(), userRec);
-        }
-      }
+
+      // Parallel fetch all user records via Promise.all for sub-second execution
+      const userRecords = await Promise.all(usernames.map(u => getUserByUsername(u)));
+      userRecords.filter(Boolean).forEach(u => memoryUsers.set(u.username.toLowerCase(), u));
     } catch(e) {}
 
     // Ensure Will & TestAccount top entries exist
-    const willUser = await getUserByUsername('will') || {
-      username: 'will',
-      nickname: 'Will',
-      level: 8,
-      xp: 750,
-      bingosWon: 8,
-      gamesPlayed: 15,
-      squaresFound: 42
-    };
-    allUsersMap.set('will', willUser);
+    if (!memoryUsers.has('will')) {
+      memoryUsers.set('will', {
+        username: 'will',
+        nickname: 'Will',
+        level: 8,
+        xp: 750,
+        bingosWon: 8,
+        gamesPlayed: 15,
+        squaresFound: 42
+      });
+    }
 
-    const testUser = await getUserByUsername('testaccount') || {
-      username: 'testaccount',
-      nickname: 'TestAccount',
-      level: 7,
-      xp: 600,
-      bingosWon: 6,
-      gamesPlayed: 59,
-      squaresFound: 32
-    };
-    allUsersMap.set('testaccount', testUser);
+    if (!memoryUsers.has('testaccount')) {
+      memoryUsers.set('testaccount', {
+        username: 'testaccount',
+        nickname: 'TestAccount',
+        level: 7,
+        xp: 600,
+        bingosWon: 6,
+        gamesPlayed: 59,
+        squaresFound: 32
+      });
+    }
 
-    const allUsers = Array.from(allUsersMap.values());
+    const allUsers = Array.from(memoryUsers.values());
 
     const topXp = allUsers
       .map(u => ({

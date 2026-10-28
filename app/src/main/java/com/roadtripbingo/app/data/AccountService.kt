@@ -237,8 +237,8 @@ object AccountService {
             val url = URL("$vercelBaseUrl/api/auth?action=leaderboard")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
-            conn.connectTimeout = 4000
-            conn.readTimeout = 4000
+            conn.connectTimeout = 8000
+            conn.readTimeout = 8000
 
             val statusCode = conn.responseCode
             if (statusCode in 200..299) {
