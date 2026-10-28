@@ -3,7 +3,7 @@ const https = require('https');
 const crypto = require('crypto');
 
 const API_STORE_URL = 'https://api.restful-api.dev/objects';
-const USER_INDEX_ID = 'ff808181a09d98f701a133a54006505e';
+const USER_INDEX_ID = 'ff808181a09d98f701a1845858103e6f';
 
 function httpRequest(urlStr, method, data) {
   return new Promise((resolve) => {
