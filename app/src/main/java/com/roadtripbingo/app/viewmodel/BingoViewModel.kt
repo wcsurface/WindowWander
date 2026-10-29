@@ -92,6 +92,17 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 unlockedDeckIds = preferences.getUnlockedDecks()
             )
         }
+
+        if (loggedIn && loadedProfile.nickname.isNotBlank()) {
+            val userKey = loadedProfile.nickname
+            viewModelScope.launch {
+                val res = AccountService.login(userKey, "")
+                if (res.success && res.profile != null && res.profile.xp >= loadedProfile.xp) {
+                    preferences.saveProfile(res.profile)
+                    _uiState.update { it.copy(playerProfile = res.profile) }
+                }
+            }
+        }
     }
 
     fun purchaseDeck(deckId: String) {

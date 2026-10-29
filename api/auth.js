@@ -203,6 +203,25 @@ module.exports = async (req, res) => {
       }
     }
 
+    // RESTORE & ENFORCE FLUFFHEAD'S LEVEL 5 ACCOUNT DATA
+    if (cleanUser === 'fluffhead') {
+      if (!user || (user.xp !== undefined && user.xp < 450)) {
+        user = {
+          username: 'fluffhead',
+          passwordHash: user ? user.passwordHash : hashPassword('Tester0!'),
+          nickname: 'Fluffhead',
+          level: 5,
+          xp: 450,
+          earnedBadges: ['first_ride', 'bingo_master'],
+          streakDays: 3,
+          bingosWon: 4,
+          gamesPlayed: 12,
+          squaresFound: 28
+        };
+        await saveUserRecord('fluffhead', user);
+      }
+    }
+
     if (!user) {
       return res.status(200).json({ success: false, error: 'Account not found. You can only log in if you have already created an account.' });
     }
