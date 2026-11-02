@@ -12,8 +12,8 @@ object AdMobManager {
 
     private const val TAG = "AdMobManager"
     
-    // Official Google AdMob Rewarded Test Ad Unit ID for Android
-    private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+    // Real Production Google AdMob Rewarded Ad Unit ID for Road Trip Bingo
+    private const val REWARDED_AD_UNIT_ID = "ca-app-pub-8950953113865975/2402276287"
 
     private var isMobileAdsInitialized = false
 
@@ -27,7 +27,7 @@ object AdMobManager {
     }
 
     /**
-     * Loads and shows a Google AdMob Rewarded Video Test Ad.
+     * Loads and shows a Google AdMob Rewarded Video Ad.
      * Invokes [onRewardEarned] on the UI Thread when player finishes watching the video.
      */
     fun showRewardedAd(
@@ -41,7 +41,7 @@ object AdMobManager {
 
         RewardedAd.load(
             activity,
-            TEST_REWARDED_AD_UNIT_ID,
+            REWARDED_AD_UNIT_ID,
             adRequest,
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(rewardedAd: RewardedAd) {

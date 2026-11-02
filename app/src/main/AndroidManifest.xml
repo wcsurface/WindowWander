@@ -16,10 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WindowWander">
 
-        <!-- OFFICIAL GOOGLE ADMOB TEST APPLICATION ID -->
+        <!-- REAL PRODUCTION GOOGLE ADMOB APPLICATION ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-8950953113865975~4556832182" />
 
         <activity
             android:name="com.roadtripbingo.app.MainActivity"
