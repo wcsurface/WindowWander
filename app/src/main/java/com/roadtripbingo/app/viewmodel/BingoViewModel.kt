@@ -369,7 +369,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 playerProfile = profile,
                 showBingoCelebration = newlyWon || (winEval.hasWon && it.showBingoCelebration),
                 showAccountPrompt = newlyWon && !it.isLoggedIn,
-                canUndo = boardHistory.size > 1
+                canUndo = false
             )
         }
     }
