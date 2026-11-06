@@ -1499,9 +1499,8 @@ class Router {
       const connectedPassengers = this.activeRoom && this.activeRoom.players ? this.activeRoom.players.filter(p => p.nickname !== this.userNickname) : [];
 
       main.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:flex-start;align-items:center;margin-top:10px;margin-bottom:12px;">
           <button class="back-pill" onclick="window.router.navigate('home')">◀ Exit</button>
-          <button class="back-pill" style="background:#F97316;border-color:#C2410C;" onclick="window.router.undoLastTap()">↩ Undo</button>
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#E2E8F0;margin-bottom:4px;font-weight:700;">

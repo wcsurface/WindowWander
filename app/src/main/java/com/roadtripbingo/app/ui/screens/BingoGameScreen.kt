@@ -273,7 +273,7 @@ fun BingoGameScreen(
                 // GAME HEADER BAR
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // EXIT BUTTON
@@ -284,7 +284,7 @@ fun BingoGameScreen(
                             .background(MediumNavy)
                             .border(1.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                             .clickable { onBackToHome() }
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                            .padding(horizontal = 14.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = "◀ Exit",
@@ -292,27 +292,6 @@ fun BingoGameScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
-                    }
-
-                    // UNDO ACCIDENTAL TAP BUTTON
-                    if (canUndo) {
-                        Box(
-                            modifier = Modifier
-                                .shadow(6.dp, RoundedCornerShape(12.dp))
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(VividOrange)
-                                .clickable { onUndo() }
-                                .padding(horizontal = 12.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                text = "↩ Undo",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
-                    } else {
-                        Spacer(modifier = Modifier.width(60.dp))
                     }
                 }
 
