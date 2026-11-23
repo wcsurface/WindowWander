@@ -131,6 +131,20 @@ async function saveUserRecord(username, userData) {
   }
 }
 
+function formatCleanNickname(rawNickname, rawUsername) {
+  let name = (rawNickname || '').trim();
+  if (name.includes('@')) {
+    name = name.split('@')[0].trim();
+  }
+  if (!name && rawUsername) {
+    name = rawUsername.includes('@') ? rawUsername.split('@')[0].trim() : rawUsername.trim();
+  }
+  if (name) {
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+  }
+  return name || 'Road Explorer';
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -142,10 +156,10 @@ module.exports = async (req, res) => {
 
   const body = req.body || {};
   const action = body.action || req.query.action || '';
-  const rawUsername = (body.username || body.nickname || '').trim();
+  const rawUsername = (body.username || '').trim();
   const username = rawUsername.toLowerCase();
   const password = body.password || 'default_pass';
-  const nickname = rawUsername || 'Road Explorer';
+  const displayNickname = formatCleanNickname(body.nickname, rawUsername);
 
   if (!username && action !== 'health' && action !== 'leaderboard') {
     return res.status(400).json({ success: false, error: 'Username required' });
@@ -162,7 +176,7 @@ module.exports = async (req, res) => {
     const newUser = {
       username: cleanUser,
       passwordHash: hashPassword(password),
-      nickname: rawUsername || username,
+      nickname: displayNickname,
       level: 1,
       xp: 0,
       earnedBadges: ['first_ride'],
@@ -250,6 +264,9 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: false, error: 'Cannot save progress: Account does not exist.' });
     }
 
+    if (body.nickname) {
+      user.nickname = formatCleanNickname(body.nickname, cleanUser);
+    }
     user.xp = body.xp !== undefined ? body.xp : (user.xp || 0);
     user.level = body.level || Math.floor((user.xp) / 100) + 1;
     user.earnedBadges = Array.isArray(body.earnedBadges) ? body.earnedBadges : (user.earnedBadges || ['first_ride']);
@@ -298,7 +315,7 @@ module.exports = async (req, res) => {
     const topXp = allUsers
       .map(u => ({
         username: u.username,
-        nickname: u.nickname || u.username,
+        nickname: formatCleanNickname(u.nickname, u.username),
         level: u.level || Math.floor((u.xp || 0) / 100) + 1,
         xp: u.xp || 0,
         bingosWon: u.bingosWon || 0,
@@ -311,7 +328,7 @@ module.exports = async (req, res) => {
     const topItems = [...allUsers]
       .map(u => ({
         username: u.username,
-        nickname: u.nickname || u.username,
+        nickname: formatCleanNickname(u.nickname, u.username),
         level: u.level || Math.floor((u.xp || 0) / 100) + 1,
         xp: u.xp || 0,
         bingosWon: u.bingosWon || 0,

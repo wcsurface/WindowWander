@@ -510,7 +510,7 @@ class BingoViewModel(application: Application) : AndroidViewModel(application) {
                 if (currentRoomCode != targetCode && _uiState.value.multiplayerRoom != null) break
 
                 try {
-                    val res = AccountService.getRoomFromRailway(targetCode)
+                    val res = AccountService.getRoomOnRailway(targetCode)
                     if (res.success && res.players.isNotEmpty()) {
                         val syncedDeck = DeckRepository.DECKS.find { it.id == res.deckId } ?: _uiState.value.selectedDeck
                         val syncedGameMode = GameMode.values().firstOrNull { it.name == res.gameMode || it.displayName == res.gameMode } ?: _uiState.value.gameMode
