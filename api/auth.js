@@ -266,14 +266,18 @@ module.exports = async (req, res) => {
   if (action === 'leaderboard' || req.url.includes('leaderboard')) {
     try {
       const userIndex = await getUserIndex();
-      const usernames = Object.keys(userIndex);
+      const usernames = Object.keys(userIndex).filter(u => u !== 'testaccount');
 
-      // Parallel fetch all user records via Promise.all for sub-second execution
+      // Parallel fetch all user records via Promise.all
       const userRecords = await Promise.all(usernames.map(u => getUserByUsername(u)));
-      userRecords.filter(Boolean).forEach(u => memoryUsers.set(u.username.toLowerCase(), u));
+      userRecords.filter(Boolean).forEach(u => {
+        if (u.username.toLowerCase() !== 'testaccount') {
+          memoryUsers.set(u.username.toLowerCase(), u);
+        }
+      });
     } catch(e) {}
 
-    // Ensure Will & TestAccount top entries exist
+    // Ensure Will exists in memory
     if (!memoryUsers.has('will')) {
       memoryUsers.set('will', {
         username: 'will',
@@ -286,19 +290,10 @@ module.exports = async (req, res) => {
       });
     }
 
-    if (!memoryUsers.has('testaccount')) {
-      memoryUsers.set('testaccount', {
-        username: 'testaccount',
-        nickname: 'TestAccount',
-        level: 7,
-        xp: 600,
-        bingosWon: 6,
-        gamesPlayed: 59,
-        squaresFound: 32
-      });
-    }
+    // Remove TestAccount from leaderboard
+    memoryUsers.delete('testaccount');
 
-    const allUsers = Array.from(memoryUsers.values());
+    const allUsers = Array.from(memoryUsers.values()).filter(u => u.username.toLowerCase() !== 'testaccount');
 
     const topXp = allUsers
       .map(u => ({

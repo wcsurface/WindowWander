@@ -25,6 +25,26 @@ const usersDb = new Map();
 async function initDbTables() {
   if (db) {
     try {
+      // 1. CREATE USERS TABLE
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          username VARCHAR(100) UNIQUE NOT NULL,
+          password_hash VARCHAR(256) NOT NULL,
+          nickname VARCHAR(100) NOT NULL,
+          level INTEGER DEFAULT 1,
+          xp INTEGER DEFAULT 0,
+          earned_badges TEXT DEFAULT 'first_ride',
+          streak_days INTEGER DEFAULT 1,
+          bingos_won INTEGER DEFAULT 0,
+          games_played INTEGER DEFAULT 0,
+          squares_found INTEGER DEFAULT 0,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log('Railway PostgreSQL users table verified.');
+
+      // 2. CREATE ROOM_LOBBIES TABLE
       await db.query(`
         CREATE TABLE IF NOT EXISTS room_lobbies (
           room_code VARCHAR(10) PRIMARY KEY,
@@ -35,8 +55,27 @@ async function initDbTables() {
         );
       `);
       console.log('Railway PostgreSQL room_lobbies table verified.');
+
+      // 3. PURGE TESTACCOUNT & ENSURE WILL IS LEVEL 8 IN POSTGRESQL DB
+      await db.query(`DELETE FROM users WHERE LOWER(username) = 'testaccount' OR LOWER(nickname) = 'testaccount';`);
+
+      const willPassHash = hashPassword('!929Ford');
+      await db.query(`
+        INSERT INTO users (username, password_hash, nickname, level, xp, earned_badges, streak_days, bingos_won, games_played, squares_found)
+        VALUES ('will', $1, 'Will', 8, 750, 'first_ride,bingo_master,speedy_explorer,highway_hero', 5, 8, 15, 42)
+        ON CONFLICT (username) DO UPDATE
+        SET password_hash = $1,
+            nickname = 'Will',
+            level = 8,
+            xp = 750,
+            bingos_won = 8,
+            games_played = 15,
+            squares_found = 42;
+      `, [willPassHash]);
+      console.log('Will Level 8 account synced in PostgreSQL.');
+
     } catch(e) {
-      console.error('Failed to init room_lobbies table:', e.message);
+      console.error('Failed to init PostgreSQL tables:', e.message);
     }
   }
 }
